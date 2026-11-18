@@ -145,3 +145,14 @@
 - 途中手滑改坏过 TEAM 那几行（zhan 被复制成两行、zhang 丢失），已修回六个人齐全。
 
 验证：点 2021 → 详情打开、3 条信息、2 条记录；输入「Q3 学会了拒绝」后记录变 3 条；「带着这一年去立项」跳到立项并关闭弹层；桌面 4 tab / 8 处跳转 0 报错，手机模式正常。
+
+## 第 13 轮（接真实 AI）
+
+- 底片数据模型：YEARS 作为唯一数据源（年份 / 身份 / 在做 / 城市 / 一句话 / 技能 / 记录），补记的内容写进 localStorage 并在下次启动时并回模型。
+- 新增「让 AI 读一遍」：把底片摘要 JSON 发给 DeepSeek（response_format=json_object），渲染 strength / evidence×3 / openings / why，附 token 用量。
+- 设置面板：填 Key、选模型（deepseek-chat / deepseek-reasoner），只存本机；无 Key 或失败时有「演示结果」兜底。
+- 先做了 CORS 探测：从 file:// 直连 api.deepseek.com 返回 401 且响应可读，确认浏览器可直连。
+- 布局：AI 按钮放在底片页底部，为不压住 2015 那格，删掉原来的提示行并把按钮压到底部 8px。
+- 测试：拦截请求检查 payload（model / response_format / 2 条消息 / 摘要前缀），模拟返回后渲染正确；真实 401 能显示可读错误并回落到演示结果。
+
+验证：mock 全链路通过；401 路径通过；桌面 4 tab / 8 处跳转 0 报错。
