@@ -51,3 +51,15 @@ index.html      指向原型的入口（给 GitHub Pages 用）
 ## License
 
 MIT
+
+## 开发脚本（可选）
+
+`tools/` 里是截图与点击测试脚本，依赖 Node 与 Playwright，以及 huashu-design 的 Playwright 环境：
+
+```bash
+set HUASHU_SKILL=<你的 huashu-design 目录>   # Windows
+node tools/shot-all.mjs                      # 重新截图
+node tools/test.mjs                          # 点击回归
+```
+
+脚本里的路径都相对仓库根目录，不包含任何本机绝对路径。
