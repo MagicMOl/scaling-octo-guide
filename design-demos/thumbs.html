@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>重开 · 六个方向</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #17171A; color: #EDEBE6; padding: 44px 48px 36px;
+    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .head { display: flex; align-items: baseline; gap: 18px; }
+  .head h1 { font-size: 25px; font-weight: 600; letter-spacing: .04em; }
+  .head span { font-size: 12px; color: #8C8A85; letter-spacing: .04em; }
+  .grid { margin-top: 26px; display: grid; grid-template-columns: repeat(3, 480px); gap: 20px; }
+  .cell {
+    position: relative; width: 480px; height: 380px; overflow: hidden; border-radius: 3px;
+    outline: 1px solid rgba(255,255,255,.13);
+  }
+  .tag { position: absolute; left: 20px; top: 18px; width: 240px; z-index: 6; }
+  .tag .num { font: 500 10px/1 ui-monospace, monospace; letter-spacing: .2em; opacity: .5; }
+  .tag .name { font-size: 19px; font-weight: 600; margin-top: 8px; line-height: 1.3; }
+  .tag .src { font-size: 11px; line-height: 1.7; margin-top: 8px; opacity: .62; }
+  .tag .borrow { font-size: 11px; line-height: 1.75; margin-top: 12px; opacity: .82; max-width: 210px; }
+
+  /* 设备壳：按 assets/ios_frame.jsx 常量移植 */
+  .phone { width: 417px; height: 876px; padding: 12px; background: #000; border-radius: 60px; box-shadow: 0 0 0 2px #1f2937, 0 20px 60px rgba(0,0,0,.35); position: relative; }
+  .screen { position: relative; width: 393px; height: 852px; border-radius: 48px; overflow: hidden; }
+  .sbar { position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 20; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font: 600 16px/1 -apple-system, "SF Pro Text", sans-serif; pointer-events: none; }
+  .island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 124px; height: 36px; background: #000; border-radius: 999px; z-index: 30; }
+  .content { position: absolute; top: 54px; left: 0; right: 0; bottom: 34px; overflow: hidden; }
+  .home { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 140px; height: 5px; border-radius: 999px; z-index: 10; }
+  .sicons { display: flex; align-items: center; gap: 6px; }
+  .sig { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
+  .sig i { width: 3px; background: currentColor; border-radius: 1px; display: block; }
+  .bat { width: 26px; height: 12px; border: 1.5px solid currentColor; border-radius: 3px; padding: 1px; position: relative; opacity: .8; }
+  .bat b { display: block; width: 85%; height: 100%; background: currentColor; border-radius: 1px; opacity: .9; }
+  .bat::after { content: ""; position: absolute; top: 3px; right: -3px; width: 2px; height: 6px; background: currentColor; border-radius: 0 1px 1px 0; }
+  .slot { position: absolute; right: 18px; bottom: 10px; transform: scale(.40); transform-origin: bottom right; }
+
+  /* 1 白纸 */
+  .t1 { background: #F2F1ED; } .t1 .tag { color: #14140F; }
+  .t1 .screen { background: #FCFCFA; } .t1 .sbar { color: #14140F; }
+  .t1 .content { padding: 46px 30px 0; }
+  .t1 .zhong { font-family: "Noto Serif SC", "Songti SC", SimSun, serif; font-size: 150px; font-weight: 300; line-height: 1; color: #14140F; }
+  .t1 .lead { font-family: "Noto Serif SC", "Songti SC", SimSun, serif; font-size: 19px; line-height: 1.9; color: #3A3A33; margin-top: 26px; }
+  .t1 .rule { height: 1px; background: #CFCDC5; margin: 34px 0 16px; }
+  .t1 .go { display: flex; justify-content: space-between; font-size: 12px; letter-spacing: .2em; color: #6E6E64; }
+
+  /* 2 倒计时 */
+  .t2 { background: #06070A; } .t2 .tag { color: #E8FF4A; }
+  .t2 .screen { background: #06070A; } .t2 .sbar { color: #fff; }
+  .t2 .content { padding: 38px 26px 0; background-image: linear-gradient(#14161B 1px, transparent 1px), linear-gradient(90deg, #14161B 1px, transparent 1px); background-size: 26px 26px; }
+  .t2 .cap { font: 500 10px/1 "JetBrains Mono", ui-monospace, monospace; letter-spacing: .22em; color: #7C818C; }
+  .t2 .big { font: 500 96px/1 "JetBrains Mono", ui-monospace, monospace; color: #E8FF4A; letter-spacing: -.04em; margin-top: 20px; }
+  .t2 .unit { font: 500 13px/1 "JetBrains Mono", ui-monospace, monospace; color: #7C818C; letter-spacing: .1em; margin-top: 10px; }
+  .t2 .row { display: flex; justify-content: space-between; font: 400 11px/1 "JetBrains Mono", ui-monospace, monospace; color: #B4B9C2; border-top: 1px solid #1E2128; padding: 11px 0; }
+  .t2 .rows { margin-top: 34px; }
+
+  /* 3 路径 */
+  .t3 { background: #101A33; } .t3 .tag { color: #CBD3F5; }
+  .t3 .screen { background: linear-gradient(160deg, #18213A 0%, #202C4A 60%, #24304F 100%); } .t3 .sbar { color: #E7ECFF; }
+  .t3 .content { padding: 30px 22px 0; }
+  .t3 .say { font-size: 21px; line-height: 1.55; color: #F2F5FF; font-weight: 600; }
+  .t3 .card { margin-top: 20px; background: #26335A; border-radius: 28px; padding: 20px; }
+  .t3 .day { font-size: 12px; color: #A9B4DA; }
+  .t3 .pill { display: inline-block; font-size: 11px; background: rgba(155,224,204,.16); color: #9BE0CC; padding: 5px 10px; border-radius: 999px; margin-left: 8px; }
+
+  /* 4 行程 */
+  .t4 { background: #0C0E12; } .t4 .tag { color: #9AA3B2; }
+  .t4 .screen { background: #0C0E12; } .t4 .sbar { color: #fff; }
+  .t4 .content { padding: 30px 22px 0; }
+  .t4 .ttl { font-size: 24px; font-weight: 700; color: #fff; letter-spacing: -.01em; }
+  .t4 .sub { font-size: 12px; color: #7E8796; margin-top: 6px; }
+  .t4 .axis { position: relative; height: 150px; margin-top: 26px; border-left: 1px solid #2A303C; margin-left: 6px; }
+  .t4 .node { position: absolute; left: -4px; font: 500 11px/1.5 "JetBrains Mono", monospace; color: #8C96A6; }
+  .t4 .node b { color: #fff; }
+
+  /* 5 体检 */
+  .t5 { background: #000; } .t5 .tag { color: #EDEDED; }
+  .t5 .screen { background: #000; } .t5 .sbar { color: #fff; }
+  .t5 .content { padding: 26px 22px 0; }
+  .t5 .ringwrap { position: relative; width: 190px; height: 190px; margin: 10px auto 0; }
+  .t5 .score { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .t5 .score b { font: 700 62px/1 "Inter", system-ui; color: #fff; letter-spacing: -.03em; }
+  .t5 .score span { font-size: 11px; color: #8E8E93; margin-top: 6px; }
+  .t5 .card { background: #1C1C1E; border-radius: 18px; padding: 16px; margin-top: 18px; }
+
+  /* 6 几何 */
+  .t6 { background: #EDE6D6; } .t6 .tag { color: #1A1A18; }
+  .t6 .screen { background: #EDE6D6; } .t6 .sbar { color: #1A1A18; }
+  .t6 .geo { position: absolute; inset: 0; }
+  .t6 .zi { position: absolute; font-family: "Noto Serif SC", "Songti SC", serif; font-weight: 900; color: #1A1A18; letter-spacing: .06em; }
+
+  .foot { margin-top: 22px; font-size: 11px; color: #7C7A75; letter-spacing: .04em; }
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>重开 · 六个方向</h1>
+  <span>AI 时代的重启人生／App 原型／六张缩略图，挑三张做完整版</span>
+</div>
+
+<div class="grid">
+
+  <div class="cell t1" data-thumb="1">
+    <div class="tag">
+      <div class="num">01</div><div class="name">白纸</div>
+      <div class="src">最佳设计师<br>原研哉</div>
+      <div class="borrow">一屏只放一件事，字距放开，留白即主角。</div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen">
+        <div class="sbar"><span>9:41</span><div class="sicons"><div class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></div><div class="bat"><b></b></div></div></div>
+        <div class="island"></div>
+        <div class="content">
+          <div class="zhong">重</div>
+          <div class="lead">你已经过了 28 年。<br>剩下多少，由你定。</div>
+          <div class="rule"></div>
+          <div class="go"><span>开始</span><span>三条路在等你</span></div>
+        </div>
+        <div class="home" style="background:rgba(0,0,0,.25)"></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="cell t2" data-thumb="2">
+    <div class="tag">
+      <div class="num">02</div><div class="name">倒计时</div>
+      <div class="src">最佳设计师<br>中村勇吾</div>
+      <div class="borrow">把「还剩多少自由时间」做成整屏最大的东西，而且它在动。</div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen">
+        <div class="sbar"><span>9:41</span><div class="sicons"><div class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></div><div class="bat"><b></b></div></div></div>
+        <div class="island"></div>
+        <div class="content">
+          <div class="cap">自由时间余额</div>
+          <div class="big">74,203</div>
+          <div class="unit">小时 · 按每周 12 小时算到 45 岁</div>
+          <div class="rows">
+            <div class="row"><span>已用</span><span>18,720 h</span></div>
+            <div class="row"><span>每周可支配</span><span>12.0 h</span></div>
+            <div class="row"><span>房贷</span><span>4,200 / 月</span></div>
+          </div>
+        </div>
+        <div class="home" style="background:rgba(255,255,255,.5)"></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="cell t3" data-thumb="3">
+    <div class="tag">
+      <div class="num">03</div><div class="name">路径</div>
+      <div class="src">现实参照<br>Gentler Streak（ADA 2024）</div>
+      <div class="borrow">一句建议句当标题，路径上一个白点表示「你在哪儿」。</div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen">
+        <div class="sbar"><span>9:41</span><div class="sicons"><div class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></div><div class="bat"><b></b></div></div></div>
+        <div class="island"></div>
+        <div class="content">
+          <div class="say">今天适合先确认方向，<br>不适合加速。</div>
+          <div class="card">
+            <svg viewBox="0 0 300 120" width="100%">
+              <path d="M8 96 C 60 96, 74 26, 130 26 S 220 78, 292 62" fill="none" stroke="#3A4468" stroke-width="10" stroke-linecap="round"/>
+              <path d="M8 96 C 60 96, 74 26, 130 26" fill="none" stroke="#9BE0CC" stroke-width="10" stroke-linecap="round"/>
+              <circle cx="130" cy="26" r="7" fill="#fff"/>
+            </svg>
+            <div class="day" style="margin-top:12px">你现在在第 12 天 <span class="pill">还在计划</span></div>
+          </div>
+        </div>
+        <div class="home" style="background:rgba(255,255,255,.5)"></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="cell t4" data-thumb="4">
+    <div class="tag">
+      <div class="num">04</div><div class="name">行程</div>
+      <div class="src">现实参照<br>Flighty（ADA 2023）</div>
+      <div class="borrow">人生有延误和转机，所以是行程表，不是待办清单。</div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen">
+        <div class="sbar"><span>9:41</span><div class="sicons"><div class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></div><div class="bat"><b></b></div></div></div>
+        <div class="island"></div>
+        <div class="content">
+          <div class="ttl">路线一 · 转行独立开发</div>
+          <div class="sub">14 个月 · 收入降到 40%</div>
+          <div class="axis">
+            <div class="node" style="top:0"><b>现在</b><br>存够 5.4 个月</div>
+            <div class="node" style="top:62px">3 个月<br>上线第一个付费</div>
+            <div class="node" style="top:118px">12 个月<br>收入回正</div>
+          </div>
+        </div>
+        <div class="home" style="background:rgba(255,255,255,.5)"></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="cell t5" data-thumb="5">
+    <div class="tag">
+      <div class="num">05</div><div class="name">体检</div>
+      <div class="src">秒数轮盘<br>App 09 健康数据</div>
+      <div class="borrow">三色圆环 + 状态胶囊，颜色即结论；给「意义」也打分。</div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen">
+        <div class="sbar"><span>9:41</span><div class="sicons"><div class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></div><div class="bat"><b></b></div></div></div>
+        <div class="island"></div>
+        <div class="content">
+          <div class="ringwrap">
+            <svg viewBox="0 0 200 200" width="190" height="190">
+              <circle cx="100" cy="100" r="86" fill="none" stroke="#2A2A2E" stroke-width="16"/>
+              <circle cx="100" cy="100" r="86" fill="none" stroke="#FA114F" stroke-width="16" stroke-linecap="round" stroke-dasharray="390 540" transform="rotate(-90 100 100)"/>
+              <circle cx="100" cy="100" r="64" fill="none" stroke="#2A2A2E" stroke-width="16"/>
+              <circle cx="100" cy="100" r="64" fill="none" stroke="#92E82A" stroke-width="16" stroke-linecap="round" stroke-dasharray="190 402" transform="rotate(-90 100 100)"/>
+              <circle cx="100" cy="100" r="42" fill="none" stroke="#2A2A2E" stroke-width="16"/>
+              <circle cx="100" cy="100" r="42" fill="none" stroke="#FFCC00" stroke-width="16" stroke-linecap="round" stroke-dasharray="90 264" transform="rotate(-90 100 100)"/>
+            </svg>
+            <div class="score"><b>62</b><span>人生可用度</span></div>
+          </div>
+          <div class="card">
+            <div style="font-size:11px;color:#8E8E93;letter-spacing:.08em">构成</div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:#fff;margin-top:10px"><span>时间</span><span style="color:#FA114F">偏紧</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:#fff;margin-top:8px"><span>钱</span><span style="color:#FFCC00">勉强</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:#fff;margin-top:8px"><span>意义</span><span style="color:#FF453A">缺</span></div>
+          </div>
+        </div>
+        <div class="home" style="background:rgba(255,255,255,.5)"></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="cell t6" data-thumb="6">
+    <div class="tag">
+      <div class="num">06</div><div class="name">几何</div>
+      <div class="src">秒数轮盘<br>east 09 田中一光</div>
+      <div class="borrow">色块拼贴 + 竖排粗宋，「重开」二字压住色块交界。</div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen">
+        <div class="geo">
+          <div style="position:absolute;left:0;top:0;width:200px;height:200px;background:#D8452F"></div>
+          <div style="position:absolute;left:52px;top:52px;width:96px;height:96px;background:#EDE6D6;border-radius:50%"></div>
+          <div style="position:absolute;left:200px;top:0;width:193px;height:200px;background:#1A1A18"></div>
+          <div style="position:absolute;left:200px;top:110px;width:70px;height:70px;background:#E8B62C;border-radius:0 70px 0 0"></div>
+          <div style="position:absolute;left:286px;top:70px;width:44px;height:44px;background:#4E6E96;border-radius:50% 0 0 0"></div>
+          <div style="position:absolute;left:0;top:200px;width:393px;height:70px;background:#E8B62C"></div>
+          <div style="position:absolute;left:0;top:270px;width:100%;height:24px"></div>
+          <div class="zi" style="right:26px;top:330px;font-size:78px;writing-mode:vertical-rl">重开</div>
+          <div style="position:absolute;left:30px;bottom:120px;width:34px;height:34px;border-radius:50%;background:#D8452F"></div>
+        </div>
+        <div class="sbar"><span>9:41</span><div class="sicons"><div class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></div><div class="bat"><b></b></div></div></div>
+        <div class="island"></div>
+        <div class="home" style="background:rgba(0,0,0,.25)"></div>
+      </div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="foot">演示数据：虚构人物（28 岁产品经理），非真实数据。前三张做完整版，后三张留作备选。</div>
+
+</body>
+</html>

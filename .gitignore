@@ -1,0 +1,11 @@
+# 忽略：截图与临时产物（体积大，repo 里只保留 docs/images 下的少量关键图）
+design-demos/crops*/
+design-demos/*.png
+!design-demos/thumbs.png
+tools/*.json
+test-report.json
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+tools/_scratch/

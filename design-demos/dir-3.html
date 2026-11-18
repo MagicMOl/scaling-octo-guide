@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>重开 · 方向三 体检</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #000; }
+  body {
+    width: 1440px; height: 900px; overflow: hidden; position: relative; background: #000; color: #fff;
+    font-family: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- 板面 ---------- */
+  .bd-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,.07); }
+  .board-title { position: absolute; left: 64px; top: 66px; width: 300px; }
+  .board-title .k { font-size: 10px; letter-spacing: .3em; color: #6E6E76; }
+  .board-title h1 { font-size: 44px; font-weight: 700; letter-spacing: -.02em; line-height: 1.28; margin-top: 16px; }
+  .board-title p { margin-top: 16px; font-size: 12px; line-height: 2; color: #8E8E96; }
+  .board-foot { position: absolute; right: 64px; top: 68px; width: 400px; text-align: right; font-size: 10px; letter-spacing: .08em; color: #5E5E66; line-height: 1.9; }
+
+  /* ---------- 设备壳：按 assets/ios_frame.jsx 常量移植 ---------- */
+  .phone { width: 417px; height: 876px; padding: 12px; background: #000; border-radius: 60px; box-shadow: 0 0 0 2px #1f2937, 0 26px 70px rgba(0,0,0,.9); position: relative; }
+  .screen { position: relative; width: 393px; height: 852px; border-radius: 48px; overflow: hidden; background: #000; }
+  .sbar {
+    position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 20; color: #fff;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 32px;
+    font: 600 16px/1 -apple-system, "SF Pro Text", sans-serif; pointer-events: none;
+  }
+  .island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 124px; height: 36px; background: #000; border-radius: 999px; z-index: 30; }
+  .content { position: absolute; top: 54px; left: 0; right: 0; bottom: 90px; overflow: hidden; }
+  .home { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 140px; height: 5px; border-radius: 999px; background: rgba(255,255,255,.5); z-index: 10; }
+  .sicons { display: flex; align-items: center; gap: 6px; }
+  .sig { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
+  .sig i { width: 3px; background: currentColor; border-radius: 1px; display: block; }
+  .bat { width: 26px; height: 12px; border: 1.5px solid currentColor; border-radius: 3px; padding: 1px; position: relative; opacity: .8; }
+  .bat b { display: block; width: 85%; height: 100%; background: currentColor; border-radius: 1px; opacity: .9; }
+  .bat::after { content: ""; position: absolute; top: 3px; right: -3px; width: 2px; height: 6px; background: currentColor; border-radius: 0 1px 1px 0; }
+
+  .scr { display: none; height: 100%; padding: 18px 20px 0; position: relative; }
+  .scr.on { display: block; }
+  .k { font-size: 10px; letter-spacing: .22em; color: #6E6E76; }
+  .h { font-size: 26px; font-weight: 700; letter-spacing: -.01em; margin-top: 8px; }
+  .card { background: #1C1C1E; border-radius: 18px; padding: 16px; margin-top: 14px; }
+
+  /* S1 体检 */
+  .ringwrap { position: relative; width: 208px; height: 208px; margin: 6px auto 0; }
+  .score { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .score b { font-size: 64px; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
+  .score span { font-size: 10px; color: #8E8E93; margin-top: 8px; letter-spacing: .16em; }
+  .pills { display: flex; gap: 8px; margin-top: 16px; justify-content: center; }
+  .pill { font-size: 11px; padding: 6px 12px; border-radius: 999px; }
+  .pr { background: rgba(250,17,79,.14); color: #FF6079; }
+  .py { background: rgba(255,204,0,.14); color: #FFD93B; }
+  .pb { background: rgba(52,152,255,.14); color: #5FAFFF; }
+  .pr2 { background: rgba(255,69,58,.14); color: #FF6B60; }
+  .brs { margin-top: 4px; }
+  .brs div { display: flex; align-items: center; gap: 10px; padding: 7px 0; }
+  .brs span:first-child { width: 32px; font-size: 11px; color: #8E8E93; }
+  .brs .track { flex: 1; height: 6px; border-radius: 3px; background: #2C2C2E; overflow: hidden; }
+  .brs .track i { display: block; height: 100%; border-radius: 3px; }
+  .brs span:last-child { width: 34px; text-align: right; font-size: 11px; color: #C7C7CC; font-variant-numeric: tabular-nums; }
+  .cta { position: absolute; left: 20px; right: 20px; bottom: 16px; background: #fff; color: #000; border: 0; border-radius: 14px; padding: 14px 0; font: 600 13px/1 inherit; letter-spacing: .04em; cursor: pointer; transition: opacity .2s; }
+  .cta:hover { opacity: .8; }
+
+  /* S2 三条路 */
+  .routes { margin-top: 6px; }
+  .rt { cursor: pointer; }
+  .rt .nam { font-size: 15px; font-weight: 600; }
+  .rt .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .rt .bars { flex: 1; height: 8px; border-radius: 4px; background: #2C2C2E; overflow: hidden; margin-right: 10px; }
+  .rt .bars i { display: block; height: 100%; border-radius: 4px; }
+  .rt .mo { font-size: 12px; color: #C7C7CC; font-variant-numeric: tabular-nums; }
+  .rt .cost { font-size: 11px; color: #8E8E93; margin-top: 8px; line-height: 1.7; }
+  .rt .dl { font-size: 11px; color: #FF6B60; margin-top: 6px; }
+  .rt:hover .nam { color: #FFD93B; }
+
+  /* S3 趋势 */
+  .chart { margin-top: 10px; }
+  .rows { margin-top: 10px; }
+  .rows div { display: flex; justify-content: space-between; font-size: 12px; padding: 9px 0; border-bottom: 1px solid #2A2A2C; color: #C7C7CC; }
+  .rows div span:first-child { color: #8E8E93; }
+  .legend { display: flex; gap: 14px; margin-top: 12px; font-size: 10px; color: #8E8E93; }
+  .legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; }
+
+  /* S4 今天 */
+  .stepno { font-size: 74px; font-weight: 700; letter-spacing: -.05em; line-height: 1; margin-top: 10px; color: #FFD93B; }
+  .stepno small { font-size: 12px; letter-spacing: .2em; color: #8E8E93; font-weight: 400; margin-left: 10px; }
+  .txt { font-size: 16px; line-height: 1.85; margin-top: 14px; }
+  .why { font-size: 11px; color: #8E8E93; line-height: 1.9; margin-top: 14px; }
+  .done { margin-top: 16px; width: 100%; background: #FFD93B; color: #000; border: 0; border-radius: 14px; padding: 14px 0; font: 700 13px/1 inherit; letter-spacing: .04em; cursor: pointer; }
+  .done:hover { background: #fff; }
+
+  /* tab */
+  .tabbar { position: absolute; left: 0; right: 0; bottom: 34px; height: 56px; display: flex; align-items: center; justify-content: space-around; background: rgba(10,10,10,.92); border-top: 1px solid #242426; }
+  .tab { font-size: 10px; letter-spacing: .16em; color: #6E6E76; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .tab i { width: 5px; height: 5px; border-radius: 50%; background: transparent; display: block; }
+  .tab.on { color: #fff; }
+  .tab.on i { background: #FFD93B; }
+
+  .pwrap { position: absolute; transform-origin: top left; }
+  .plabel { position: absolute; font-size: 10px; color: #6E6E76; letter-spacing: .16em; white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<div class="bd-ring" style="left:760px;top:-260px;width:900px;height:900px"></div>
+<div class="bd-ring" style="left:860px;top:-160px;width:700px;height:700px"></div>
+<div class="bd-ring" style="left:960px;top:-60px;width:500px;height:500px"></div>
+
+<div class="board-title">
+  <div class="k">重开 · 方向三</div>
+  <h1>先体检，<br>再重开。</h1>
+  <p>把人生当成一份体检报告：<br>时间、钱、意义，三项指标。<br>颜色就是结论。</p>
+</div>
+<div class="board-foot">演示数据：虚构人物 28 岁产品经理 · 方法：Apple 健康／Oura 的状态色编码</div>
+
+<div id="stage"></div>
+
+<template id="tpl-home">
+  <div class="scr" data-name="home">
+    <div class="k">周五 · 10 月 17 日</div>
+    <div class="h">人生体检</div>
+    <div class="ringwrap">
+      <svg viewBox="0 0 220 220" width="208" height="208">
+        <circle cx="110" cy="110" r="94" fill="none" stroke="#2A2A2C" stroke-width="14"/>
+        <circle cx="110" cy="110" r="94" fill="none" stroke="#FA114F" stroke-width="14" stroke-linecap="round" stroke-dasharray="425 590" transform="rotate(-90 110 110)"/>
+        <circle cx="110" cy="110" r="72" fill="none" stroke="#2A2A2C" stroke-width="14"/>
+        <circle cx="110" cy="110" r="72" fill="none" stroke="#92E82A" stroke-width="14" stroke-linecap="round" stroke-dasharray="249 452" transform="rotate(-90 110 110)"/>
+        <circle cx="110" cy="110" r="50" fill="none" stroke="#2A2A2C" stroke-width="14"/>
+        <circle cx="110" cy="110" r="50" fill="none" stroke="#FFD93B" stroke-width="14" stroke-linecap="round" stroke-dasharray="75 314" transform="rotate(-90 110 110)"/>
+      </svg>
+      <div class="score"><b>62</b><span>可用度</span></div>
+    </div>
+    <div class="pills">
+      <span class="pill pr">时间 偏紧</span>
+      <span class="pill py">钱 勉强</span>
+      <span class="pill pr2">意义 缺</span>
+    </div>
+    <div class="card brs">
+      <div><span>时间</span><span class="track"><i style="width:72%;background:#FA114F"></i></span><span>72%</span></div>
+      <div><span>钱</span><span class="track"><i style="width:55%;background:#92E82A"></i></span><span>55%</span></div>
+      <div><span>意义</span><span class="track"><i style="width:24%;background:#FFD93B"></i></span><span>24%</span></div>
+    </div>
+    <button class="cta" data-go="route">看三条路</button>
+  </div>
+</template>
+
+<template id="tpl-route">
+  <div class="scr" data-name="route">
+    <div class="k">AI 算出的三条路</div>
+    <div class="h">三条路</div>
+    <div class="routes">
+      <div class="card rt" data-go="trend">
+        <div class="nam">一年内转行做独立开发</div>
+        <div class="meta"><div class="bars"><i style="width:78%;background:#FA114F"></i></div><span class="mo">14 月</span></div>
+        <div class="cost">收入降到 40% · 需要先补 3 个月缓冲</div>
+        <div class="dl">最晚决定 12 月 15 日</div>
+      </div>
+      <div class="card rt" data-go="trend">
+        <div class="nam">不转行，把工作改成远程</div>
+        <div class="meta"><div class="bars"><i style="width:100%;background:#92E82A"></i></div><span class="mo">18 月</span></div>
+        <div class="cost">收入不变 · 18 个月里不能换赛道</div>
+        <div class="dl">最晚决定 明年 3 月</div>
+      </div>
+      <div class="card rt" data-go="trend">
+        <div class="nam">先休息三个月</div>
+        <div class="meta"><div class="bars"><i style="width:17%;background:#FFD93B"></i></div><span class="mo">3 月</span></div>
+        <div class="cost">现金流 −2.4 万 · 换一次清醒</div>
+        <div class="dl">最晚决定 下个月 1 日</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-trend">
+  <div class="scr" data-name="trend">
+    <div class="k">路线二 · 现金能撑多久</div>
+    <div class="h">余额趋势</div>
+    <div class="chart">
+      <svg viewBox="0 0 340 170" width="100%">
+        <rect x="0" y="40" width="340" height="52" fill="rgba(146,232,42,.10)"/>
+        <line x1="0" y1="92" x2="340" y2="92" stroke="rgba(255,69,58,.5)" stroke-dasharray="3 4"/>
+        <polyline points="6,26 92,40 168,66 250,58 330,74" fill="none" stroke="#3498FF" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="6" cy="26" r="4" fill="#fff"/>
+        <circle cx="168" cy="66" r="3.5" fill="#3498FF"/>
+        <circle cx="330" cy="74" r="3.5" fill="#3498FF"/>
+        <text x="6" y="16" fill="#8E8E93" font-size="10" font-family="Inter,sans-serif">现在</text>
+        <text x="150" y="108" fill="#8E8E93" font-size="10" font-family="Inter,sans-serif">第 9 月</text>
+        <text x="300" y="108" fill="#8E8E93" font-size="10" font-family="Inter,sans-serif">18 月</text>
+      </svg>
+      <div class="legend"><span><i style="background:rgba(146,232,42,.5)"></i>安全区</span><span><i style="background:rgba(255,69,58,.6)"></i>低于安全线</span></div>
+    </div>
+    <div class="card rows">
+      <div><span>余额</span><span>6.0 万</span></div>
+      <div><span>每月支出</span><span>1.1 万</span></div>
+      <div><span>安全线</span><span>2.0 万</span></div>
+      <div><span>第 9 月最低点</span><span style="color:#FFD93B">2.6 万</span></div>
+    </div>
+    <div class="k" style="margin-top:14px">结论：路线二能走完，但没有容错。</div>
+  </div>
+</template>
+
+<template id="tpl-today">
+  <div class="scr" data-name="today">
+    <div class="k">今天只做这一件</div>
+    <div class="h">今天的一步</div>
+    <div class="stepno">20<small>分钟</small></div>
+    <div class="txt">写下你在工作里真正做过瘾的三件事。</div>
+    <div class="card">
+      <div class="k" style="letter-spacing:.16em">AI 的判断</div>
+      <div class="why" style="margin-top:8px">你的钱够 5.4 个月，先确认方向再加速，比先加速再纠偏便宜。</div>
+    </div>
+    <button class="done" data-go="route">记下了</button>
+    <div class="k" style="margin-top:16px">走了 12 天 · 改了 3 次方向</div>
+  </div>
+</template>
+
+<script>
+  const PHONES = [
+    { initial: 'home',  scale: .68, x: 320,  y: 268, label: '一　人生体检' },
+    { initial: 'route', scale: .60, x: 630,  y: 320, label: '二　三条路' },
+    { initial: 'trend', scale: .60, x: 900,  y: 320, label: '三　余额趋势' },
+    { initial: 'today', scale: .60, x: 1166, y: 320, label: '四　今天的一步' },
+  ];
+  const TABS = [
+    { key: 'home', label: '体检' },
+    { key: 'route', label: '三条路' },
+    { key: 'trend', label: '趋势' },
+    { key: 'today', label: '今天' },
+  ];
+  const stage = document.getElementById('stage');
+
+  function buildPhone(cfg) {
+    const wrap = document.createElement('div');
+    wrap.className = 'pwrap';
+    wrap.style.left = cfg.x + 'px';
+    wrap.style.top = cfg.y + 'px';
+    wrap.style.transform = `scale(${cfg.scale})`;
+
+    const phone = document.createElement('div');
+    phone.className = 'phone';
+    phone.innerHTML = `
+      <div class="screen">
+        <div class="sbar"><span>9:41</span>
+          <div class="sicons">
+            <div class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></div>
+            <div class="bat"><b></b></div>
+          </div>
+        </div>
+        <div class="island"></div>
+        <div class="content"></div>
+        <div class="tabbar"></div>
+        <div class="home"></div>
+      </div>`;
+
+    const content = phone.querySelector('.content');
+    ['home', 'route', 'trend', 'today'].forEach((k) => content.appendChild(document.getElementById('tpl-' + k).content.cloneNode(true)));
+
+    const scr = content.querySelectorAll('.scr');
+    const show = (name) => {
+      scr.forEach((s) => s.classList.toggle('on', s.dataset.name === name));
+      phone.querySelectorAll('.tab').forEach((t) => t.classList.toggle('on', t.dataset.tab === name));
+    };
+
+    const tabbar = phone.querySelector('.tabbar');
+    TABS.forEach((t) => {
+      const b = document.createElement('div');
+      b.className = 'tab';
+      b.dataset.tab = t.key;
+      b.innerHTML = '<i></i><span>' + t.label + '</span>';
+      b.addEventListener('click', () => show(t.key));
+      tabbar.appendChild(b);
+    });
+
+    phone.querySelectorAll('[data-go]').forEach((el) => {
+      el.addEventListener('click', (e) => { e.stopPropagation(); show(el.dataset.go); });
+    });
+
+    show(cfg.initial);
+    wrap.appendChild(phone);
+    return wrap;
+  }
+
+  PHONES.forEach((cfg) => {
+    stage.appendChild(buildPhone(cfg));
+    const label = document.createElement('div');
+    label.className = 'plabel';
+    label.textContent = cfg.label;
+    label.style.left = cfg.x + 'px';
+    label.style.top = (cfg.y + 876 * cfg.scale + 12) + 'px';
+    stage.appendChild(label);
+  });
+</script>
+</body>
+</html>
