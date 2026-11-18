@@ -22,6 +22,10 @@ const before = {
   rows: await inv.locator('.plist .pl').count(),
 };
 
+const gatedBefore = await inv.locator('.invbtn').isDisabled();
+await inv.locator('.ck[data-ck="q"]').click();
+const gatedAfter = await inv.locator('.invbtn').isDisabled();
+
 await inv.locator('.invbtn').click();
 await page.waitForTimeout(300);
 const sheetOpen = await inv.locator('.sheet.on').count();
@@ -40,5 +44,5 @@ const after = {
 };
 await inv.screenshot({ path: path.join(root, 'crops6', 'invest-after.png') });
 
-console.log(JSON.stringify({ errors, before, sheetOpen, after }, null, 2));
+console.log(JSON.stringify({ errors, before, gatedBefore, gatedAfter, sheetOpen, after }, null, 2));
 await browser.close();

@@ -392,6 +392,28 @@
   .mem .mt b { color: #2B5C86; }
   .fine { color: #B4701F; }
   .ship b { color: #2B5C86; font-weight: 600; }
+  /* ---------- 底片贯穿：立项胶片框 / 下单印章 / 合规勾选 ---------- */
+  .framefilm { background: #1B1711; padding: 15px 12px 10px; position: relative; overflow: hidden; }
+  .framefilm::before, .framefilm::after { content: ""; position: absolute; left: 8px; right: 8px; height: 5px;
+    background: repeating-linear-gradient(90deg, rgba(240,230,205,.42) 0 6px, transparent 6px 14px); }
+  .framefilm::before { top: 4px; }
+  .framefilm::after { bottom: 4px; }
+  .framefilm .lb { color: rgba(255,255,255,.55); }
+  .framefilm .fnum { position: absolute; right: 12px; top: 13px; font-size: 8px; letter-spacing: .16em; color: rgba(255,255,255,.45); }
+  .framefilm .req .row { border-bottom-color: rgba(255,255,255,.14); color: #F2EADA; }
+  .framefilm .req .row span { color: rgba(255,255,255,.5); }
+  .order { position: relative; }
+  .stamp { flex: none; width: 52px; height: 52px; border: 1.6px solid #B03A28;
+    color: #B03A28; border-radius: 3px; display: flex; align-items: center; justify-content: center;
+    transform: rotate(-7deg); font-family: "Noto Serif SC", serif; font-size: 10.5px; letter-spacing: .1em; opacity: .8; display: flex; align-items: center; justify-content: center; }
+  .comply { margin-top: 12px; }
+  .ck { display: flex; gap: 8px; align-items: flex-start; font-size: 9.5px; line-height: 1.6; color: #4A4334; padding: 5px 0; cursor: pointer; }
+  .ck i { width: 13px; height: 13px; border: 1px solid rgba(28,25,19,.45); flex: none; margin-top: 1px; position: relative; }
+  .ck.on i { background: #1C1913; border-color: #1C1913; }
+  .ck.on i::after { content: "✓"; position: absolute; inset: 0; color: #fff; font-size: 9px; display: flex; align-items: center; justify-content: center; }
+  .invbtn.off { background: #DDD5C4; color: #6E6349; cursor: not-allowed; }
+  .invbtn.off:hover { background: #C6BEAD; }
+  .org .node.ai { background: #F2F6FA; border-color: #A8BDD0; }
 </style>
 </head>
 <body>
@@ -493,9 +515,10 @@
   <div class="scr" data-name="project">
     <div class="proj">
       <div class="steps"><span data-step="project">立项</span><span data-step="team">团队</span><span data-step="invest">投资</span><span data-step="tech">选型</span><span data-step="order">下单</span></div>
-      <div class="h1" style="margin-top: 8px; font-size: 20px;">需求录入 → AI 方案 → 评审</div>
+      <div class="h1" style="margin-top: 8px; font-size: 24px;">需求录入 → 方案 → 评审</div>
 
-      <div class="pblock">
+      <div class="pblock framefilm">
+        <div class="fnum">第 25 格</div>
         <div class="lb">① 需求录入</div>
         <div class="req">
           <div class="row"><span>想做什么</span><div>把手机里的旅行照，自动排成一本能打印的小册子</div></div>
@@ -551,13 +574,13 @@
       <div class="bar"></div>
       <div class="cols">
         <div class="col">
-          <div class="gl">AI 组 · 常驻</div>
+          <div class="gl">AI 组 · 常驻 3</div>
           <div class="node ai" data-mem="zhan"><div class="av">栈</div><div class="nm">小栈<i>代码搭子</i></div></div>
           <div class="node ai" data-mem="ye"><div class="av">页</div><div class="nm">小页<i>排版助理</i></div></div>
           <div class="node ai" data-mem="zhang"><div class="av">账</div><div class="nm">小账<i>财务合规</i></div></div>
         </div>
         <div class="col">
-          <div class="gl">真人组 · 待招</div>
+          <div class="gl">真人组 · 待招 3</div>
           <div class="node" data-mem="lin"><div class="av">前</div><div class="nm">林一舟<i>前端 92%</i></div></div>
           <div class="node" data-mem="zhou"><div class="av">图</div><div class="nm">周牧<i>算法 87%</i></div></div>
           <div class="node" data-mem="lan"><div class="av">长</div><div class="nm">阿岚<i>增长 78%</i></div></div>
@@ -569,7 +592,7 @@
         <div><b class="money">4.2万</b><span>月度人力</span></div>
         <div><b>5</b><span>首月可用</span></div>
       </div>
-      <div class="tiny" style="margin-top: 10px;">点开任何一个人，看他的技能。</div>
+      <div class="tiny" style="margin-top: 10px;">六个人，六格底片。AI 随项目自带、不占工资；真人按周结算。点开任意一格看技能。</div>
       <button class="allin" data-go="tech" style="margin-top: 10px;">都要，下一步</button>
     </div>
   </div>
@@ -607,8 +630,12 @@
         <div><span>信息权</span>季度财报 + 月度进展</div>
       </div>
 
-      <button class="invbtn">参与投资</button>
-      <div class="fine" style="margin-top: 10px;">仅限合格投资者 · 早期项目可能全损</div>
+      <div class="comply">
+        <div class="ck on" data-ck="risk"><i></i><span>我已阅读《风险揭示书》，理解本金可能全损</span></div>
+        <div class="ck" data-ck="q"><i></i><span>我符合合格投资者标准（外部 10 万起投）</span></div>
+      </div>
+      <button class="invbtn off" disabled>参与投资</button>
+      <div class="fine" style="margin-top: 10px;">24 小时冷静期 · 资金由托管账户代持 · 仅限合格投资者</div>
     </div>
   </div>
 </template>
@@ -730,7 +757,10 @@
       </div>
 
       <button class="confirm" data-go="cover">确认下单</button>
-      <div class="fine">不同商家的保修与发票不同，下单前会再确认一次</div>
+      <div class="fine" style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+        <span>不同商家的保修与发票不同，下单前会再确认一次</span>
+        <span class="stamp">已冲洗</span>
+      </div>
     </div>
   </div>
 </template>
@@ -1088,6 +1118,16 @@
     // 投资认购
     let amt = 5;
     const invBtn = phone.querySelector('.invbtn');
+    const cks = phone.querySelectorAll('.ck');
+    cks.forEach((c) => c.addEventListener('click', (e) => {
+      e.stopPropagation();
+      c.classList.toggle('on');
+      const ok = [...cks].every((x) => x.classList.contains('on'));
+      if (invBtn) {
+        invBtn.disabled = !ok;
+        invBtn.classList.toggle('off', !ok);
+      }
+    }));
     if (invBtn) {
       invBtn.addEventListener('click', (e) => {
         e.stopPropagation();
