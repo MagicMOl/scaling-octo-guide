@@ -453,6 +453,19 @@
   .ai-actions button:hover, .ksave:hover, .kclear:hover { background: #1C1913; color: #fff; }
   .kinput { width: 100%; border: 0; border-bottom: 1px solid rgba(28,25,19,.35); background: transparent; font: inherit; font-size: 12px; padding: 7px 0; outline: none; }
   .ksel { width: 100%; border: 1px solid rgba(28,25,19,.25); background: #fff; font: inherit; font-size: 11px; padding: 7px; margin-top: 10px; }
+  /* ---------- 立项：可编辑需求 + AI 生成 ---------- */
+  .proj .lb { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .framefilm .req .row { align-items: center; }
+  .framefilm .req input { flex: 1; min-width: 0; border: 0; border-bottom: 1px solid rgba(255,255,255,.28);
+    background: transparent; color: #F2EADA; font: inherit; font-size: 11px; padding: 2px 0 3px; outline: none; }
+  .framefilm .req input:focus { border-bottom-color: #F2EADA; }
+  .framefilm .req input::placeholder { color: rgba(255,255,255,.35); }
+  .genbtn { border: 1px solid #1C1913; background: none; font: inherit; font-size: 9.5px; padding: 3px 8px;
+    cursor: pointer; letter-spacing: .06em; flex: none; }
+  .genbtn:hover:not(:disabled) { background: #1C1913; color: #fff; }
+  .genbtn:disabled { opacity: .4; cursor: default; }
+  .gmsg { font-size: 9.5px; line-height: 1.6; color: #B4701F; margin-top: 6px; }
+  .gmsg:empty { display: none; }
 </style>
 </head>
 <body>
@@ -563,15 +576,15 @@
         <div class="fnum">第 25 格</div>
         <div class="lb">① 需求录入</div>
         <div class="req">
-          <div class="row"><span>想做什么</span><div>把手机里的旅行照，自动排成一本能打印的小册子</div></div>
-          <div class="row"><span>给谁用</span><div>一年旅行 ≥3 次、懒得修图的人</div></div>
-          <div class="row"><span>什么时候</span><div>10 周内看到第一个能寄出去的版本</div></div>
+          <div class="row"><span>想做什么</span><input class="rq" data-k="what" type="text"></div>
+          <div class="row"><span>给谁用</span><input class="rq" data-k="who" type="text"></div>
+          <div class="row"><span>什么时候</span><input class="rq" data-k="when" type="text"></div>
         </div>
       </div>
 
       <div class="pblock">
-        <div class="lb">② AI 方案 · 两版</div>
-        <div class="sol">
+        <div class="lb"><span>② AI 方案 · 两版</span><button class="genbtn">用 AI 生成</button></div>
+        <div class="sol" data-sol>
           <div class="card2">
             <div class="t">A 全自动</div>
             <div class="d">按时间地点自动聚类，生成 60 页</div>
@@ -584,17 +597,18 @@
             <div class="pm">准 · 付费意愿高</div>
           </div>
         </div>
+        <div class="gmsg" data-gmsg></div>
       </div>
 
       <div class="pblock">
-        <div class="lb">③ 评审</div>
-        <div class="review">
+        <div class="lb"><span>③ 评审</span></div>
+        <div class="review" data-rev>
           <div><b>8.5</b><span>概念</span></div>
           <div><b>7.0</b><span>成本</span></div>
           <div><b class="risk">6.5</b><span>风险</span></div>
         </div>
-        <div class="tiny" style="margin-top: 8px;">结论：选 B，先做 8 周，预算 ¥30,000。风险在「选图」这一步，一次可用性测试就能验。</div>
-        <div class="rev2">
+        <div class="tiny" style="margin-top: 8px;" data-verdict>结论：选 B，先做 8 周，预算 ¥30,000。风险在「选图」这一步，一次可用性测试就能验。</div>
+        <div class="rev2" data-rev2>
           <div><span>保留</span>B 的「先选再排」，付费意愿最高</div>
           <div><span>要改</span>把选图压到 20 张以内，不然没人愿意挑</div>
           <div><span>风险</span>相册权限与导出尺寸，第 2 周前要验</div>
@@ -1089,16 +1103,16 @@
     + 'evidence（数组，3 条，每条引用具体年份和事件）、openings（一句话，不超过 20 字，说清 AI 时代可以往哪打开）、'
     + 'why（一句话解释依据）。不要输出多余文字。';
 
-  async function callAI() {
+  async function callJSON(system, user, temp) {
     const key = store.get('dipian.apiKey');
     const model = store.get('dipian.model') || 'deepseek-chat';
     const body = {
       model,
-      temperature: 0.6,
+      temperature: typeof temp === 'number' ? temp : 0.6,
       response_format: { type: 'json_object' },
       messages: [
-        { role: 'system', content: AI_SYS },
-        { role: 'user', content: JSON.stringify(filmSummary()) },
+        { role: 'system', content: system },
+        { role: 'user', content: user },
       ],
     };
     const r = await fetch('https://api.deepseek.com/chat/completions', {
@@ -1116,6 +1130,21 @@
     let data;
     try { data = JSON.parse(txt); } catch (e) { throw new Error('返回不是合法 JSON：' + txt.slice(0, 100)); }
     return { data, usage: j.usage, model };
+  }
+
+  async function callAI() {
+    return callJSON(AI_SYS, JSON.stringify(filmSummary()), 0.6);
+  }
+
+  const PROJ_SYS = '你是资深产品负责人。根据用户的三个回答和底片摘要，给出两个差异明显的方案和一次评审。'
+    + '只根据给定信息，不要编造数据。输出严格 JSON：'
+    + '{"plans":[{"name":"不超过6字","desc":"一句话不超过24字","pros":"优点不超过12字","cons":"代价不超过12字"},{"name":"","desc":"","pros":"","cons":""}],'
+    + '"recommended":0, "review":{"concept":0.0,"cost":0.0,"risk":0.0},'
+    + '"verdict":"结论一句话，含周期与预算，不超过40字","keep":"保留什么","fix":"要改什么","risky":"风险是什么"}'
+    + '。review 三项为 0–10 的一位小数；两个方案必须真的不同（一个是稳的、一个是快的或准的）。不要输出多余文字。';
+
+  async function callProject(req, film) {
+    return callJSON(PROJ_SYS, JSON.stringify({ 需求: req, 底片: film }), 0.5);
   }
 
   function buildPhone(cfg) {
@@ -1335,6 +1364,85 @@
       });
       aiState.addEventListener('click', (e) => { e.stopPropagation(); openKey(); });
       syncAI();
+    }
+
+    /* ---------- 立项：可编辑需求 + AI 生成方案与评审 ---------- */
+    const REQ_DEFAULT = {
+      what: '把手机里的旅行照，自动排成一本能打印的小册子',
+      who: '一年旅行 ≥3 次、懒得修图的人',
+      when: '10 周内看到第一个能寄出去的版本',
+    };
+    const rqInputs = phone.querySelectorAll('.rq');
+    let savedReq = {};
+    try { savedReq = JSON.parse(store.get('dipian.req') || '{}'); } catch (e) { savedReq = {}; }
+    rqInputs.forEach((inp) => {
+      const k = inp.dataset.k;
+      inp.value = savedReq[k] || REQ_DEFAULT[k] || '';
+      inp.placeholder = REQ_DEFAULT[k] || '';
+      inp.addEventListener('change', () => {
+        const cur = {};
+        rqInputs.forEach((i) => { cur[i.dataset.k] = i.value; });
+        store.set('dipian.req', JSON.stringify(cur));
+      });
+    });
+
+    const genBtn = phone.querySelector('.genbtn');
+    const solEl = phone.querySelector('[data-sol]');
+    const revEl = phone.querySelector('[data-rev]');
+    const verdictEl = phone.querySelector('[data-verdict]');
+    const rev2El = phone.querySelector('[data-rev2]');
+    const gmsg = phone.querySelector('[data-gmsg]');
+
+    const renderProject = (d) => {
+      const plans = Array.isArray(d.plans) ? d.plans.slice(0, 2) : [];
+      if (plans.length === 2 && solEl) {
+        solEl.innerHTML = plans.map((p, i) => {
+          const rec = i === Number(d.recommended);
+          return `<div class="card2 ${rec ? 'rec' : ''}">${rec ? '<div class="tag">推荐</div>' : ''}`
+            + `<div class="t">${i === 0 ? 'A ' : 'B '}${p.name || ''}</div>`
+            + `<div class="d">${p.desc || ''}</div>`
+            + `<div class="pm">${[p.pros, p.cons].filter(Boolean).join(' · ')}</div></div>`;
+        }).join('');
+      }
+      const r = d.review || {};
+      const n = (v) => (typeof v === 'number' && isFinite(v) ? v.toFixed(1) : '—');
+      if (revEl) {
+        revEl.innerHTML = `<div><b>${n(r.concept)}</b><span>概念</span></div>`
+          + `<div><b>${n(r.cost)}</b><span>成本</span></div>`
+          + `<div><b class="risk">${n(r.risk)}</b><span>风险</span></div>`;
+      }
+      if (d.verdict && verdictEl) verdictEl.textContent = '结论：' + d.verdict;
+      const rows = [['保留', d.keep], ['要改', d.fix], ['风险', d.risky]].filter((x) => x[1]);
+      if (rows.length && rev2El) {
+        rev2El.innerHTML = rows.map(([k, v]) => `<div><span>${k}</span>${v}</div>`).join('');
+      }
+    };
+
+    if (genBtn) {
+      genBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!store.get('dipian.apiKey')) {
+          gmsg.textContent = '先在底片页配置 API Key，再回来生成。';
+          return;
+        }
+        const reqData = {};
+        rqInputs.forEach((i) => { reqData[i.dataset.k] = i.value.trim(); });
+        store.set('dipian.req', JSON.stringify(reqData));
+        genBtn.disabled = true;
+        const oldLabel = genBtn.textContent;
+        genBtn.textContent = '生成中…';
+        gmsg.textContent = '';
+        try {
+          const { data } = await callProject(reqData, filmSummary());
+          renderProject(data);
+          gmsg.textContent = '';
+        } catch (err) {
+          gmsg.textContent = '生成失败：' + String(err && err.message ? err.message : err);
+        } finally {
+          genBtn.disabled = false;
+          genBtn.textContent = oldLabel;
+        }
+      });
     }
 
     phone.querySelectorAll('[data-go]').forEach((el) => {
