@@ -56,10 +56,10 @@ export function parseChatInput(raw) {
   return { value: { system, user, model: m, temperature: t } };
 }
 
-// 简单的双窗口限流（内存态；Workers 每个 isolate 独立计数，够挡误用）
-export function createLimiter({ perMinute = 20, perDay = 200, now = () => Date.now() } = {}) {
+// 限流：存储可插拔（内存 / Redis），存储故障时退回本进程内存，避免整站不可用
+export function createLikimitMemory({ perMinute = 20, perDay = 200, now = () => Date.now() } = {}) {
   const buckets = new Map();
-  return function hit(key) {
+  return function hitMemory(key) {
     const t = now();
     let b = buckets.get(key);
     if (!b) { b = { min: 0, day: 0, minuteStart: t, dayStart: t }; buckets.set(key, b); }
@@ -69,6 +69,25 @@ export function createLimiter({ perMinute = 20, perDay = 200, now = () => Date.n
     if (b.day >= perDay) return { ok: false, scope: 'day', retryAfter: Math.ceil((86400000 - (t - b.dayStart)) / 1000) };
     b.min += 1; b.day += 1;
     return { ok: true, remaining: perMinute - b.min };
+  };
+}
+
+export function createLimiter({ store, perMinute = 20, perDay = 200 } = {}) {
+  const memory = createLikimitMemory({ perMinute, perDay });
+  return async function hit(id) {
+    if (!store || store.kind === 'memory') return memory(id);
+    const keyBase = 'rl:' + id;
+    try {
+      const m = await store.incr(keyBase + ':m', 60);
+      const d = await store.incr(keyBase + ':d', 86400);
+      if (m.count > perMinute) return { ok: false, scope: 'minute', retryAfter: m.ttlSec || 60 };
+      if (d.count > perDay) return { ok: false, scope: 'day', retryAfter: d.ttlSec || 86400 };
+      return { ok: true, remaining: Math.max(0, perMinute - m.count) };
+    } catch (e) {
+      // 存储挂了：退回单进程限流，并在结果里标记，方便日志排查
+      const r = memory(id);
+      return { ...r, degraded: true };
+    }
   };
 }
 

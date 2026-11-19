@@ -3,11 +3,24 @@
 import {
   parseChatInput, createLimiter, callUpstream, json, corsHeaders, preflight, ALLOWED_MODELS,
 } from './core.mjs';
+import { pickStore } from './stores.mjs';
 
-const hit = createLimiter({
-  perMinute: Number(globalThis.RATE_PER_MIN || 20),
-  perDay: Number(globalThis.RATE_PER_DAY || 200),
-});
+let cached = null;
+function limiterFor(env) {
+  if (!cached || cached.key !== env.UPSTASH_REDIS_REST_URL) {
+    const store = pickStore(env);
+    cached = {
+      key: env.UPSTASH_REDIS_REST_URL,
+      store,
+      hit: createLimiter({
+        store,
+        perMinute: Number(env.RATE_PER_MIN || 20),
+        perDay: Number(env.RATE_PER_DAY || 200),
+      }),
+    };
+  }
+  return cached;
+}
 
 export default {
   async fetch(request, env) {
@@ -26,6 +39,7 @@ export default {
         hasKey: Boolean(env.DEEPSEEK_API_KEY),
         models: ALLOWED_MODELS,
         runtime: 'cloudflare-worker',
+        store: L.store.kind,
       }, cors);
     }
 
@@ -42,7 +56,8 @@ export default {
     }
 
     const ip = request.headers.get('cf-connecting-ip') || 'unknown';
-    const limit = hit(ip);
+    const L = limiterFor(env);
+    const limit = await L.hit(ip);
     if (!limit.ok) {
       return json(429, { error: { code: 'rate_limited', message: '请求太频繁，稍后再试。', scope: limit.scope } },
         { ...cors, 'retry-after': String(limit.retryAfter) });

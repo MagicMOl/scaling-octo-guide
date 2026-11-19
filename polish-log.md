@@ -188,3 +188,13 @@
 - 修：超大请求体先用 `req.destroy()` 会挂住客户端 → 改成回 413 后 `req.resume()` 排空。
 
 验证：BFF 13/13；原型 4 tab / 8 跳转 0 报错；直连回退仍可用（401 错误路径正常）；BFF 端到端两条链路都通。
+
+## 第 17 轮（多实例共享限流）
+
+- `server/stores.mjs`：计数器抽成可插拔存储，契约 `async incr(key, ttl) -> {count, ttl}`。实现两份：内存版（默认，单进程）与 Upstash Redis REST 版（零依赖，Node 与 Workers 都能用）。
+- `core.mjs`：`createLimiter({ store, perMinute, perDay })` 改成异步；存储抛错时退回本进程内存限流并在结果里标 `degraded`，不至于因为 Redis 挂了整站不可用。
+- `node-server.mjs` / `worker.mjs`：启动时按环境变量选存储；健康检查与启动日志会报当前是 memory 还是 upstash。
+- 测试从 13 项加到 18 项：加了一个假 Upstash（实现 INCR/EXPIRE NX/TTL），起两个 BFF 实例共享同一计数，验证「A 一次 + B 一次通过、第三次在 A 上 429、换 IP 不受影响、Redis 里确实写了键」。
+- 文档：`.env.example` 与 `server/README.md` 补上 Upstash 配置与故障降级说明；主 README 把「多实例共享限流」从未做项里去掉。
+
+验证：server/test.mjs 18/18；浏览器 → BFF → 假上游端到端仍通（读底片 + 立项两条链路）。

@@ -84,13 +84,26 @@ docker run -p 8787:8787 -e DEEPSEEK_API_KEY=sk-xxx dipian-bff
 
 - Key 只在服务端；上游 401 会被映射成 `upstream_auth`，**不会把上游原文回显给前端**；
 - 模型白名单（`deepseek-chat` / `deepseek-reasoner`），请求体与消息长度有上限；
-- 每 IP 双窗口限流（分钟 / 天），超限返回 429 + `retry-after`；
+- 每 IP 双窗口限流（分钟 / 天），超限返回 429 + `retry-after`；计数器默认在内存，配 Upstash 后跨实例共享；
 - CORS 白名单可配，默认 `*` 仅适合本地与内测；
 - 日志只记模型名与消息长度，不记内容。
 
+## 多实例共享限流
+
+默认计数器在进程内存里，单实例够用。多实例部署时配两个变量即可切到 Upstash Redis（REST 接口，零依赖，Node 与 Workers 都支持）：
+
+`ash
+UPSTASH_REDIS_REST_URL=https://xxx.upstash.io
+UPSTASH_REDIS_REST_TOKEN=xxxxx
+`
+
+Workers 上用 
+px wrangler secret put UPSTASH_REDIS_REST_URL 同样两个变量。
+
+行为：固定窗口 + TTL；Redis 不可用时退回**本进程**限流（不整站挂掉），返回里带 degraded: true 方便排查。健康检查会报当前用的是 memory 还是 upstash。
+
 ## 还没做（上线前要补）
 
-- 限流是**单进程内存**：多实例部署要用 Redis / KV 才能全局一致；
 - 没有鉴权：谁都能调这个接口，生产要加登录态或签名；
 - 没有审计与告警、没有成本熔断。
 
