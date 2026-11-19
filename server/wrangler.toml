@@ -1,0 +1,9 @@
+name = "dipian-bff"
+main = "worker.mjs"
+compatibility_date = "2026-01-01"
+
+# 允许跨域的前端来源，逗号分隔；* 表示任意（仅建议本地/内测）
+[vars]
+ALLOWED_ORIGINS = "*"
+
+# 密钥不要写在这里，用：npx wrangler secret put DEEPSEEK_API_KEY

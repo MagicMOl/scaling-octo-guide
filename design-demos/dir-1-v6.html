@@ -1112,11 +1112,32 @@
     + 'why（一句话解释依据）。不要输出多余文字。';
 
   async function callJSON(system, user, temp) {
-    const key = store.get('dipian.apiKey');
+    const endpoint = store.get('dipian.endpoint');
     const model = store.get('dipian.model') || 'deepseek-chat';
+    const t = typeof temp === 'number' ? temp : 0.6;
+
+    // 首选：走自己的 BFF（Key 在服务端，前端拿不到）
+    if (endpoint) {
+      const r = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ system, user, model, temperature: t }),
+      });
+      let j = null;
+      try { j = await r.json(); } catch (e) { j = null; }
+      if (!r.ok) {
+        const msg = (j && j.error && j.error.message) || ('HTTP ' + r.status);
+        throw new Error(msg);
+      }
+      if (!j || !j.data || typeof j.data !== 'object') throw new Error('BFF 返回格式不对。');
+      return { data: j.data, usage: j.usage || null, model: j.model || model };
+    }
+
+    // 回退：直连（仅演示，Key 在浏览器本地）
+    const key = store.get('dipian.apiKey');
     const body = {
       model,
-      temperature: typeof temp === 'number' ? temp : 0.6,
+      temperature: t,
       response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: system },
@@ -1274,9 +1295,20 @@
     const aiState = phone.querySelector('.aistate');
     const syncAI = () => {
       if (!aiState) return;
+      const ep = store.get('dipian.endpoint');
       const k = store.get('dipian.apiKey');
-      aiState.textContent = k ? ('已配置 · ' + (store.get('dipian.model') || 'deepseek-chat')) : '未配置 Key · 点这里设置';
-      aiState.classList.toggle('on', !!k);
+      if (ep) {
+        let host = ep;
+        try { host = new URL(ep).host; } catch (e) { host = ep.slice(0, 22); }
+        aiState.textContent = 'BFF · ' + host;
+        aiState.classList.add('on');
+      } else if (k) {
+        aiState.textContent = '直连 · ' + (store.get('dipian.model') || 'deepseek-chat');
+        aiState.classList.add('on');
+      } else {
+        aiState.textContent = '未连接 · 点这里设置';
+        aiState.classList.remove('on');
+      }
     };
     const closeAI = () => aisheet.classList.remove('on');
     const bindX = () => { const x = aisheet.querySelector('.x'); if (x) x.onclick = (e) => { e.stopPropagation(); closeAI(); }; };
@@ -1336,27 +1368,34 @@
     };
 
     const openKey = () => {
-      aisheet.innerHTML = `<div class="ai-hd"><b style="font-size: 15px;">API 设置</b><button class="x">×</button></div>
-        <div class="ai-meta" style="margin-top: 10px;">Key 只存在这台设备的浏览器里（localStorage），不会上传到任何服务器。演示请用临时 Key。</div>
-        <input class="kinput" type="password" placeholder="sk-..." value="">
+      aisheet.innerHTML = `<div class="ai-hd"><b style="font-size: 15px;">AI 连接设置</b><button class="x">×</button></div>
+        <div class="ai-meta" style="margin-top: 10px;">推荐填服务地址（BFF）：Key 只在服务端，浏览器拿不到。留空则退回直连模式，Key 存在本机 localStorage，仅适合自己试。</div>
+        <div class="ai-lab" style="margin-top: 14px;">服务地址</div>
+        <input class="kinput ept" type="text" placeholder="http://localhost:8787/api/chat">
+        <div class="ai-lab">直连 Key（可选）</div>
+        <input class="kinput key" type="password" placeholder="sk-...">
         <select class="ksel"><option value="deepseek-chat">deepseek-chat</option><option value="deepseek-reasoner">deepseek-reasoner</option></select>
         <div class="ai-actions"><button class="ksave">保存</button><button class="kclear">清除</button></div>`;
       bindX();
-      const input = aisheet.querySelector('.kinput');
+      const epInput = aisheet.querySelector('.ept');
+      const keyInput = aisheet.querySelector('.key');
       const sel = aisheet.querySelector('.ksel');
-      input.value = store.get('dipian.apiKey') || '';
+      epInput.value = store.get('dipian.endpoint') || '';
+      keyInput.value = store.get('dipian.apiKey') || '';
       sel.value = store.get('dipian.model') || 'deepseek-chat';
       aisheet.querySelector('.ksave').onclick = (e) => {
         e.stopPropagation();
-        const v = input.value.trim();
-        if (!v) return;
-        store.set('dipian.apiKey', v);
+        const ep = epInput.value.trim();
+        const kk = keyInput.value.trim();
+        if (ep) store.set('dipian.endpoint', ep); else store.del('dipian.endpoint');
+        if (kk) store.set('dipian.apiKey', kk); else store.del('dipian.apiKey');
         store.set('dipian.model', sel.value);
         syncAI();
         closeAI();
       };
       aisheet.querySelector('.kclear').onclick = (e) => {
         e.stopPropagation();
+        store.del('dipian.endpoint');
         store.del('dipian.apiKey');
         syncAI();
         closeAI();
@@ -1367,7 +1406,7 @@
     if (aiBtn) {
       aiBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (!store.get('dipian.apiKey')) { openKey(); return; }
+        if (!store.get('dipian.endpoint') && !store.get('dipian.apiKey')) { openKey(); return; }
         runAI();
       });
       aiState.addEventListener('click', (e) => { e.stopPropagation(); openKey(); });
@@ -1429,8 +1468,8 @@
     if (genBtn) {
       genBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
-        if (!store.get('dipian.apiKey')) {
-          gmsg.textContent = '先在底片页配置 API Key，再回来生成。';
+        if (!store.get('dipian.endpoint') && !store.get('dipian.apiKey')) {
+          gmsg.textContent = '先在底片页配置服务地址或 Key，再回来生成。';
           return;
         }
         const reqData = {};

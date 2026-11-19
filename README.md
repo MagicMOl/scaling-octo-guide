@@ -115,3 +115,25 @@ node tools/test.mjs                          # 点击回归
 - AI 生成的正文按模型当时理解的语言返回，界面外壳仍会跟着切。
 
 已知：`中文` 这个切换标签本身保持中文（作为语言名）；AI 返回的长段落不随语言重写。
+
+## BFF（把 Key 挪到服务端）
+
+浏览器不再直接持有 DeepSeek Key。`server/` 是一个零依赖的转发层：
+
+```
+浏览器原型 ──POST /api/chat──▶ BFF ──Bearer Key──▶ api.deepseek.com
+```
+
+**本地跑**：
+
+```powershell
+.\server\run-local.ps1 -Key "sk-你的key"
+```
+
+然后在原型「未连接 · 点这里设置」里把**服务地址**填成 `http://localhost:8787/api/chat`，状态会显示 `BFF · localhost:8787`。
+
+**部署**：Cloudflare Workers（`.\server\deploy-cloudflare.ps1`）或 Docker（`docker build -t dipian-bff server/`），详见 [`server/README.md`](server/README.md)。
+
+已经做了：Key 只在服务端、模型白名单、请求体与消息长度上限、每 IP 分钟/天双窗口限流、CORS 白名单、错误不回显上游原文、日志不记内容。
+
+还没做：多实例共享限流、接口鉴权、审计告警、成本熔断。

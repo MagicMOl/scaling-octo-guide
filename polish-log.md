@@ -177,3 +177,14 @@
 - 用例：中文 → EN → 中文，标题/标签/输入值/html lang 全部正确往返；手机端「我」页同样可用。
 
 验证：4 tab / 8 跳转、年份详情、AI 读底片、立项生成、手机模式全部回归通过，0 报错。
+
+## 第 16 轮（BFF + 部署脚本）
+
+- 新增 `server/`：零依赖 Node BFF + Cloudflare Workers 版本，共用 `core.mjs`（校验 / 双窗口限流 / 转发 / 错误映射）。
+- 原型改造：`callJSON` 优先走「服务地址」（BFF），留空则回退直连；设置面板拆成「服务地址 + 直连 Key + 模型」；状态文案区分 BFF / 直连 / 未连接。
+- 安全：Key 只在服务端；上游 401 映射成 `upstream_auth` 且不回显原文；日志只记模型与长度；CORS 可配。
+- 部署脚本：`run-local.ps1`、`deploy-cloudflare.ps1`、`Dockerfile`、`wrangler.toml`、`.env.example`。
+- 测试：`server/test.mjs` 13 项（含 413、429、405、404、上游 401、未配 Key）；`tools/test-bff-e2e.mjs` 跑通「浏览器 → BFF → 假上游」两条 AI 链路。
+- 修：超大请求体先用 `req.destroy()` 会挂住客户端 → 改成回 413 后 `req.resume()` 排空。
+
+验证：BFF 13/13；原型 4 tab / 8 跳转 0 报错；直连回退仍可用（401 错误路径正常）；BFF 端到端两条链路都通。
