@@ -510,6 +510,10 @@
   .fromfilm button { margin-top: 8px; border: 1px solid #2B5C86; background: none; color: #2B5C86;
     font: inherit; font-size: 9.5px; padding: 4px 9px; cursor: pointer; letter-spacing: .06em; }
   .fromfilm button:hover { background: #2B5C86; color: #fff; }
+  .spiral .hd { position: relative; }
+  .addyear { position: absolute; right: 24px; top: 2px; border: 1px solid #C9C1AE; background: none;
+    font: inherit; font-size: 9.5px; color: #8A7E62; padding: 3px 8px; cursor: pointer; letter-spacing: .06em; }
+  .addyear:hover { border-color: #1C1913; color: #1C1913; }
 </style>
 </head>
 <body>
@@ -575,6 +579,7 @@
         <div class="kicker">个人信息记录</div>
         <div class="h2" style="margin-top: 8px;">十一年，螺旋上升</div>
         <div class="tiny" style="margin-top: 4px;">越往上越近。点开任意一格，照片可以随时插进去。</div>
+        <button class="addyear">＋ 新增一年</button>
       </div>
       <div class="coil" id="coil">
         <svg class="path" viewBox="0 0 393 612" preserveAspectRatio="none">
@@ -1156,14 +1161,38 @@ function syncFromFilmAll(focus) {
   }
 }
 
-function filmSummary() {    return Object.keys(YEARS).sort().map((y) => {
+function filmSummary() {
+  return Object.keys(YEARS).sort()
+    .filter((y) => {
+      const d = YEARS[y];
+      return (d.logs && d.logs.length) || (d.skills && d.skills.length);
+    })
+    .map((y) => {
       const d = YEARS[y];
       return {
         年: y, 身份: d.sub, 在做: d.doing, 城市: d.city,
-        一句话: d.line, 技能: d.skills.map(([k, v]) => k + ' ' + v), 记录: d.logs,
+        一句话: d.line, 技能: (d.skills || []).map(([k, v]) => k + ' ' + v), 记录: d.logs || [],
       };
     });
+}
+
+// 新建一年：先只有空壳，等用户写下第一条记录
+function createNextYear() {
+  const keys = Object.keys(YEARS).filter((k) => /^\d+$/.test(k)).map(Number);
+  const maxY = keys.length ? String(Math.max(...keys)) : '2026';
+  const y = String(Number(maxY) + 1);
+  if (!YEARS[y]) {
+    const prev = (YEARS[maxY] && YEARS[maxY].sub) || '';
+    const m = prev.match(/(\d+)/);
+    const n = m ? Number(m[1]) + 1 : keys.length + 1;
+    YEARS[y] = {
+      sub: '第 ' + n + ' 年', doing: '还没写', city: '—',
+      line: '还没写', skills: [], logs: [],
+    };
   }
+  return y;
+}
+
 
   const AI_SYS = '你是一位资深的产品与职业顾问。只根据用户提供的「底片」数据判断，不要编造年份或事件。'
     + '输出严格的 JSON，字段：strength（一句话，不超过 20 字，说清他真正擅长什么）、'
@@ -1302,13 +1331,10 @@ function filmSummary() {    return Object.keys(YEARS).sort().map((y) => {
     });
 
     // 底片：点开某一年，看信息并补记录
-    phone.querySelectorAll('.cell[data-year]').forEach((c) => {
-      c.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const y = c.dataset.year;
+    const openYear = (y, imgSrc) => {
         const d = YEARS[y];
         if (!d) return;
-        const img = c.querySelector('.ph img');
+        const img = imgSrc ? { src: imgSrc } : null;
         ys.innerHTML = `<div class="yh">
             <div class="yimg">${img ? `<img src="${img.src}" alt="">` : '照片位'}</div>
             <div><b>${y}</b><span>${d.sub}</span></div>
@@ -1319,8 +1345,10 @@ function filmSummary() {    return Object.keys(YEARS).sort().map((y) => {
             <div><span>城市</span>${d.city}</div>
             <div><span>一句</span>${d.line}</div>
           </div>
-          <div class="fl">这一年积累的</div>
-          <div class="skills">${d.skills.map(([k, v]) => `<div class="s"><span>${k}</span><div class="track"><i style="width:${v}%"></i></div><b>${v}</b></div>`).join('')}</div>
+          ${(d.skills && d.skills.length)
+            ? `<div class="fl">这一年积累的</div>
+          <div class="skills">${d.skills.map(([k, v]) => `<div class="s"><span>${k}</span><div class="track"><i style="width:${v}%"></i></div><b>${v}</b></div>`).join('')}</div>`
+            : ''}
           <div class="fl">这一年的记录</div>
           ${(d.logs && d.logs.length)
             ? `<div class="ylist">${d.logs.map((l) => `<div>${l}</div>`).join('')}</div>`
@@ -1358,8 +1386,23 @@ function filmSummary() {    return Object.keys(YEARS).sort().map((y) => {
           } catch (err) { /* 存不了就只在本次会话里 */ }
         };
         ys.querySelector('.ygo').onclick = (ev) => { ev.stopPropagation(); ys.classList.remove('on'); show('project'); };
+    };
+
+    phone.querySelectorAll('.cell[data-year]').forEach((c) => {
+      c.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const im = c.querySelector('.ph img');
+        openYear(c.dataset.year, im ? im.src : null);
       });
     });
+
+    const addYearBtn = phone.querySelector('.addyear');
+    if (addYearBtn) {
+      addYearBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openYear(createNextYear(), null);
+      });
+    }
 
     /* ---------- AI 读底片 ---------- */
     const aiBtn = phone.querySelector('.aibtn');
@@ -1811,6 +1854,7 @@ function filmSummary() {    return Object.keys(YEARS).sort().map((y) => {
     "越往上越近。点开任意一格，照片可以随时插进去。": "The higher it goes, the closer it gets. Tap a frame; photos can go in later.",
     "文案 · 被退稿": "Copywriting · rejected",
     "＋ 插入照片": "＋ Add a photo",
+    "＋ 新增一年": "＋ New year",
     "访谈 40 场": "40 user interviews",
     "组件化 · 带 3 人": "Design system · led 3",
     "定价 · 留存 +8%": "Pricing · retention +8%",
