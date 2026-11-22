@@ -221,14 +221,14 @@
   .req .row span { width: 56px; color: #8A7E62; flex: none; }
   .sol { display: flex; gap: 8px; margin-top: 10px; }
   .card2 { flex: 1; border: 1px solid rgba(28,25,19,.18); padding: 9px; position: relative; }
-  .card2.rec { border-color: #B03A28; box-shadow: inset 0 0 0 1px #B03A28; }
+  .card2.rec { border-color: #2B5C86; box-shadow: inset 0 0 0 1px #2B5C86; }
   .card2 .t { font-size: 11px; font-weight: 600; }
   .card2 .d { font-size: 9px; color: #4A4334; line-height: 1.65; margin-top: 4px; }
   .card2 .pm { font-size: 8.5px; margin-top: 5px; color: #2B5C86; }
-  .card2 .tag { position: absolute; right: 7px; top: -7px; background: #B03A28; color: #fff; font-size: 7.5px; padding: 2px 5px; letter-spacing: .1em; }
+  .card2 .tag { position: absolute; right: 7px; top: -7px; background: #2B5C86; color: #fff; font-size: 7.5px; padding: 2px 5px; letter-spacing: .1em; }
   .review { display: flex; gap: 10px; margin-top: 6px; }
   .review div { flex: 1; }
-  .review b { font-family: "Noto Serif SC", serif; font-size: 17px; color: #B03A28; display: block; }
+  .review b { font-family: "Noto Serif SC", serif; font-size: 17px; color: #1C1913; display: block; }
   .review span { font-size: 8.5px; color: #8A7E62; letter-spacing: .1em; }
 
   /* ---------- 团队：组织架构 ---------- */
@@ -472,6 +472,44 @@
   .langtog b.on { color: #1C1913; border-bottom-color: #1C1913; }
   .melist .lp { font-style: normal; cursor: pointer; font-weight: 400; padding-bottom: 1px; border-bottom: 1px solid transparent; }
   .melist .lp.on { color: #1C1913; border-bottom-color: #1C1913; }
+  /* ---------- 层级重构 ---------- */
+  .steps { font-size: 9px; letter-spacing: .18em; }
+  .steps span { color: #C9C1AE; }
+  .steps span.on { color: #2B5C86; }
+  .scr .h1 { font-size: 26px; }
+  .review div:first-child b { font-size: 27px; line-height: 1.1; color: #1C1913; }
+  .review div:not(:first-child) b { font-size: 13px; color: #1C1913; opacity: .5; font-family: "Noto Serif SC", serif; }
+  .review span { font-size: 9px; opacity: .75; }
+  .pblock .lb { font-size: 9px; letter-spacing: .24em; }
+  .card2 .t { font-size: 12px; }
+  .card2 .d { font-size: 9.5px; }
+  .spiral .hd { padding-top: 4px; padding-bottom: 10px; }
+  .coil .hint { font-size: 9.5px; }
+
+  /* ---------- 过渡与状态 ---------- */
+  .sheet { transition: transform .24s cubic-bezier(.22,.7,.3,1), opacity .24s ease; }
+  .sheet.on { animation: sheetUp .24s cubic-bezier(.22,.7,.3,1); }
+  @keyframes sheetUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .scr { animation: scrIn .22s ease-out; }
+  @keyframes scrIn { from { opacity: .6; } to { opacity: 1; } }
+  .sk { background: linear-gradient(90deg,#EFEAE0 25%,#F7F3EA 37%,#EFEAE0 63%); background-size: 400% 100%;
+    animation: skShine 1.2s ease-in-out infinite; border-radius: 2px; }
+  @keyframes skShine { from { background-position: 100% 0; } to { background-position: 0 0; } }
+  .sk-l { height: 10px; margin-top: 8px; }
+  .sk-b { height: 22px; margin-top: 10px; width: 62%; }
+  .empty { padding: 16px 0 4px; }
+  .empty b { display: block; font-size: 12px; font-weight: 500; }
+  .empty span { display: block; margin-top: 6px; font-size: 10px; line-height: 1.8; color: #8A7E62; }
+  .empty .eadd { margin-top: 12px; border: 1px solid #1C1913; background: none; font: inherit; font-size: 10px;
+    padding: 8px 14px; cursor: pointer; letter-spacing: .08em; }
+  .empty .eadd:hover { background: #1C1913; color: #fff; }
+  .fromfilm { margin-top: 14px; border-left: 2px solid #2B5C86; padding: 8px 0 8px 10px; display: none; }
+  .fromfilm.on { display: block; }
+  .fromfilm p { font-size: 10px; line-height: 1.7; color: #4A4334; }
+  .fromfilm b { font-size: 9px; letter-spacing: .18em; color: #2B5C86; display: block; margin-bottom: 3px; }
+  .fromfilm button { margin-top: 8px; border: 1px solid #2B5C86; background: none; color: #2B5C86;
+    font: inherit; font-size: 9.5px; padding: 4px 9px; cursor: pointer; letter-spacing: .06em; }
+  .fromfilm button:hover { background: #2B5C86; color: #fff; }
 </style>
 </head>
 <body>
@@ -578,6 +616,12 @@
     <div class="proj">
       <div class="steps"><span data-step="project">立项</span><span data-step="team">团队</span><span data-step="invest">投资</span><span data-step="tech">选型</span><span data-step="order">下单</span></div>
       <div class="h1" style="margin-top: 8px; font-size: 24px;">需求录入 → 方案 → 评审</div>
+
+      <div class="fromfilm" data-fromfilm>
+        <b>来自底片的结论</b>
+        <p data-fromtext></p>
+        <button data-fill>代入需求</button>
+      </div>
 
       <div class="pblock framefilm">
         <div class="fnum">第 25 格</div>
@@ -1096,8 +1140,23 @@
   } catch (e) { /* 忽略损坏数据 */ }
 
   // 数据模型 → 提示词用的结构化摘要
-  function filmSummary() {
-    return Object.keys(YEARS).sort().map((y) => {
+  // 底片结论 -> 立项页的带入条（跨手机统一刷新）
+function syncFromFilmAll(focus) {
+  let c = null;
+  try { c = JSON.parse(store.get('dipian.conclusion') || 'null'); } catch (e) { c = null; }
+  document.querySelectorAll('#stage [data-fromfilm]').forEach((el) => {
+    if (!c || (!c.strength && !c.openings)) { el.classList.remove('on'); return; }
+    el.classList.add('on');
+    const t = el.querySelector('[data-fromtext]');
+    if (t) t.textContent = '你擅长的：' + (c.strength || '—') + '。可以打开的方向：' + (c.openings || '—') + '。';
+  });
+  if (focus) {
+    const b = document.querySelector('#stage [data-fromfilm].on [data-fill]');
+    if (b) b.focus();
+  }
+}
+
+function filmSummary() {    return Object.keys(YEARS).sort().map((y) => {
       const d = YEARS[y];
       return {
         年: y, 身份: d.sub, 在做: d.doing, 城市: d.city,
@@ -1263,17 +1322,29 @@
           <div class="fl">这一年积累的</div>
           <div class="skills">${d.skills.map(([k, v]) => `<div class="s"><span>${k}</span><div class="track"><i style="width:${v}%"></i></div><b>${v}</b></div>`).join('')}</div>
           <div class="fl">这一年的记录</div>
-          <div class="ylist">${d.logs.map((l) => `<div>${l}</div>`).join('')}</div>
+          ${(d.logs && d.logs.length)
+            ? `<div class="ylist">${d.logs.map((l) => `<div>${l}</div>`).join('')}</div>`
+            : `<div class="empty"><b>这一年还没有记录</b><span>写下当时在做什么、卡在哪里。下次读底片时，这段会进到模型输入里。</span><button class="eadd">补一条</button></div>`}
           <div class="yfill"><input type="text" placeholder="记一句这一年的事…"><button>存</button></div>
           <button class="ygo">带着这一年去立项 →</button>`;
         ys.classList.add('on');
         ys.querySelector('.x').onclick = (ev) => { ev.stopPropagation(); ys.classList.remove('on'); };
         const input = ys.querySelector('.yfill input');
-        const list = ys.querySelector('.ylist');
+        const eadd = ys.querySelector('.eadd');
+        if (eadd) eadd.onclick = (ev) => { ev.stopPropagation(); input.focus(); };
         ys.querySelector('.yfill button').onclick = (ev) => {
           ev.stopPropagation();
           const v = input.value.trim();
           if (!v) return;
+          let list = ys.querySelector('.ylist');
+          if (!list) {
+            // 空态：第一次补记时，把空态换成列表
+            const empty = ys.querySelector('.empty');
+            list = document.createElement('div');
+            list.className = 'ylist';
+            if (empty) empty.replaceWith(list);
+            else ys.insertBefore(list, input.parentElement);
+          }
           const div = document.createElement('div');
           div.textContent = v;
           list.appendChild(div);
@@ -1339,7 +1410,13 @@
         <div class="ai-actions"><button class="again">再读一次</button><button class="toinv">带着结论去立项 →</button></div>`;
       bindX();
       aisheet.querySelector('.again').onclick = (e) => { e.stopPropagation(); runAI(); };
-      aisheet.querySelector('.toinv').onclick = (e) => { e.stopPropagation(); closeAI(); show('project'); };
+      aisheet.querySelector('.toinv').onclick = (e) => {
+        e.stopPropagation();
+        store.set('dipian.conclusion', JSON.stringify({ strength: data.strength || '', openings: data.openings || '' }));
+        closeAI();
+        show('project');
+        syncFromFilmAll(true);
+      };
       aisheet.classList.add('on');
     };
 
@@ -1356,7 +1433,14 @@
 
     const runAI = async () => {
       aisheet.innerHTML = `<div class="ai-hd"><b style="font-size: 15px;">读底片</b><button class="x">×</button></div>
-        <div class="ai-load"><div class="spin"></div><span>正在读十一年的记录…</span></div>`;
+        <div class="ai-lab">你擅长的</div>
+        <div class="sk sk-b" style="width: 70%;"></div>
+        <div class="sk sk-l"></div>
+        <div class="sk sk-l" style="width: 84%;"></div>
+        <div class="sk sk-l" style="width: 60%;"></div>
+        <div class="ai-lab" style="margin-top: 22px;">可以打开的</div>
+        <div class="sk sk-b" style="width: 56%;"></div>
+        <div class="ai-meta">正在读十一年的记录…</div>`;
       bindX();
       aisheet.classList.add('on');
       try {
@@ -1414,6 +1498,26 @@
     }
 
     /* ---------- 立项：可编辑需求 + AI 生成方案与评审 ---------- */
+    const fillBtn = phone.querySelector('[data-fill]');
+    if (fillBtn) {
+      fillBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        let c = null;
+        try { c = JSON.parse(store.get('dipian.conclusion') || 'null'); } catch (err) { c = null; }
+        if (!c || !c.openings) return;
+        const what = phone.querySelector('.rq[data-k="what"]');
+        if (what) {
+          what.value = c.openings;
+          const cur = {};
+          rqInputs.forEach((i) => { cur[i.dataset.k] = i.value; });
+          store.set('dipian.req', JSON.stringify(cur));
+          what.focus();
+        }
+      });
+    }
+
+    syncFromFilmAll();
+
     const REQ_DEFAULT = {
       what: '把手机里的旅行照，自动排成一本能打印的小册子',
       who: '一年旅行 ≥3 次、懒得修图的人',
@@ -1871,6 +1975,11 @@
     "Q4 做完一个没人用的功能": "Q4 · shipped a feature nobody used",
     "存": "Save",
     "带着这一年去立项 →": "Take this year to the brief →",
+    "来自底片的结论": "From your film",
+    "代入需求": "Use as brief",
+    "这一年还没有记录": "No records for this year yet",
+    "写下当时在做什么、卡在哪里。下次读底片时，这段会进到模型输入里。": "Note what you were doing and where you got stuck — it feeds the next read.",
+    "补一条": "Add one",
     "把手机里的旅行照，自动排成一本能打印的小册子": "Travel photos on your phone, auto-laid into a printable booklet",
     "一年旅行 ≥3 次、懒得修图的人": "People who travel 3+ times a year and hate editing photos",
     "10 周内看到第一个能寄出去的版本": "A first mailable version within 10 weeks",
