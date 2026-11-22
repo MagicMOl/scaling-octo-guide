@@ -472,6 +472,7 @@
   .langtog b.on { color: #1C1913; border-bottom-color: #1C1913; }
   .melist .lp { font-style: normal; cursor: pointer; font-weight: 400; padding-bottom: 1px; border-bottom: 1px solid transparent; }
   .melist .lp.on { color: #1C1913; border-bottom-color: #1C1913; }
+  .melist em.ok { color: #2B5C86; }
   /* ---------- 层级重构 ---------- */
   .steps { font-size: 9px; letter-spacing: .18em; }
   .steps span { color: #C9C1AE; }
@@ -926,6 +927,7 @@
         <div data-go="film"><span>我的底片</span><em>十一年 · 5 格</em></div>
         <div data-go="project"><span>我的项目</span><em>进行中 · 第 3 步</em></div>
         <div data-go="invest"><span>我的认购</span><em>¥5 万 · 待签约</em></div>
+        <div data-go="order"><span>我的订单</span><em data-order-em>未下单</em></div>
         <div><span>设置</span><em>通知 · 隐私 · 导出</em></div>
         <div><span>语言 Language</span><em><b class="lp" data-lang="zh">中文</b> · <b class="lp" data-lang="en">EN</b></em></div>
       </div>
@@ -1177,6 +1179,17 @@
 
   // 数据模型 → 提示词用的结构化摘要
   // 底片结论 -> 立项页的带入条（跨手机统一刷新）
+function syncMeOrder() {
+  let o = null;
+  try { o = JSON.parse(store.get('dipian.order') || 'null'); } catch (e) { o = null; }
+  const delivered = o && (o.stage || 0) >= 4;
+  document.querySelectorAll('#stage [data-order-em]').forEach((el) => {
+    if (!o) { el.textContent = '未下单'; el.classList.remove('ok'); return; }
+    el.textContent = '¥27,197 · ' + (delivered ? '已到货' : '运输中');
+    el.classList.toggle('ok', delivered);
+  });
+}
+
 function syncFromFilmAll(focus) {
   let c = null;
   try { c = JSON.parse(store.get('dipian.conclusion') || 'null'); } catch (e) { c = null; }
@@ -1591,6 +1604,7 @@ function createNextYear() {
     }
 
     syncFromFilmAll();
+    syncMeOrder();
 
     const REQ_DEFAULT = {
       what: '把手机里的旅行照，自动排成一本能打印的小册子',
@@ -1682,39 +1696,73 @@ function createNextYear() {
       const confirmBtn = orderScr.querySelector('.confirm');
       const TNO = 'SF1234567890';
       const NODES = [
-        ['已下单', '11 / 20 10:12', 'done'],
-        ['已发货 · 顺丰速运', '11 / 20 18:40', 'done'],
-        ['运输中 · 已到达上海转运中心', '11 / 21 07:05', 'on'],
-        ['派送中', '预计 11 / 21 14:00', 'wait'],
-        ['已签收', '—', 'wait'],
+        ['已下单', '11 / 20 10:12'],
+        ['已发货 · 顺丰速运', '11 / 20 18:40'],
+        ['运输中 · 已到达上海转运中心', '11 / 21 07:05'],
+        ['派送中', '11 / 21 13:40'],
+        ['已签收', '11 / 21 14:12'],
       ];
+      const readOrder = () => {
+        try { return JSON.parse(store.get('dipian.order') || 'null'); } catch (e) { return null; }
+      };
+      const STATUS = ['已下单', '已发货', '运输中', '派送中', '已签收'];
       const renderTrack = () => {
         if (!trackBox) return;
+        const o = readOrder();
+        if (!o) return;
+        const stage = Math.min(o.stage || 0, NODES.length - 1);
+        const done = stage >= NODES.length - 1;
         trackBox.innerHTML = `<div class="theader">
-            <div class="tstatus"><b>运输中</b></div>
-            <span class="stamp">已冲洗</span>
+            <div class="tstatus"><b>${STATUS[stage]}</b></div>
+            <span class="stamp">${done ? '已到货' : '已冲洗'}</span>
           </div>
           <span class="tno">${TNO} · 顺丰速运</span>
-          <div class="tl">${NODES.map(([t, s, k]) => `<div class="n ${k}"><b>${t}</b><span>${s}</span></div>`).join('')}</div>
-          <div class="tact"><button class="copy">复制单号</button><button class="back">回封面</button></div>
-          <div class="tnote">物流信息每 30 分钟更新一次，签收后可在「我」里查看保修与发票。</div>`;
+          <div class="tl">${NODES.map(([t, s], i) => {
+            const k = i < stage ? 'done' : (i === stage ? 'on' : 'wait');
+            return `<div class="n ${k}"><b>${t}</b><span>${s}</span></div>`;
+          }).join('')}</div>
+          <div class="tact">
+            <button class="copy">复制单号</button>
+            ${done ? '<button class="back">去「我」</button>' : '<button class="next">推进到下一节点</button>'}
+          </div>
+          <div class="tnote">${done
+            ? '已签收，订单记为「已到货」，保修与发票在「我」里。'
+            : '演示用：点「推进到下一节点」可以让物流往前走一步；签收后自动回到「我」页。'}</div>`;
         const copyBtn = trackBox.querySelector('.copy');
         copyBtn.onclick = async (e) => {
           e.stopPropagation();
           try {
             await navigator.clipboard.writeText(TNO);
             copyBtn.textContent = '已复制';
-          } catch (err) {
-            copyBtn.textContent = TNO;
-          }
+          } catch (err) { copyBtn.textContent = TNO; }
         };
-        trackBox.querySelector('.back').onclick = (e) => { e.stopPropagation(); show('cover'); };
+        const backBtn = trackBox.querySelector('.back');
+        if (backBtn) backBtn.onclick = (e) => { e.stopPropagation(); show('me'); syncMeOrder(); };
+        const nextBtn = trackBox.querySelector('.next');
+        if (nextBtn) {
+          nextBtn.onclick = (e) => {
+            e.stopPropagation();
+            const cur = readOrder();
+            if (!cur) return;
+            const ns = Math.min((cur.stage || 0) + 1, NODES.length - 1);
+            store.set('dipian.order', JSON.stringify({ ...cur, stage: ns }));
+            const h1n = orderScr.querySelector('.h1');
+            if (h1n) h1n.textContent = ns >= NODES.length - 1 ? '已签收，冲洗完了。' : '已下单，正在路上。';
+            renderTrack();
+            syncMeOrder();
+            if (ns >= NODES.length - 1) {
+              // 签收：停一下让人看到最后一个节点亮起，再自动切到「我」
+              setTimeout(() => { show('me'); syncMeOrder(); }, 1400);
+            }
+          };
+        }
       };
       const applyOrderState = () => {
         const h1 = orderScr.querySelector('.h1');
-        if (store.get('dipian.order')) {
+        const o = readOrder();
+        if (o) {
           orderBox.classList.add('tracked');
-          if (h1) h1.textContent = '已下单，正在路上。';
+          if (h1) h1.textContent = (o.stage || 0) >= NODES.length - 1 ? '已签收，冲洗完了。' : '已下单，正在路上。';
           renderTrack();
         } else {
           orderBox.classList.remove('tracked');
@@ -1724,8 +1772,9 @@ function createNextYear() {
       if (confirmBtn) {
         confirmBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          store.set('dipian.order', JSON.stringify({ no: TNO, carrier: '顺丰速运', at: Date.now() }));
+          store.set('dipian.order', JSON.stringify({ no: TNO, carrier: '顺丰速运', at: Date.now(), stage: 2 }));
           applyOrderState();
+          syncMeOrder();
         });
       }
       applyOrderState();
@@ -2076,8 +2125,14 @@ function createNextYear() {
     "回封面": "Back",
     "已复制": "Copied",
     "已下单，正在路上。": "Order placed — on its way.",
-    "三件硬件，六家商家。": "Three devices, six sellers.",
-    "预计 11 / 21 14:00": "Est. Nov 21, 14:00",
+    "已签收，冲洗完了。": "Delivered — all developed.",
+    "我的订单": "My order",
+    "未下单": "Not ordered",
+    "已到货": "Arrived",
+    "推进到下一节点": "Advance one step",
+    "去「我」": "Go to Me",
+    "已签收，订单记为「已到货」，保修与发票在「我」里。": "Delivered. Order marked arrived; warranty and invoice are in Me.",
+    "演示用：点「推进到下一节点」可以让物流往前走一步；签收后自动回到「我」页。": "Demo: tap advance to move the shipment forward; on delivery it returns to Me.",
     "物流信息每 30 分钟更新一次，签收后可在「我」里查看保修与发票。": "Tracking refreshes every 30 min; warranty and invoice are in Me.",
     "不同商家的保修与发票不同，下单前会再确认一次": "Warranty and invoice differ by seller; we'll confirm before charging",
     "已冲洗": "Developed",
