@@ -263,7 +263,7 @@
   .skills .s span:first-child { width: 50px; color: #8A7E62; flex: none; }
   .skills .track { flex: 1; height: 4px; background: rgba(28,25,19,.12); }
   .skills .track i { display: block; height: 100%; background: #2B5C86; }
-  .skills .s b { width: 22px; text-align: right; font-weight: 500; color: #B03A28; }
+  .skills .s b { width: 22px; text-align: right; font-weight: 500; color: #2B5C86; }
   .sheet .ft { margin-top: 16px; font-size: 9.5px; color: #8A7E62; }
 
   /* ---------- 下单：商家 ---------- */
@@ -492,11 +492,11 @@
   @keyframes sheetUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   .scr { animation: scrIn .22s ease-out; }
   @keyframes scrIn { from { opacity: .6; } to { opacity: 1; } }
-  .sk { background: linear-gradient(90deg,#EFEAE0 25%,#F7F3EA 37%,#EFEAE0 63%); background-size: 400% 100%;
+  .skel { background: linear-gradient(90deg,#EFEAE0 25%,#F7F3EA 37%,#EFEAE0 63%); background-size: 400% 100%;
     animation: skShine 1.2s ease-in-out infinite; border-radius: 2px; }
   @keyframes skShine { from { background-position: 100% 0; } to { background-position: 0 0; } }
-  .sk-l { height: 10px; margin-top: 8px; }
-  .sk-b { height: 22px; margin-top: 10px; width: 62%; }
+  .skel-l { height: 10px; margin-top: 8px; }
+  .skel-b { height: 22px; margin-top: 10px; width: 62%; }
   .empty { padding: 16px 0 4px; }
   .empty b { display: block; font-size: 12px; font-weight: 500; }
   .empty span { display: block; margin-top: 6px; font-size: 10px; line-height: 1.8; color: #8A7E62; }
@@ -1477,12 +1477,12 @@ function createNextYear() {
     const runAI = async () => {
       aisheet.innerHTML = `<div class="ai-hd"><b style="font-size: 15px;">读底片</b><button class="x">×</button></div>
         <div class="ai-lab">你擅长的</div>
-        <div class="sk sk-b" style="width: 70%;"></div>
-        <div class="sk sk-l"></div>
-        <div class="sk sk-l" style="width: 84%;"></div>
-        <div class="sk sk-l" style="width: 60%;"></div>
+        <div class="skel skel-b" style="width: 70%;"></div>
+        <div class="skel skel-l"></div>
+        <div class="skel skel-l" style="width: 84%;"></div>
+        <div class="skel skel-l" style="width: 60%;"></div>
         <div class="ai-lab" style="margin-top: 22px;">可以打开的</div>
-        <div class="sk sk-b" style="width: 56%;"></div>
+        <div class="skel skel-b" style="width: 56%;"></div>
         <div class="ai-meta">正在读十一年的记录…</div>`;
       bindX();
       aisheet.classList.add('on');
