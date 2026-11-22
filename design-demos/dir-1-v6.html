@@ -514,6 +514,35 @@
   .addyear { position: absolute; right: 24px; top: 2px; border: 1px solid #C9C1AE; background: none;
     font: inherit; font-size: 9.5px; color: #8A7E62; padding: 3px 8px; cursor: pointer; letter-spacing: .06em; }
   .addyear:hover { border-color: #1C1913; color: #1C1913; }
+  /* ---------- 下单后的物流追踪 ---------- */
+  .track { display: none; }
+  .order.tracked .item2, .order.tracked .total, .order.tracked .pay,
+  .order.tracked .ship, .order.tracked .shipbar, .order.tracked .confirm, .order.tracked .fine { display: none !important; }
+  .order.tracked .track { display: block; }
+  .track .theader { position: relative; padding-right: 62px; }
+  .track .theader .stamp { position: absolute; right: 0; top: -8px; }
+  .track .tstatus { display: flex; justify-content: space-between; align-items: baseline;
+    border-top: 1px solid rgba(28,25,19,.14); padding-top: 14px; margin-top: 6px; }
+  .track .tstatus b { font-size: 15px; font-weight: 600; }
+  .track .tstatus i { font-style: normal; font-size: 9px; color: #2B5C86; letter-spacing: .12em; }
+  .track .tno { font-family: "JetBrains Mono", Consolas, monospace; font-size: 9.5px;
+    color: #8A7E62; letter-spacing: .04em; margin-top: 6px; display: block; }
+  .tl { margin-top: 16px; position: relative; padding-left: 18px; }
+  .tl::before { content: ''; position: absolute; left: 4.5px; top: 7px; bottom: 14px; width: 1px;
+    background: rgba(28,25,19,.16); }
+  .tl .n { position: relative; padding-bottom: 15px; }
+  .tl .n::before { content: ''; position: absolute; left: -18px; top: 5px; width: 8px; height: 8px;
+    border-radius: 50%; background: #fff; border: 1px solid rgba(28,25,19,.3); }
+  .tl .n.on::before { background: #2B5C86; border-color: #2B5C86; box-shadow: 0 0 0 3px rgba(43,92,134,.14); }
+  .tl .n b { display: block; font-size: 12px; font-weight: 500; }
+  .tl .n span { display: block; margin-top: 3px; font-size: 9.5px; color: #8A7E62; letter-spacing: .02em; }
+  .tl .n.wait b { color: #B3AA97; font-weight: 400; }
+  .tl .n.wait span { color: #C4BCAA; }
+  .track .tact { display: flex; gap: 10px; margin-top: 4px; }
+  .track .tact button { flex: 1; border: 1px solid #1C1913; background: none; font: inherit;
+    font-size: 10px; padding: 9px; cursor: pointer; letter-spacing: .06em; }
+  .track .tact button:hover { background: #1C1913; color: #fff; }
+  .track .tnote { margin-top: 14px; font-size: 9.5px; line-height: 1.8; color: #8A7E62; }
 </style>
 </head>
 <body>
@@ -868,11 +897,13 @@
         <div><b>11 / 21</b><span>送达</span></div>
       </div>
 
-      <button class="confirm" data-go="cover">确认下单</button>
+      <button class="confirm">确认下单</button>
       <div class="fine" style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
         <span>不同商家的保修与发票不同，下单前会再确认一次</span>
         <span class="stamp">已冲洗</span>
       </div>
+
+      <div class="track" data-track></div>
     </div>
   </div>
 </template>
@@ -1643,6 +1674,63 @@ function createNextYear() {
       el.addEventListener('click', (e) => { e.stopPropagation(); show(el.dataset.go); });
     });
 
+    /* ---------- 下单后的物流追踪 ---------- */
+    const orderScr = phone.querySelector('.scr[data-name="order"]');
+    if (orderScr) {
+      const orderBox = orderScr.querySelector('.order');
+      const trackBox = orderScr.querySelector('[data-track]');
+      const confirmBtn = orderScr.querySelector('.confirm');
+      const TNO = 'SF1234567890';
+      const NODES = [
+        ['已下单', '11 / 20 10:12', 'done'],
+        ['已发货 · 顺丰速运', '11 / 20 18:40', 'done'],
+        ['运输中 · 已到达上海转运中心', '11 / 21 07:05', 'on'],
+        ['派送中', '预计 11 / 21 14:00', 'wait'],
+        ['已签收', '—', 'wait'],
+      ];
+      const renderTrack = () => {
+        if (!trackBox) return;
+        trackBox.innerHTML = `<div class="theader">
+            <div class="tstatus"><b>运输中</b></div>
+            <span class="stamp">已冲洗</span>
+          </div>
+          <span class="tno">${TNO} · 顺丰速运</span>
+          <div class="tl">${NODES.map(([t, s, k]) => `<div class="n ${k}"><b>${t}</b><span>${s}</span></div>`).join('')}</div>
+          <div class="tact"><button class="copy">复制单号</button><button class="back">回封面</button></div>
+          <div class="tnote">物流信息每 30 分钟更新一次，签收后可在「我」里查看保修与发票。</div>`;
+        const copyBtn = trackBox.querySelector('.copy');
+        copyBtn.onclick = async (e) => {
+          e.stopPropagation();
+          try {
+            await navigator.clipboard.writeText(TNO);
+            copyBtn.textContent = '已复制';
+          } catch (err) {
+            copyBtn.textContent = TNO;
+          }
+        };
+        trackBox.querySelector('.back').onclick = (e) => { e.stopPropagation(); show('cover'); };
+      };
+      const applyOrderState = () => {
+        const h1 = orderScr.querySelector('.h1');
+        if (store.get('dipian.order')) {
+          orderBox.classList.add('tracked');
+          if (h1) h1.textContent = '已下单，正在路上。';
+          renderTrack();
+        } else {
+          orderBox.classList.remove('tracked');
+          if (h1) h1.textContent = '三件硬件，六家商家。';
+        }
+      };
+      if (confirmBtn) {
+        confirmBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          store.set('dipian.order', JSON.stringify({ no: TNO, carrier: '顺丰速运', at: Date.now() }));
+          applyOrderState();
+        });
+      }
+      applyOrderState();
+    }
+
     show(cfg.initial);
 
     // 团队成员详情
@@ -1977,6 +2065,20 @@ function createNextYear() {
     "今天": "Today",
     "发货": "Ship",
     "确认下单": "Confirm order",
+    "已下单": "Order placed",
+    "已发货 · 顺丰速运": "Shipped · SF Express",
+    "运输中 · 已到达上海转运中心": "In transit · Shanghai hub",
+    "派送中": "Out for delivery",
+    "已签收": "Delivered",
+    "运输中": "In transit",
+    "已发货": "Shipped",
+    "复制单号": "Copy no.",
+    "回封面": "Back",
+    "已复制": "Copied",
+    "已下单，正在路上。": "Order placed — on its way.",
+    "三件硬件，六家商家。": "Three devices, six sellers.",
+    "预计 11 / 21 14:00": "Est. Nov 21, 14:00",
+    "物流信息每 30 分钟更新一次，签收后可在「我」里查看保修与发票。": "Tracking refreshes every 30 min; warranty and invoice are in Me.",
     "不同商家的保修与发票不同，下单前会再确认一次": "Warranty and invoice differ by seller; we'll confirm before charging",
     "已冲洗": "Developed",
     "我": "Me",
