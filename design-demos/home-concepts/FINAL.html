@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>封面终版 · 先洗一格</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --paper:#FBF3E2; --ink:#17140F; --soft:#8A7D63; --line:#DCCFB4;
+    --orange:#E8743B; --blue:#2B5C86;
+  }
+  body{width:393px;height:852px;background:var(--paper);color:var(--ink);overflow:hidden;position:relative;
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+
+  .sb{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 6px;
+    font-size:11px;font-weight:700;position:relative;z-index:6}
+  .sb .r{display:flex;gap:5px;align-items:center}
+  .sb i{display:block;width:22px;height:10px;border:1.6px solid var(--ink);border-radius:3px;position:relative}
+  .sb i::after{content:'';position:absolute;inset:1.5px 8px 1.5px 1.5px;background:var(--ink)}
+
+  /* 极淡的十字路口：作为“路口”意象的残留 */
+  .cross{position:absolute;left:50%;top:300px;width:600px;height:1px;background:rgba(23,20,15,.06);
+    transform:translate(-50%,-50%)}
+  .cross.v{width:1px;height:600px}
+
+  .hd{position:relative;z-index:3;padding:8px 24px 0}
+  .kicker{display:flex;align-items:center;gap:8px;font-size:9.5px;font-weight:800;letter-spacing:.2em;color:var(--orange)}
+  .kicker i{display:block;width:18px;height:1.4px;background:var(--orange)}
+  h1{margin-top:16px;font-size:58px;line-height:1.02;font-weight:900;letter-spacing:-.01em}
+  h1 em{font-style:normal;color:var(--orange)}
+  .lede{margin-top:18px;font-size:12.5px;line-height:1.9;color:#5F5647;max-width:19em}
+
+  /* 会滚的胶片 */
+  .stripwrap{position:absolute;left:0;right:0;top:330px;height:196px;background:var(--ink);
+    transform:rotate(-3deg) scale(1.08);padding:11px 0;overflow:hidden;z-index:2}
+  .stripwrap::before,.stripwrap::after{content:'';position:absolute;left:0;right:0;height:8px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 9px,transparent 9px 24px);opacity:.82}
+  .stripwrap::before{top:4px}.stripwrap::after{bottom:4px}
+  .strip{display:flex;gap:11px;align-items:center;height:100%;padding:0 14px;animation:roll 22s linear infinite}
+  @keyframes roll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .fr{flex:0 0 auto;width:124px;height:166px;border-radius:3px;position:relative;overflow:hidden;
+    display:flex;align-items:flex-end;padding:9px}
+  .fr b{font-size:10.5px;font-weight:800;color:#fff;letter-spacing:.02em;position:relative;z-index:2;line-height:1.5}
+  .fr::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent 58%)}
+  .f1{background:linear-gradient(160deg,#2B5C86,#16344E)}
+  .f2{background:linear-gradient(160deg,#E8743B,#AE451A)}
+  .f3{background:linear-gradient(160deg,#7DA84B,#48622A)}
+  .f4{background:linear-gradient(160deg,#8E7CC3,#54437F)}
+  .f5{background:repeating-linear-gradient(45deg,#221F19 0 7px,#2B2822 7px 14px);border:1px dashed rgba(251,243,226,.38)}
+  .f5 b{color:rgba(251,243,226,.62)}
+
+  .below{position:absolute;left:24px;right:24px;top:556px;z-index:3}
+  .prog{display:flex;align-items:baseline;justify-content:space-between}
+  .prog .num{font-size:34px;font-weight:900;letter-spacing:-.03em;line-height:1}
+  .prog .num i{font-style:normal;font-size:13px;font-weight:800;color:var(--soft);margin-left:3px}
+  .prog .lab{font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--soft);text-align:right;line-height:1.7}
+  .track{margin-top:10px;height:4px;background:rgba(23,20,15,.1);border-radius:2px;overflow:hidden}
+  .track i{display:block;height:100%;width:16%;background:var(--orange);border-radius:2px}
+
+  .hint{margin-top:20px;font-size:11.5px;line-height:1.9;color:#6B6152}
+  .hint b{font-weight:800;color:var(--ink)}
+
+  .cta{position:absolute;left:24px;right:24px;bottom:96px;height:58px;border-radius:15px;background:var(--ink);
+    color:var(--paper);display:flex;align-items:center;justify-content:center;gap:9px;
+    font-size:16px;font-weight:800;letter-spacing:.06em;box-shadow:0 6px 0 rgba(23,20,15,.2);z-index:4}
+  .cta i{width:26px;height:26px;border-radius:50%;background:var(--orange);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-style:normal;font-size:14px;font-weight:900}
+
+  .tabs{position:absolute;left:0;right:0;bottom:0;height:66px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-around;font-size:10.5px;font-weight:700;color:#AFA48C;z-index:5}
+  .tabs .on{color:var(--ink);position:relative}
+  .tabs .on::after{content:'';position:absolute;left:50%;transform:translateX(-50%);bottom:-8px;
+    width:18px;height:2px;border-radius:2px;background:var(--orange)}
+</style>
+</head>
+<body>
+  <div class="cross"></div><div class="cross v"></div>
+
+  <div class="sb"><span>9:41</span><div class="r"><span>◍</span><span>▮▮▮</span><i></i></div></div>
+
+  <div class="hd">
+    <div class="kicker"><i></i>25 号底片 · 已显影 4</div>
+    <h1>先<em>洗</em>一格</h1>
+    <p class="lede">十一年，四个年份留下了记录。<br>剩下二十一格，还等着被写下来。</p>
+  </div>
+
+  <div class="stripwrap">
+    <div class="strip" id="strip"></div>
+  </div>
+
+  <div class="below">
+    <div class="prog">
+      <div class="num">4<i>/25</i></div>
+      <div class="lab">最近一次<br>2024 · 定价与留存</div>
+    </div>
+    <div class="track"><i></i></div>
+    <p class="hint">每洗一格，都会变成<b>一个能开工的项目</b>：需求、团队、钱、设备，一路推到下单。</p>
+  </div>
+
+  <div class="cta">洗第一格 <i>→</i></div>
+  <div class="tabs"><span class="on">路口</span><span>底片</span><span>项目</span><span>我</span></div>
+
+<script>
+  const strip = document.getElementById('strip');
+  const frames = [
+    ['f1', '2015<br>文案 · 被退稿'], ['f2', '2018<br>访谈 40 场'], ['f3', '2021<br>组件化 · 带 3 人'],
+    ['f4', '2024<br>定价 · 留存 +8%'], ['f5', '2026<br>？'],
+    ['f1', '2015<br>文案 · 被退稿'], ['f2', '2018<br>访谈 40 场'], ['f3', '2021<br>组件化 · 带 3 人'],
+    ['f4', '2024<br>定价 · 留存 +8%'], ['f5', '2026<br>？'],
+  ];
+  frames.forEach(([cls, label]) => {
+    const d = document.createElement('div');
+    d.className = 'fr ' + cls;
+    d.innerHTML = '<b>' + label + '</b>';
+    strip.appendChild(d);
+  });
+</script>
+</body>
+</html>

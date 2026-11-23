@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>封面 · 长曝光（左对齐版）</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--paper:#F4EDDE;--ink:#22262E;--blue:#3A4A5C;--soft:#8C8474;--line:#DED3BE;--orange:#C4572A}
+  body{width:393px;height:852px;background:var(--paper);color:var(--ink);overflow:hidden;position:relative;
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+  .sb{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 6px;
+    font-size:11px;font-weight:600;position:relative;z-index:6;color:#2A2E36}
+  .sb .r{display:flex;gap:5px;align-items:center}
+  .sb i{display:block;width:22px;height:10px;border:1px solid #2A2E36;border-radius:3px;position:relative}
+  .sb i::after{content:'';position:absolute;inset:1.5px 8px 1.5px 1.5px;background:#2A2E36;opacity:.8}
+
+  .scene{position:absolute;left:0;right:0;top:0;height:430px;overflow:hidden}
+  .scene svg{width:100%;height:100%;display:block}
+  .fade{position:absolute;left:0;right:0;top:330px;height:110px;
+    background:linear-gradient(to bottom,rgba(244,237,222,0),var(--paper))}
+
+  .head{position:absolute;left:28px;right:28px;top:64px;z-index:4}
+  .kicker{font-size:9px;letter-spacing:.32em;color:var(--blue);font-weight:600}
+  h1{margin-top:20px;font-family:"Noto Serif SC","Songti SC",serif;font-size:58px;line-height:1.06;
+    font-weight:300;letter-spacing:.04em}
+  h1 br + span{position:relative}
+  h1 .slash{position:absolute;left:-18px;top:6px;width:1px;height:60px;background:rgba(58,74,92,.4);transform:rotate(-18deg)}
+  .lede{margin-top:18px;font-size:11.5px;line-height:1.95;color:#6F6858;max-width:17em}
+
+  .bottom{position:absolute;left:28px;right:28px;bottom:96px;z-index:4}
+  .row{display:flex;align-items:flex-end;justify-content:space-between}
+  .count{display:flex;align-items:baseline;gap:3px}
+  .count b{font-size:40px;font-weight:300;font-family:"Noto Serif SC",serif;line-height:1;letter-spacing:-.02em}
+  .count i{font-style:normal;font-size:13px;color:var(--soft);font-weight:300}
+  .count span{font-size:9px;letter-spacing:.2em;color:var(--soft);margin-left:8px}
+  .meta{text-align:right;font-size:9.5px;line-height:1.8;color:var(--soft);letter-spacing:.04em}
+  .bar{margin-top:14px;height:1px;background:rgba(34,38,46,.14);position:relative}
+  .bar i{position:absolute;left:0;top:-0.5px;height:2px;width:16%;background:var(--orange)}
+
+  .cta{margin-top:22px;display:flex;align-items:center;justify-content:space-between;
+    padding-bottom:12px;border-bottom:1px solid rgba(34,38,46,.3)}
+  .cta span{font-size:12px;letter-spacing:.22em}
+  .cta b{font-weight:400;font-size:18px;line-height:1}
+
+  .tabs{position:absolute;left:0;right:0;bottom:0;height:66px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-around;font-size:10px;letter-spacing:.16em;
+    color:#ADA28B;z-index:5;background:var(--paper)}
+  .tabs .on{color:var(--ink);position:relative}
+  .tabs .on::after{content:'';position:absolute;left:50%;transform:translateX(-50%);bottom:-8px;
+    width:14px;height:1.4px;background:var(--orange)}
+</style>
+</head>
+<body>
+  <div class="scene">
+    <svg viewBox="0 0 393 430" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <filter id="mb" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="10 1.1"/>
+        </filter>
+        <filter id="mb2" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="5 0.7"/>
+        </filter>
+        <filter id="mb3" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="2.2 0.3"/>
+        </filter>
+        <g id="walker">
+          <circle cx="0" cy="-52" r="5.6"/>
+          <path d="M-7 -45 q7 -4 14 0 l3 22 -3 2 -2 -10 -1 22 -4.5 0 -1.5 -16 -1.5 16 -4.5 0 -1 -22 -2 10 -3 -2 z"/>
+        </g>
+      </defs>
+
+      <rect width="393" height="430" fill="#F4EDDE"/>
+
+      <g filter="url(#mb)" fill="#3A4A5C" opacity=".18">
+        <use href="#walker" x="30" y="120" />
+        <use href="#walker" x="110" y="112" transform="scale(1.05)" />
+        <use href="#walker" x="196" y="120" />
+        <use href="#walker" x="282" y="114" transform="scale(.95)" />
+        <use href="#walker" x="348" y="122" transform="scale(1.1)" />
+      </g>
+
+      <g filter="url(#mb2)" fill="#313D4C" opacity=".42">
+        <use href="#walker" x="52" y="206" transform="scale(1.2)" />
+        <use href="#walker" x="140" y="198" transform="scale(1.1)" />
+        <use href="#walker" x="228" y="212" transform="scale(1.3)" />
+        <use href="#walker" x="312" y="200" transform="scale(1.15)" />
+      </g>
+
+      <g filter="url(#mb3)" fill="#222A33" opacity=".8">
+        <use href="#walker" x="84" y="300" transform="scale(1.5)" />
+        <use href="#walker" x="258" y="306" transform="scale(1.62)" />
+      </g>
+
+      <g filter="url(#mb2)" stroke="#2E3947" stroke-width="2.2" fill="none" opacity=".45">
+        <circle cx="20" cy="300" r="22"/>
+        <circle cx="80" cy="300" r="22"/>
+        <path d="M20 300 L44 270 L70 270 M80 300 L70 270 L50 300 M44 270 L50 300"/>
+      </g>
+
+      <g filter="url(#mb3)" fill="#2E3947" opacity=".65">
+        <ellipse cx="200" cy="262" rx="6" ry="3.8"/>
+        <path d="M205 260 l7 -2 -5 3z"/>
+        <ellipse cx="292" cy="104" rx="6.5" ry="4"/>
+        <path d="M298 102 l8 -2.4 -6 3.4z"/>
+      </g>
+
+      <line x1="0" y1="352" x2="393" y2="352" stroke="#3A4A5C" stroke-opacity=".12" stroke-width="1"/>
+    </svg>
+    <div class="fade"></div>
+  </div>
+
+  <div class="sb"><span>9:41</span><div class="r"><span>◍</span><span>▮▮▮</span><i></i></div></div>
+
+  <div class="head">
+    <div class="kicker">25 号底片 · 十一年</div>
+    <h1><span class="slash"></span>先洗<br>一格</h1>
+    <p class="lede">在还没显影的十一年里，<br>挑一格，把它变成能开工的事。</p>
+  </div>
+
+  <div class="bottom">
+    <div class="row">
+      <div class="count"><b>4</b><i>/25</i><span>已显影</span></div>
+      <div class="meta">最近一次<br>2024 · 定价与留存</div>
+    </div>
+    <div class="bar"><i></i></div>
+    <div class="cta"><span>洗第一格</span><b>→</b></div>
+  </div>
+
+  <div class="tabs"><span class="on">封面</span><span>底片</span><span>项目</span><span>我</span></div>
+</body>
+</html>

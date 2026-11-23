@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>首页 A · 拨钟</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--paper:#F2EADA;--ink:#1C1913;--soft:#8A7E62;--blue:#2B5C86;--rule:#D9CFBC}
+  body{width:393px;height:852px;background:var(--paper);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    display:flex;flex-direction:column;overflow:hidden;position:relative}
+  .sb{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 6px;
+    font-size:11px;font-weight:600;letter-spacing:.02em}
+  .sb .r{display:flex;gap:5px;align-items:center}
+  .sb i{display:block;width:22px;height:10px;border:1px solid var(--ink);border-radius:2px;opacity:.75;position:relative}
+  .sb i::after{content:'';position:absolute;inset:1.5px 8px 1.5px 1.5px;background:var(--ink);opacity:.75}
+  .kicker{margin:16px 0 0 26px;font-size:9.5px;letter-spacing:.32em;color:var(--soft)}
+  .stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin-top:-10px}
+  .dial{width:286px;height:286px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;
+    border:1px solid rgba(28,25,19,.18)}
+  .dial::before{content:'';position:absolute;inset:9px;border-radius:50%;border:1px solid rgba(28,25,19,.08)}
+  .mark{position:absolute;left:50%;top:0;width:1px;height:7px;background:rgba(28,25,19,.32);transform-origin:50% 143px}
+  .mark.major{height:12px;width:1.4px;background:rgba(28,25,19,.55)}
+  .year{position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(28,25,19,.22);left:50%;top:50%;transform-origin:0 0}
+  .year.now{width:7px;height:7px;background:var(--blue)}
+  .hand{position:absolute;left:50%;bottom:50%;transform-origin:50% 100%;background:var(--ink);border-radius:2px;z-index:1}
+  .hand.h{width:2px;height:66px;transform:translateX(-1px) rotate(52deg)}
+  .hand.m{width:1.4px;height:96px;transform:translateX(-0.7px) rotate(-24deg);background:rgba(28,25,19,.55)}
+  .hand.s{width:1px;height:108px;transform:translateX(-0.5px) rotate(148deg);background:#B03A28;opacity:.55}
+  .hub{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--ink);z-index:3}
+  .core b{display:block;font-family:"Noto Serif SC","Songti SC",serif;font-size:40px;font-weight:600;letter-spacing:-.01em}
+  .core span{display:block;margin-top:4px;font-size:9.5px;letter-spacing:.26em;color:var(--soft)}
+  .yearNow{margin-top:30px;text-align:center}
+  .yearNow b{display:block;font-family:"Noto Serif SC","Songti SC",serif;font-size:34px;font-weight:600;letter-spacing:-.01em;line-height:1}
+  .yearNow span{display:block;margin-top:7px;font-size:9.5px;letter-spacing:.26em;color:var(--soft)}
+  .hint{margin-top:16px;font-size:11px;line-height:1.9;color:#6E6656;text-align:center;letter-spacing:.02em}
+  .cta{margin:18px 26px 0;height:46px;border:1px solid var(--ink);display:flex;align-items:center;justify-content:center;
+    font-size:12.5px;letter-spacing:.24em}
+  .tabs{margin-top:22px;height:64px;border-top:1px solid var(--rule);display:flex;align-items:center;justify-content:space-around;
+    font-size:10px;letter-spacing:.14em;color:#B3AA97}
+  .tabs .on{color:var(--ink);position:relative}
+  .tabs .on::after{content:'';position:absolute;left:50%;transform:translateX(-50%);bottom:-9px;width:16px;height:1px;background:var(--ink)}
+</style>
+</head>
+<body>
+  <div class="sb"><span>9:41</span><div class="r"><span>◍</span><span>▮▮▮</span><i></i></div></div>
+  <div class="kicker">个人信息记录</div>
+
+  <div class="stage">
+    <div class="dial" id="dial">
+      <div class="hub"></div>
+      <div class="hand h"></div>
+      <div class="hand m"></div>
+      <div class="hand s"></div>
+    </div>
+    <div class="yearNow"><b>2026</b><span>第 11 年</span></div>
+    <p class="hint">往回拨三年，看见你在做什么。<br>拨到底，是那格还没显影的底片。</p>
+  </div>
+
+  <div class="cta">拨动钟面</div>
+  <div class="tabs"><span class="on">路口</span><span>底片</span><span>项目</span><span>我</span></div>
+
+<script>
+  const dial = document.getElementById('dial');
+  // 60 个刻度
+  for (let i = 0; i < 60; i++) {
+    const d = document.createElement('div');
+    d.className = 'mark' + (i % 5 === 0 ? ' major' : '');
+    d.style.transform = `rotate(${i * 6}deg) translateY(0)`;
+    dial.appendChild(d);
+  }
+  // 五个年份点：2015 2018 2021 2024 2026
+  const years = [[2015, -118], [2018, -74], [2021, -30], [2024, 12], [2026, 44]];
+  years.forEach(([y, deg], i) => {
+    const dot = document.createElement('div');
+    dot.className = 'year' + (i === years.length - 1 ? ' now' : '');
+    dot.style.transform = `rotate(${deg}deg) translateY(-143px)`;
+    dial.appendChild(dot);
+  });
+</script>
+</body>
+</html>

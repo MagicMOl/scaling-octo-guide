@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>首页 F · 色块冲撞</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--ink:#161310;--paper:#FFF9EC;--yellow:#FFD23F;--blue:#2B5C86;--green:#7DA84B;--orange:#F0823C;--pink:#E8B4B8}
+  body{width:393px;height:852px;background:var(--paper);color:var(--ink);overflow:hidden;position:relative;
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+  .sb{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 6px;font-size:11px;font-weight:700;position:relative;z-index:4}
+  .sb .r{display:flex;gap:5px;align-items:center}
+  .sb i{display:block;width:22px;height:10px;border:1.6px solid var(--ink);border-radius:3px;position:relative}
+  .sb i::after{content:'';position:absolute;inset:1.5px 8px 1.5px 1.5px;background:var(--ink)}
+
+  .hero{margin:6px 20px 0;background:var(--yellow);border:2px solid var(--ink);border-radius:26px;
+    padding:22px 22px 18px;position:relative;box-shadow:5px 6px 0 var(--ink)}
+  .hero .tag{display:inline-block;background:var(--ink);color:var(--yellow);font-size:10px;font-weight:700;
+    letter-spacing:.16em;padding:5px 10px;border-radius:20px}
+  .hero h1{margin-top:14px;font-size:52px;line-height:1;font-weight:900;letter-spacing:-.035em}
+  .hero h1 small{display:block;font-size:14px;font-weight:600;letter-spacing:.02em;margin-top:22px;color:#3E3413}
+  .hero .num{position:absolute;right:14px;top:14px;width:58px;height:58px;border-radius:50%;
+    background:var(--paper);border:2px solid var(--ink);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;transform:rotate(10deg)}
+  .hero .num b{font-size:20px;line-height:1;font-weight:900}
+  .hero .num span{font-size:7.5px;letter-spacing:.14em;margin-top:3px}
+
+  .grid{margin:22px 20px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+  .cell{aspect-ratio:1/1;border-radius:16px;border:2px solid var(--ink);display:flex;align-items:center;
+    justify-content:center;font-size:11px;font-weight:800;letter-spacing:.02em}
+  .c1{background:var(--blue);color:#fff}
+  .c2{background:var(--green);color:#fff}
+  .c3{background:var(--orange);color:var(--ink)}
+  .c4{background:var(--ink);color:var(--yellow)}
+  .empty{background:transparent;border:2px dashed rgba(22,19,16,.28);color:rgba(22,19,16,.35);font-size:20px;font-weight:400}
+  .plus{background:var(--pink);border-style:solid}
+
+  .rowline{margin:18px 20px 0;display:flex;justify-content:space-between;align-items:center}
+  .rowline span{font-size:11px;font-weight:600;letter-spacing:.04em;color:#6B6152}
+  .rowline b{font-size:13px;font-weight:800}
+
+  .cta{position:absolute;left:20px;right:20px;bottom:98px;height:58px;border-radius:29px;background:var(--ink);
+    color:var(--yellow);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;
+    font-size:16px;font-weight:800;letter-spacing:.1em;box-shadow:0 5px 0 rgba(22,19,16,.22)}
+  .cta span{margin-right:8px}
+  .cta i{width:24px;height:24px;border-radius:50%;background:var(--yellow);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;font-style:normal;font-size:13px;font-weight:900}
+
+    .tip{position:absolute;left:0;right:0;bottom:172px;text-align:center;font-size:10.5px;letter-spacing:.1em;color:#8C8168}
+  .tabs{position:absolute;left:0;right:0;bottom:0;height:68px;border-top:2px solid var(--ink);background:var(--paper);
+    display:flex;align-items:center;justify-content:space-around;font-size:11px;font-weight:700;color:#A79C86}
+  .tabs .on{color:var(--ink);background:var(--yellow);border-radius:16px;padding:7px 16px;border:2px solid var(--ink)}
+</style>
+</head>
+<body>
+  <div class="sb"><span>9:41</span><div class="r"><span>◍</span><span>▮▮▮</span><i></i></div></div>
+
+  <div class="hero">
+    <span class="tag">25 格 · 已冲 4 格</span>
+    <div class="num"><b>21</b><span>待冲洗</span></div>
+    <h1>还差<br>二十一格</h1>
+    <small>每一格，都是你还没过完的一年。</small>
+  </div>
+
+  <div class="grid">
+    <div class="cell c1">2015</div>
+    <div class="cell c2">2018</div>
+    <div class="cell c3">2021</div>
+    <div class="cell c4">2024</div>
+    <div class="cell plus">+</div>
+    <div class="cell empty">·</div>
+    <div class="cell empty">·</div>
+    <div class="cell empty">·</div>
+    <div class="cell empty">·</div>
+    <div class="cell empty">·</div>
+    <div class="cell empty">·</div>
+    <div class="cell empty">·</div>
+  </div>
+
+  <div class="rowline">
+    <span>最近一格：2024 定价与留存</span>
+    <b>4 / 25</b>
+  </div>
+
+  <div class="tip">长按任意一格，可以补记那一年的第一件事</div>
+  <div class="cta"><span>开始冲洗</span><i>→</i></div>
+  <div class="tabs"><span class="on">路口</span><span>底片</span><span>项目</span><span>我</span></div>
+</body>
+</html>

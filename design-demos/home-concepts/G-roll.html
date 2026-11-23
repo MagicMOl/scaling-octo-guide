@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>首页 G · 滚动胶片</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--ink:#17140F;--paper:#FBF3E2;--orange:#E8743B;--blue:#2B5C86;--yellow:#FFD23F}
+  body{width:393px;height:852px;background:var(--paper);color:var(--ink);overflow:hidden;position:relative;
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+  .sb{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 6px;font-size:11px;font-weight:700;position:relative;z-index:4}
+  .sb .r{display:flex;gap:5px;align-items:center}
+  .sb i{display:block;width:22px;height:10px;border:1.6px solid var(--ink);border-radius:3px;position:relative}
+  .sb i::after{content:'';position:absolute;inset:1.5px 8px 1.5px 1.5px;background:var(--ink)}
+
+  .top{padding:10px 24px 0}
+  .top .k{font-size:10px;font-weight:800;letter-spacing:.24em;color:var(--orange)}
+  .top h1{margin-top:12px;font-size:40px;line-height:1.16;font-weight:900;letter-spacing:-.03em}
+  .top h1 em{font-style:normal;color:var(--orange)}
+  .top p{margin-top:12px;font-size:12px;line-height:1.85;color:#5F5647}
+
+  /* 胶片条：横向滚动 */
+  .stripwrap{position:absolute;left:0;right:0;top:300px;height:220px;background:var(--ink);
+    transform:rotate(-3deg) scale(1.06);padding:12px 0;overflow:hidden}
+  .stripwrap::before,.stripwrap::after{content:'';position:absolute;left:0;right:0;height:9px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 10px,transparent 10px 26px);opacity:.85}
+  .stripwrap::before{top:4px}.stripwrap::after{bottom:4px}
+  .strip{display:flex;gap:12px;align-items:center;height:100%;padding:0 16px;animation:roll 18s linear infinite}
+  @keyframes roll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .fr{flex:0 0 auto;width:132px;height:180px;border-radius:3px;position:relative;overflow:hidden;
+    display:flex;align-items:flex-end;padding:8px}
+  .fr b{font-size:11px;font-weight:800;color:#fff;letter-spacing:.02em;position:relative;z-index:2}
+  .fr::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),transparent 55%)}
+  .f1{background:linear-gradient(160deg,#2B5C86,#173A57)}
+  .f2{background:linear-gradient(160deg,#E8743B,#B84A1E)}
+  .f3{background:linear-gradient(160deg,#7DA84B,#4E6C2B)}
+  .f4{background:linear-gradient(160deg,#8E7CC3,#5B4A8F)}
+  .f5{background:repeating-linear-gradient(45deg,#2A2620 0 8px,#34302A 8px 16px);
+    border:1px dashed rgba(251,243,226,.4)}
+  .f5 b{color:rgba(251,243,226,.65)}
+
+  .hintline{position:absolute;left:0;right:0;top:536px;text-align:center;font-size:10.5px;
+    letter-spacing:.2em;color:#9A8F79}
+
+  .stats{position:absolute;left:24px;right:24px;top:576px;display:flex;justify-content:space-between}
+  .stats div b{display:block;font-size:30px;font-weight:900;letter-spacing:-.02em;line-height:1}
+  .stats div span{display:block;margin-top:5px;font-size:9.5px;letter-spacing:.14em;color:#8C8168}
+  .stats .accent b{color:var(--orange)}
+
+  .cta{position:absolute;left:24px;right:24px;bottom:96px;height:56px;border-radius:14px;background:var(--orange);
+    color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;font-weight:800;
+    letter-spacing:.08em;box-shadow:0 6px 0 #B84A1E}
+  .cta i{font-style:normal}
+
+  .tabs{position:absolute;left:0;right:0;bottom:0;height:66px;border-top:1px solid rgba(23,20,15,.14);
+    display:flex;align-items:center;justify-content:space-around;font-size:10.5px;font-weight:700;color:#A99E86}
+  .tabs .on{color:var(--ink);position:relative}
+  .tabs .on::after{content:'';position:absolute;left:50%;transform:translateX(-50%);bottom:-8px;width:18px;height:2px;background:var(--orange);border-radius:2px}
+</style>
+</head>
+<body>
+  <div class="sb"><span>9:41</span><div class="r"><span>◍</span><span>▮▮▮</span><i></i></div></div>
+
+  <div class="top">
+    <div class="k">LOADING 25 FRAMES</div>
+    <h1>滚一遍，<br>看看你<em>冲了几格</em>。</h1>
+    <p>十一年，四个年份有记录。剩下的，边过边补。</p>
+  </div>
+
+  <div class="stripwrap">
+    <div class="strip" id="strip"></div>
+  </div>
+  <div class="hintline">← 左右滑动 · 会自己滚 →</div>
+
+  <div class="stats">
+    <div><b>4</b><span>已显影</span></div>
+    <div class="accent"><b>21</b><span>还空着</span></div>
+    <div><b>11</b><span>年记录</span></div>
+  </div>
+
+  <div class="cta"><i>＋</i> 补一格</div>
+  <div class="tabs"><span class="on">路口</span><span>底片</span><span>项目</span><span>我</span></div>
+
+<script>
+  const strip = document.getElementById('strip');
+  const frames = [
+    ['f1', '2015 · 文案'], ['f2', '2018 · 访谈'], ['f3', '2021 · 组件'], ['f4', '2024 · 定价'],
+    ['f5', '2026 · ？'], ['f1', '2015 · 文案'], ['f2', '2018 · 访谈'], ['f3', '2021 · 组件'],
+    ['f4', '2024 · 定价'], ['f5', '2026 · ？'],
+  ];
+  frames.forEach(([cls, label]) => {
+    const d = document.createElement('div');
+    d.className = 'fr ' + cls;
+    d.innerHTML = '<b>' + label + '</b>';
+    strip.appendChild(d);
+  });
+</script>
+</body>
+</html>
