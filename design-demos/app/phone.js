@@ -77,9 +77,11 @@ function createNextYear() {
 
 
   const AI_SYS = '你是一位资深的产品与职业顾问。只根据用户提供的「底片」数据判断，不要编造年份或事件。'
-    + '输出严格的 JSON，字段：strength（一句话，不超过 20 字，说清他真正擅长什么）、'
-    + 'evidence（数组，3 条，每条引用具体年份和事件）、openings（一句话，不超过 20 字，说清 AI 时代可以往哪打开）、'
-    + 'why（一句话解释依据）。不要输出多余文字。';
+    + '输出严格的 JSON，结构见契约 v1：'
+    + '{ "v": 1, "strength": "一句话，6–20 字，说清他真正擅长什么，不用「具有」开头，不加句号", '
+    + '"evidence": [{ "year": 2021, "event": "这一年发生的具体事，8–40 字，来自底片原文", "why": "不超过 12 字" }], '
+    + '"openings": "一句话，6–20 字，说清 AI 时代可以往哪打开", "confidence": 0.7 }。'
+    + 'evidence 必须恰好 3 条，年份必须是底片里出现过的年份。不要输出多余文字，不要给价格。';
 
   async function callJSON(system, user, temp) {
     const endpoint = store.get('dipian.endpoint');
@@ -325,13 +327,22 @@ function createNextYear() {
 
     const renderResult = ({ data, usage, model }) => {
       const ev = Array.isArray(data.evidence) ? data.evidence : [];
+      // 契约 v1：evidence 为 {year, event, why?} 对象；同时兼容旧的字符串写法
+      const evHtml = ev.map((e) => {
+        if (e && typeof e === 'object') {
+          const why = e.why ? ` <i>${e.why}</i>` : '';
+          return `<div>${e.year || ''} · ${e.event || ''}${why}</div>`;
+        }
+        return `<div>${e}</div>`;
+      }).join('');
+      const conf = typeof data.confidence === 'number' ? ` · 把握 ${Math.round(data.confidence * 100)}%` : '';
       aisheet.innerHTML = `<div class="ai-hd"><b style="font-size: 15px;">AI 读完了十一年</b><button class="x">×</button></div>
         <div class="ai-lab">你擅长的</div>
         <div class="ai-big">${data.strength || '—'}</div>
-        <div class="ai-ev">${ev.map((e) => `<div>${e}</div>`).join('')}</div>
+        <div class="ai-ev">${evHtml}</div>
         <div class="ai-lab">可以打开的</div>
         <div class="ai-big">${data.openings || '—'}</div>
-        <div class="ai-meta">${model} · 输入 ${(usage && usage.prompt_tokens) || '-'} / 输出 ${(usage && usage.completion_tokens) || '-'} tokens · ${data.why || ''}</div>
+        <div class="ai-meta">${model} · 输入 ${(usage && usage.prompt_tokens) || '-'} / 输出 ${(usage && usage.completion_tokens) || '-'} tokens${conf} · ${data.why || ''}</div>
         <div class="ai-actions"><button class="again">再读一次</button><button class="toinv">带着结论去立项 →</button></div>`;
       bindX();
       aisheet.querySelector('.again').onclick = (e) => { e.stopPropagation(); runAI(); };

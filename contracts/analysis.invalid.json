@@ -1,0 +1,71 @@
+{
+  "说明": "每组是一个应被拒绝的返回，用于评测集断言。expected 是期望命中的字段前缀。",
+  "cases": [
+    {
+      "name": "证据条数不足",
+      "expected": "evidence",
+      "payload": {
+        "v": 1,
+        "strength": "把混乱收进秩序",
+        "evidence": [
+          { "year": 2021, "event": "用 42 个组件把混乱的界面收进一套规范" },
+          { "year": 2024, "event": "砍掉三个功能，留存从 11% 回到 19%" }
+        ],
+        "openings": "用 AI 做决策，不做设计稿"
+      }
+    },
+    {
+      "name": "结论为空",
+      "expected": "strength",
+      "payload": {
+        "v": 1,
+        "strength": "",
+        "evidence": [
+          { "year": 2021, "event": "用 42 个组件把混乱的界面收进一套规范" },
+          { "year": 2024, "event": "砍掉三个功能，留存从 11% 回到 19%" },
+          { "year": 2018, "event": "访谈 40 位用户后被退稿 3 次，仍改到可用" }
+        ],
+        "openings": "用 AI 做决策，不做设计稿"
+      }
+    },
+    {
+      "name": "旧格式：证据是字符串数组",
+      "expected": "evidence[0]",
+      "payload": {
+        "v": 1,
+        "strength": "把混乱收进秩序",
+        "evidence": ["2021 · 组件化", "2024 · 定价", "2018 · 访谈"],
+        "openings": "用 AI 做决策，不做设计稿"
+      }
+    },
+    {
+      "name": "借用套话开头",
+      "expected": "strength",
+      "payload": {
+        "v": 1,
+        "strength": "具有较强的结构化能力",
+        "evidence": [
+          { "year": 2021, "event": "用 42 个组件把混乱的界面收进一套规范" },
+          { "year": 2024, "event": "砍掉三个功能，留存从 11% 回到 19%" },
+          { "year": 2018, "event": "访谈 40 位用户后被退稿 3 次，仍改到可用" }
+        ],
+        "openings": "用 AI 做决策，不做设计稿"
+      }
+    },
+    {
+      "name": "结论里出现价格",
+      "expected": "$",
+      "payload": {
+        "v": 1,
+        "strength": "把混乱收进秩序",
+        "evidence": [
+          { "year": 2021, "event": "用 42 个组件把混乱的界面收进一套规范" },
+          { "year": 2024, "event": "砍掉三个功能，留存从 11% 回到 19%" },
+          { "year": 2018, "event": "访谈 40 位用户后被退稿 3 次，仍改到可用" }
+        ],
+        "openings": "先卖 ¥299 的小工具",
+        "confidence": 0.6
+      }
+    }
+  ]
+}

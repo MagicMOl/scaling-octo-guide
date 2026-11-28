@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://restart-life.local/contracts/analysis.schema.json",
+  "title": "档案分析结论",
+  "description": "AI 读一遍档案后返回的结构化结论。前端据此渲染，评测集据此断言。任何一方改字段，必须同步改本文件与 app/phone.js。",
+  "type": "object",
+  "required": ["v", "strength", "evidence", "openings"],
+  "additionalProperties": true,
+  "properties": {
+    "v": {
+      "type": "integer",
+      "const": 1,
+      "description": "契约版本。字段发生不兼容变更时递增。"
+    },
+    "strength": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 20,
+      "description": "一句话说清这个人真正擅长什么。不写「具有……能力」这类套话，不写句号。"
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "恰好三条证据。每条必须引用某一年的具体事件，不许编造年份或事件。",
+      "items": {
+        "type": "object",
+        "required": ["year", "event"],
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": 1980,
+            "maximum": 2100,
+            "description": "事件发生的年份，必须来自档案中真实存在的年份。"
+          },
+          "event": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 40,
+            "description": "这一年发生了什么，用档案里的事实，不加工。"
+          },
+          "why": {
+            "type": "string",
+            "maxLength": 12,
+            "description": "这条证据说明了什么，可选，不超过 12 字。"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "openings": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 20,
+      "description": "一句话说清可以往哪打开。不写「建议……」「可以尝试……」这类空话。"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "模型对结论的把握，0 到 1。前端展示为百分比，可选。"
+    },
+    "meta": {
+      "type": "object",
+      "description": "调用信息，由服务端回填，前端可选展示。",
+      "properties": {
+        "model": { "type": "string" },
+        "prompt_tokens": { "type": "integer", "minimum": 0 },
+        "completion_tokens": { "type": "integer", "minimum": 0 },
+        "years": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "description": "参与本次分析的年份。"
+        },
+        "records": { "type": "integer", "minimum": 0, "description": "参与本次分析的记录条数。" }
+      },
+      "additionalProperties": true
+    }
+  }
+}
