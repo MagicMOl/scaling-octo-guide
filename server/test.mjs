@@ -170,7 +170,7 @@ try {
   await withBff({ DEEPSEEK_API_KEY: '' }, async () => {
     const r = await post({ system: 's', user: 'u' });
     const j = await r.json();
-    check('服务端没配 Key 返回 500', r.status === 500 && j.error?.code === 'no_key', j);
+    check('服务端没配 Key 返回 503', r.status === 503 && j.error?.code === 'server_misconfigured', j);
   });
 
   // ---------- 跨实例共享限流（Upstash）----------

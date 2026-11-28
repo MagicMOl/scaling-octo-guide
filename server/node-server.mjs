@@ -72,11 +72,8 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (!API_KEY) {
-    send(res, 500, { error: { code: 'no_key', message: '服务端没有配置 DEEPSEEK_API_KEY。' } }, cors);
-    return;
-  }
-
+  // 先用便宜的检查挡掉客户端错误，再检查服务端配置：
+  // 参数错误（400）应优先于「服务端没配 Key」（503）暴露，否则排查方向会被带偏。
   const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || 'unknown';
   const limit = await hit(ip);
   if (!limit.ok) {
@@ -86,24 +83,30 @@ const server = http.createServer(async (req, res) => {
 
   const body = await readBody(req);
   if (body.tooLarge) {
-    send(res, 413, { error: { code: 'body_too_large', message: `请求体超过 ${MAX_BODY} 字节。` } }, cors);
+    send(res, 413, { error: { code: 'payload_too_large', message: `请求体超过 ${MAX_BODY} 字节。` } }, cors);
     req.resume(); // 把剩下的数据读掉，保证 413 能被客户端收到
     return;
   }
   if (body.error) {
-    send(res, 400, { error: { code: 'body_read_error', message: '读取请求体失败。' } }, cors);
+    send(res, 400, { error: { code: 'bad_request', message: '读取请求体失败。' } }, cors);
     return;
   }
 
   let parsedBody;
   try { parsedBody = JSON.parse(body.raw); } catch (e) {
-    send(res, 400, { error: { code: 'bad_json', message: '请求体不是合法 JSON。' } }, cors);
+    send(res, 400, { error: { code: 'bad_request', message: '请求体不是合法 JSON。' } }, cors);
     return;
   }
 
   const parsed = parseChatInput(parsedBody);
   if (parsed.error) {
     send(res, 400, { error: parsed.error }, cors);
+    return;
+  }
+
+  // 客户端参数都对了，最后才报服务端配置问题
+  if (!API_KEY) {
+    send(res, 503, { error: { code: 'server_misconfigured', message: '服务端没有配置 DEEPSEEK_API_KEY。' } }, cors);
     return;
   }
 
