@@ -1,0 +1,2933 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Consolas", "Courier New", monospace; color: #000; }
+  .page {
+    width: 210mm; height: 297mm; padding: 16mm 14mm 14mm;
+    page-break-after: always; position: relative; overflow: hidden;
+  }
+  header {
+    font-family: "SimSun", serif; font-size: 9pt; text-align: center;
+    padding-bottom: 3mm; border-bottom: 0.4pt solid #000; margin-bottom: 4mm;
+  }
+  pre {
+    font-size: 7.2pt; line-height: 3.9mm; white-space: pre-wrap;
+    word-break: break-all; letter-spacing: 0;
+  }
+  footer {
+    position: absolute; left: 0; right: 0; bottom: 8mm; text-align: center;
+    font-family: "SimSun", serif; font-size: 8.5pt;
+  }
+</style></head><body>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"&gt;
+&lt;title&gt;寻找人生的 25 号底片&lt;/title&gt;
+&lt;style&gt;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #8B7E64; }
+  body {
+    color: #1C1913;
+    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* 整块版心按窗口缩放，任何预览尺寸都能看到完整界面 */
+  #fit { position: fixed; inset: 0; }
+  #board {
+    position: absolute; left: 50%; top: 50%; width: 1800px; height: 1000px; overflow: hidden;
+    transform-origin: center center; transform: translate(-50%, -50%);
+    background: radial-gradient(120% 90% at 30% 10%, #C9BC9F 0%, #BCAE90 60%, #AB9C7E 100%);
+    box-shadow: 0 24px 80px rgba(0,0,0,.35);
+  }
+  .serif { font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif; }
+  .grain { position: absolute; inset: 0; pointer-events: none; opacity: .5; z-index: 2;
+    background-image: repeating-linear-gradient(0deg, rgba(120,100,60,.035) 0 1px, transparent 1px 3px),
+                      repeating-linear-gradient(90deg, rgba(120,100,60,.025) 0 1px, transparent 1px 4px); }
+  /* ---------- 底图：按用户给的两张参考图（黄昏湖面 / 水鸭青绿）取气氛 ---------- */
+  .photo { position: absolute; inset: 0; z-index: 0; }
+  .photo.dusk {
+    background:
+      radial-gradient(58% 34% at 50% 66%, rgba(255,248,230,.95) 0%, rgba(255,224,198,.5) 24%, rgba(255,212,190,0) 50%),
+      radial-gradient(95% 55% at 50% 102%, rgba(186,138,168,.6), transparent 72%),
+      linear-gradient(180deg, #E5B6C6 0%, #EFC6C6 24%, #F3CEC8 44%, #E0B1C1 70%, #C899B6 100%);
+  }
+  .photo.dusk::after {
+    content: ""; position: absolute; left: 50%; top: 16%; width: 78px; height: 28%;
+    transform: translateX(-50%); border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(255,252,238,.92), rgba(255,236,210,.4) 55%, transparent 76%);
+    filter: blur(9px);
+  }
+  .photo.water {
+    background:
+      radial-gradient(80% 52% at 24% 14%, rgba(216,250,242,.6), transparent 62%),
+      radial-gradient(62% 44% at 78% 80%, rgba(146,210,202,.5), transparent 66%),
+      linear-gradient(180deg, #1E6373 0%, #2A8390 30%, #4EA1A4 58%, #85C2BB 82%, #A8D5CB 100%);
+  }
+  .photo .ripple { position: absolute; inset: 0; opacity: .55;
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0 1px, transparent 1px 10px); }
+  .veil { position: absolute; inset: 0; z-index: 1; background: rgba(243,235,219,.64); }
+  .veil.soft { background: rgba(243,235,219,.30); }</pre>
+    <footer>第 1 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  .scr &gt; .cov, .scr &gt; .spiral, .scr &gt; .proj, .scr &gt; .team, .scr &gt; .tech, .scr &gt; .order { position: relative; z-index: 2; }
+  /* ---------- 撕纸 ---------- */
+  .tornw { position: absolute; filter: drop-shadow(0 2px 2px rgba(80,64,36,.18)) drop-shadow(0 8px 14px rgba(80,64,36,.12)); }
+  .tornw::before { content: ""; position: absolute; inset: 0; background: #C4B696; clip-path: var(--tear); transform: translate(1.8px, 2.2px); z-index: 0; }
+  .tear { position: absolute; inset: 0; z-index: 1; background: linear-gradient(158deg,#F9F3E5 0%,#F0E7D2 55%,#E6DBBF 100%); clip-path: var(--tear); }
+  .tear .q { position: absolute; left: 12px; right: 12px; top: 10px; font-family: "Noto Serif SC","Songti SC",SimSun,serif; line-height: 1.75; }
+  .tear .who { position: absolute; left: 12px; bottom: 9px; font-size: 8px; letter-spacing: .1em; color: #8A7E62; }
+  /* ---------- 板面 ---------- */
+  .board-title { position: absolute; left: 68px; top: 46px; z-index: 3; width: 400px; }
+  .board-title h1 { font-family: "Noto Serif SC","Songti SC",SimSun,serif; font-size: 26px; font-weight: 500; letter-spacing: .14em; line-height: 1.5; }
+  .board-title p { margin-top: 12px; font-size: 10px; letter-spacing: .2em; color: #8A7E62; }
+  .board-foot { position: absolute; left: 72px; bottom: 24px; z-index: 3; font-size: 9.5px; color: #8A7E62; letter-spacing: .05em; }
+  .flowline { position: absolute; height: 1px; background: rgba(60,48,24,.22); z-index: 3; }
+  .flowstep { position: absolute; z-index: 4; font-size: 9.5px; letter-spacing: .2em; color: #8A7E62; }
+  /* ---------- 手机 ---------- */
+  .phone { width: 417px; height: 876px; padding: 12px; background: #000; border-radius: 60px; box-shadow: 0 0 0 2px #1f2937, 0 22px 60px rgba(60,48,24,.30); position: relative; }
+  .screen { position: relative; width: 393px; height: 852px; border-radius: 48px; overflow: hidden; background: #FFFFFF; }
+  .sbar { position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 20; color: #1C1913;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 32px;
+    font: 600 16px/1 -apple-system, "SF Pro Text", sans-serif; pointer-events: none; }
+  .island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 124px; height: 36px; background: #000; border-radius: 999px; z-index: 30; }
+  .content { position: absolute; top: 54px; left: 0; right: 0; bottom: 90px; overflow: hidden; }
+  .home { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 140px; height: 5px; border-radius: 999px; background: rgba(28,25,19,.3); z-index: 10; }
+  .sicons { display: flex; align-items: center; gap: 6px; }
+  .sig { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
+  .sig i { width: 3px; background: currentColor; border-radius: 1px; display: block; }
+  .bat { width: 26px; height: 12px; border: 1.5px solid currentColor; border-radius: 3px; padding: 1px; position: relative; opacity: .8; }
+  .bat b { display: block; width: 85%; height: 100%; background: currentColor; border-radius: 1px; opacity: .9; }
+  .bat::after { content: ""; position: absolute; top: 3px; right: -3px; width: 2px; height: 6px; background: currentColor; border-radius: 0 1px 1px 0; }
+  .scr { display: none; height: 100%; position: relative; }
+  .scr.on { display: block; }
+  .kicker { font-size: 10.5px; letter-spacing: .28em; color: #2B5C86; }
+  .h1 { font-family: "Noto Serif SC","Songti SC",SimSun,serif; font-size: 24px; line-height: 1.5; font-weight: 500; }
+  .h2 { font-family: "Noto Serif SC","Songti SC",SimSun,serif; font-size: 18px; line-height: 1.6; font-weight: 500; }
+  .tiny { font-size: 11px; line-height: 1.8; color: #7E7258; }
+  /* ---------- 封面 ---------- */
+  .cov { height: 100%; position: relative; }
+  .cov .road { position: absolute; left: -62px; right: -62px; top: 96px; height: 330px; }
+  .cov .ht { position: absolute; left: 26px; top: 446px; }
+  .cov .ht h2 { font-family: "Noto Serif SC","Songti SC",SimSun,serif; font-size: 38px; font-weight: 500; letter-spacing: .12em; line-height: 1; }
+  .cov .ht p { margin-top: 16px; font-size: 11.5px; line-height: 1.95; color: #4A4334; }
+  .cov .go { position: absolute; left: 26px; bottom: 22px; font-size: 12px; letter-spacing: .24em; cursor: pointer; padding-bottom: 8px; border-bottom: 1px solid #1C1913; }
+  .cov .go:hover { opacity: .55; }
+  /* ---------- 底片螺旋 ---------- */
+  .spiral { position: relative; height: 100%; padding: 20px 0 0; }
+  .spiral .hd { padding: 0 24px; }
+  .coil { position: absolute; left: 0; top: 96px; right: 0; bottom: 0; }
+  .coil .path { position: absolute; inset: 0; }
+  .cell {
+    position: absolute; width: 172px; height: 90px; background: #1B1711; border-radius: 3px; padding: 12px 9px;</pre>
+    <footer>第 2 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    box-shadow: inset 0 0 0 1px rgba(240,230,205,.12), 0 8px 18px rgba(50,40,20,.22);
+    display: flex; gap: 8px; cursor: pointer; transform-origin: 50% 50%;
+  }
+  .cell::before, .cell::after {
+    content: ""; position: absolute; left: 5px; right: 5px; height: 6px;
+    background: repeating-linear-gradient(90deg, rgba(240,230,205,.42) 0 6px, transparent 6px 14px);
+  }
+  .cell::before { top: 3px; }
+  .cell::after { bottom: 3px; }
+  .cell:hover { box-shadow: inset 0 0 0 1px rgba(240,230,205,.4), 0 8px 18px rgba(50,40,20,.22); }
+  .cell .ph { width: 56px; height: 64px; flex: none; border-radius: 2px; overflow: hidden; background: #2C2519; position: relative; }
+  .cell .ph img { width: 100%; height: 100%; object-fit: cover; display: block; filter: sepia(.35) contrast(1.05); }
+  .cell .ph.add { display: flex; align-items: center; justify-content: center; color: #8C7A57; font-size: 9px; letter-spacing: .06em; border: 1px dashed rgba(240,230,205,.26); background: transparent; }
+  .cell .txt { flex: 1; min-width: 0; }
+  .cell .yr { position: relative; z-index: 1; font-family: "Noto Serif SC","Songti SC",SimSun,serif; font-size: 20px; color: #FFFFFF; line-height: 1; }
+  .cell .sk { position: relative; z-index: 1; margin-top: 7px; font-size: 9px; line-height: 1.65; color: rgba(255,255,255,.74); }
+  .cell .lv { position: relative; z-index: 1; margin-top: 6px; font-size: 8px; letter-spacing: .12em; color: #9CC6C9; }
+  .coil .hint { position: absolute; left: 24px; bottom: 6px; font-size: 10px; color: #2B5C86; letter-spacing: .04em; }
+  /* ---------- 立项 ---------- */
+  .ask, .proj { padding: 20px 24px 0; }
+  .bigbtn {
+    width: 100%; background: #1C1913; color: #F4EBD6; border: 0; padding: 15px 0; font: 500 14px/1 inherit;
+    letter-spacing: .3em; cursor: pointer; margin-top: 16px; transition: background .2s;
+  }
+  .bigbtn:hover { background: #3A3324; }
+  .qs { margin-top: 14px; }
+  .q { padding: 10px 0 8px; border-bottom: 1px solid rgba(28,25,19,.15); }
+  .q .qq { font-family: "Noto Serif SC","Songti SC",SimSun,serif; font-size: 14px; line-height: 1.6; }
+  .q .qa { margin-top: 7px; font-size: 11.5px; line-height: 1.8; color: #3E382A; }
+  .q .qd { margin-top: 5px; font-size: 10px; color: #9A8E72; }
+  .brief { margin-top: 12px; background: rgba(255,255,255,.4); box-shadow: inset 0 0 0 1px rgba(28,25,19,.12); padding: 14px 14px 12px; }
+  .brief .lb { font-size: 9.5px; letter-spacing: .22em; color: #8A7E62; }
+  .brief h3 { font-family: "Noto Serif SC","Songti SC",SimSun,serif; font-size: 16px; line-height: 1.55; margin-top: 8px; font-weight: 500; }
+  .brief .row { display: flex; justify-content: space-between; font-size: 10.5px; padding: 6px 0; border-bottom: 1px solid rgba(28,25,19,.1); }
+  .brief .row span:first-child { color: #8A7E62; }
+  .brief .kv { display: flex; gap: 14px; margin-top: 10px; }
+  .brief .kv div { flex: 1; }
+  .brief .kv b { display: block; font-family: "Noto Serif SC",SimSun,serif; font-size: 17px; font-weight: 500; color: #B03A28; }
+  .brief .kv span { font-size: 9px; color: #8A7E62; letter-spacing: .1em; }
+  /* ---------- 团队 ---------- */
+  .team { padding: 20px 24px 0; }
+  .who { margin-top: 4px; }
+  .ai { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(28,25,19,.10); }
+  .ai .av { width: 34px; height: 34px; flex: none; border-radius: 50%; border: 1px dashed #8A7E62; color: #6E6349;
+    display: flex; align-items: center; justify-content: center; font-size: 11px; }
+  .ai .in { flex: 1; min-width: 0; }
+  .ai .nm { font-size: 11.5px; font-weight: 600; }
+  .ai .nm i { font-style: normal; font-size: 8px; letter-spacing: .12em; border: 1px solid #2B5C86; color: #2B5C86;
+    padding: 1px 4px; margin-left: 6px; vertical-align: 1px; }
+  .ai .dc { font-size: 10px; color: #6E6349; margin-top: 2px; }</pre>
+    <footer>第 3 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  .ai .st { font-size: 8.5px; color: #8A7E62; letter-spacing: .1em; flex: none; }
+  .mem { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(28,25,19,.14); }
+  .mem .av { width: 42px; height: 42px; flex: none; border-radius: 50%; background: #1C1913; color: #F4EBD6;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; letter-spacing: .02em; }
+  .mem .in { flex: 1; }
+  .mem .nm { font-size: 12.5px; font-weight: 600; }
+  .mem .rl { font-size: 9.5px; color: #8A7E62; letter-spacing: .06em; margin-top: 2px; }
+  .mem .rs { font-size: 10.5px; line-height: 1.7; color: #4A4334; margin-top: 5px; }
+  .mem .mt { font-size: 9px; color: #8A7E62; margin-top: 5px; letter-spacing: .04em; }
+  .mem .mt b { color: #B03A28; font-weight: 600; }
+  .allin { margin-top: 16px; width: 100%; border: 1px solid #1C1913; background: none; color: #1C1913;
+    padding: 13px 0; font: 500 12.5px/1 inherit; letter-spacing: .24em; cursor: pointer; }
+  .allin:hover { background: #1C1913; color: #F4EBD6; }
+  /* ---------- 技术 ---------- */
+  .tech { padding: 22px 24px 0; }
+  .grp { margin-top: 12px; }
+  .grp .gl { font-size: 9.5px; letter-spacing: .24em; color: #8A7E62; }
+  .it { padding: 10px 0; border-bottom: 1px solid rgba(28,25,19,.12); }
+  .it .n { display: flex; justify-content: space-between; font-size: 12px; }
+  .it .n b { font-weight: 500; }
+  .it .n span { font-size: 9.5px; color: #8A7E62; letter-spacing: .04em; }
+  .it .n span.price { color: #B03A28; font-variant-numeric: tabular-nums; }
+  .it .w { font-size: 10px; color: #6E6349; line-height: 1.7; margin-top: 3px; }
+  .sum { margin-top: 14px; font-size: 10.5px; color: #4A4334; }
+  /* ---------- 下单 ---------- */
+  .order { padding: 22px 24px 0; }
+  .lines { margin-top: 14px; }
+  .line { display: flex; justify-content: space-between; gap: 10px; font-size: 11px; padding: 9px 0; border-bottom: 1px solid rgba(28,25,19,.12); }
+  .line .l { color: #4A4334; }
+  .line .l i { font-style: normal; display: block; font-size: 9px; color: #9A8E72; margin-top: 2px; }
+  .total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 16px; }
+  .total span { font-size: 10px; color: #8A7E62; letter-spacing: .18em; }
+  .total b { font-family: "Noto Serif SC",SimSun,serif; font-size: 30px; font-weight: 500; color: #B03A28; }
+  .pay { margin-top: 4px; font-size: 10px; color: #8A7E62; text-align: right; }
+  .ship { margin-top: 18px; font-size: 10.5px; line-height: 1.9; color: #4A4334; }
+  .ship b { font-weight: 600; }
+  .confirm { margin-top: 20px; width: 100%; background: #1C1913; color: #F4EBD6; border: 0; padding: 15px 0;
+    font: 500 13px/1 inherit; letter-spacing: .3em; cursor: pointer; }
+  .confirm:hover { background: #3A3324; }
+  .shipbar { display: flex; justify-content: space-between; margin-top: 22px; padding-top: 12px;
+    border-top: 1px solid rgba(28,25,19,.14); position: relative; }
+  .shipbar div { flex: 1; }
+  .shipbar div:nth-child(2) { text-align: center; }
+  .shipbar div:nth-child(3) { text-align: right; }
+  .shipbar b { display: block; font-size: 12px; font-weight: 600; letter-spacing: .04em; }
+  .shipbar span { font-size: 9.5px; color: #8A7E62; letter-spacing: .12em; }
+  .fine { margin-top: 12px; font-size: 9px; color: #9A8E72; line-height: 1.8; }
+  /* ---------- tab ---------- */
+  .tabbar { position: absolute; left: 0; right: 0; bottom: 34px; height: 56px; display: flex; align-items: center; justify-content: space-around;
+    background: rgba(255,255,255,.96); border-top: 1px solid rgba(28,25,19,.10); }</pre>
+    <footer>第 4 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  .tab { font-size: 9px; letter-spacing: .14em; color: #A2957A; cursor: pointer; padding: 4px 0; border-bottom: 1px solid transparent; }
+  .tab.on { color: #1C1913; border-bottom-color: #1C1913; }
+  /* ---------- 立项：需求录入 / AI 方案 / 评审 ---------- */
+  .pblock { margin-top: 12px; }
+  .pblock .lb { font-size: 9.5px; letter-spacing: .2em; color: #2B5C86; }
+  .req { margin-top: 6px; }
+  .req .row { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(28,25,19,.13); font-size: 11px; line-height: 1.55; }
+  .req .row span { width: 56px; color: #8A7E62; flex: none; }
+  .sol { display: flex; gap: 8px; margin-top: 10px; }
+  .card2 { flex: 1; border: 1px solid rgba(28,25,19,.18); padding: 9px; position: relative; }
+  .card2.rec { border-color: #2B5C86; box-shadow: inset 0 0 0 1px #2B5C86; }
+  .card2 .t { font-size: 11px; font-weight: 600; }
+  .card2 .d { font-size: 9px; color: #4A4334; line-height: 1.65; margin-top: 4px; }
+  .card2 .pm { font-size: 8.5px; margin-top: 5px; color: #2B5C86; }
+  .card2 .tag { position: absolute; right: 7px; top: -7px; background: #2B5C86; color: #fff; font-size: 7.5px; padding: 2px 5px; letter-spacing: .1em; }
+  .review { display: flex; gap: 10px; margin-top: 6px; }
+  .review div { flex: 1; }
+  .review b { font-family: "Noto Serif SC", serif; font-size: 17px; color: #1C1913; display: block; }
+  .review span { font-size: 8.5px; color: #8A7E62; letter-spacing: .1em; }
+  /* ---------- 团队：组织架构 ---------- */
+  .org { padding: 16px 20px 0; }
+  .org .root { width: 118px; margin: 6px auto 0; text-align: center; border: 1px solid #1C1913; padding: 6px 0; font-size: 11px; }
+  .org .root em { display: block; font-style: normal; font-size: 8px; color: #8A7E62; margin-top: 2px; }
+  .org .stem { width: 1px; height: 14px; background: #1C1913; margin: 0 auto; opacity: .45; }
+  .org .bar { height: 1px; background: #1C1913; opacity: .45; margin: 0 46px; }
+  .org .cols { display: flex; gap: 12px; }
+  .org .col { flex: 1; position: relative; padding-top: 12px; }
+  .org .col::before { content: ""; position: absolute; top: 0; left: 50%; width: 1px; height: 12px; background: #1C1913; opacity: .45; }
+  .org .gl { text-align: center; font-size: 9px; letter-spacing: .14em; color: #2B5C86; margin-bottom: 7px; }
+  .org .node { display: flex; align-items: center; gap: 6px; border: 1px solid rgba(28,25,19,.22); padding: 5px 6px; margin-bottom: 6px; cursor: pointer; background: #fff; }
+  .org .node:hover { border-color: #1C1913; background: #FBFBF9; }
+  .org .node.ai { border-style: dashed; }
+  .org .node .av { width: 22px; height: 22px; border-radius: 50%; background: #1C1913; color: #fff; font-size: 9px; display: flex; align-items: center; justify-content: center; flex: none; }
+  .org .node.ai .av { background: #2B5C86; }
+  .org .node .nm { font-size: 10.5px; line-height: 1.25; }
+  .org .node .nm i { font-style: normal; font-size: 7.5px; color: #8A7E62; display: block; }
+  /* ---------- 个人详情 ---------- */
+  .sheet { position: absolute; left: 0; right: 0; bottom: 34px; height: 56%; z-index: 40; display: none; background: #FFFFFF; padding: 18px 20px 0; border-radius: 18px 18px 0 0; box-shadow: 0 -10px 30px rgba(28,25,19,.14); }
+  .sheet.on { display: block; }
+  .sheet .hd { display: flex; align-items: center; gap: 10px; }
+  .sheet .hd .av { width: 40px; height: 40px; border-radius: 50%; background: #1C1913; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .sheet .hd b { font-size: 15px; display: block; }
+  .sheet .hd i { font-style: normal; font-size: 9.5px; color: #8A7E62; }
+  .sheet .x { margin-left: auto; border: 0; background: none; font-size: 19px; cursor: pointer; color: #1C1913; line-height: 1; }
+  .sheet .ds { margin-top: 12px; font-size: 10.5px; line-height: 1.8; color: #4A4334; }
+  .skills { margin-top: 14px; }
+  .skills .s { display: flex; align-items: center; gap: 8px; margin-top: 9px; font-size: 9.5px; }
+  .skills .s span:first-child { width: 50px; color: #8A7E62; flex: none; }
+  .skills .track { flex: 1; height: 4px; background: rgba(28,25,19,.12); }
+  .skills .track i { display: block; height: 100%; background: #2B5C86; }</pre>
+    <footer>第 5 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  .skills .s b { width: 22px; text-align: right; font-weight: 500; color: #2B5C86; }
+  .sheet .ft { margin-top: 16px; font-size: 9.5px; color: #8A7E62; }
+  /* ---------- 下单：商家 ---------- */
+  .item2 { padding: 8px 0 6px; border-bottom: 1px solid rgba(28,25,19,.12); }
+  .item2 .t { display: flex; justify-content: space-between; align-items: baseline; font-size: 11px; }
+  .item2 .t b { font-weight: 600; }
+  .item2 .t span { color: #B03A28; font-variant-numeric: tabular-nums; }
+  .shops { display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
+  .shop { border: 1px solid rgba(28,25,19,.2); padding: 3px 6px; font-size: 8.5px; color: #4A4334; cursor: pointer; background: #fff; line-height: 1.45; }
+  .shop.on { border-color: #B03A28; color: #B03A28; box-shadow: inset 0 0 0 1px #B03A28; }
+  .shop i { font-style: normal; display: block; font-size: 7.5px; color: #8A7E62; }
+  .rev2 { margin-top: 10px; border-top: 1px solid rgba(28,25,19,.12); padding-top: 6px; }
+  .rev2 div { display: flex; gap: 8px; font-size: 10px; line-height: 1.6; color: #4A4334; padding: 4px 0; }
+  .rev2 span { width: 26px; flex: none; color: #2B5C86; }
+  .org .summary { display: flex; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(28,25,19,.14); }
+  .summary div { flex: 1; text-align: center; }
+  .summary b { display: block; font-family: "Noto Serif SC", serif; font-size: 16px; color: #B03A28; }
+  .summary span { font-size: 8.5px; color: #8A7E62; letter-spacing: .06em; }
+  .tags { margin-top: 16px; display: flex; gap: 6px; }
+  .tags span { border: 1px solid rgba(28,25,19,.22); padding: 3px 8px; font-size: 9px; color: #2B5C86; }
+  .it { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(28,25,19,.12); }
+  .it .pic { width: 42px; height: 42px; flex: none; border: 1px solid rgba(28,25,19,.16); background: #fff;
+    display: flex; align-items: center; justify-content: center; }
+  .it .pic.mono { font-family: "Noto Serif SC", serif; font-size: 17px; color: #2B5C86; letter-spacing: .02em; }
+  .it .pic.mono.sm { font-family: Inter, system-ui; font-size: 11px; }
+  .it .tx { flex: 1; min-width: 0; }
+  .pf { display: flex; gap: 11px; align-items: center; }
+  .pf .pf-img { width: 62px; height: 62px; flex: none; overflow: hidden; border: 1px solid rgba(28,25,19,.2); position: relative; }
+  .pf .pf-img svg { display: block; width: 100%; height: 100%; }
+  .pf .pf-t { flex: 1; min-width: 0; }
+  .pf .pf-t b { font-size: 15px; display: block; }
+  .pf .pf-t i { font-style: normal; font-size: 9.5px; color: #8A7E62; display: block; margin-top: 2px; }
+  .pf .pf-t .pm { font-size: 9px; color: #2B5C86; margin-top: 6px; }
+  .fl { margin-top: 16px; font-size: 9px; letter-spacing: .2em; color: #8A7E62; }
+  .strip { display: flex; gap: 6px; margin-top: 7px; }
+  .mf { flex: 1; background: #1B1711; padding: 9px 7px 7px; border-radius: 2px; position: relative; overflow: hidden; }
+  .mf::before { content: ""; position: absolute; left: 4px; right: 4px; top: 2px; height: 4px;
+    background: repeating-linear-gradient(90deg, rgba(240,230,205,.4) 0 5px, transparent 5px 12px); }
+  .mf b { display: block; font-family: "Noto Serif SC", serif; font-size: 13px; color: #fff; line-height: 1; margin-top: 5px; }
+  .mf span { display: block; font-size: 8px; color: rgba(255,255,255,.72); margin-top: 4px; line-height: 1.4; }
+  .mf.ai { background: #1E3D57; }
+  /* ---------- 手机浏览模式：窄屏时只显示一台手机 ---------- */
+  #mobile { display: none; }
+  @media (max-width: 900px) {
+    #fit { display: none; }
+    #mobile { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 12px; background: #F2EADA; padding: 10px; }
+  }
+  .mbar { display: flex; align-items: baseline; justify-content: space-between; width: 100%; max-width: 460px;
+    font-size: 11px; color: #8A7E62; letter-spacing: .06em; }</pre>
+    <footer>第 6 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  .mbar b { font-family: "Noto Serif SC", "Songti SC", serif; font-size: 13px; color: #1C1913; letter-spacing: .08em; }
+  .mstage { position: relative; }
+  .mfoot { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .mdots { display: flex; gap: 7px; }
+  .mdots i { width: 5px; height: 5px; border-radius: 50%; background: rgba(28,25,19,.18); display: block; }
+  .mdots i.on { background: #1C1913; }
+  .mhint { font-size: 10px; color: #9A8E72; letter-spacing: .18em; }
+  /* ---------- 投资参与 ---------- */
+  .inv { padding: 18px 22px 0; }
+  .round { display: flex; margin-top: 14px; border-top: 1px solid rgba(28,25,19,.14); border-bottom: 1px solid rgba(28,25,19,.14); }
+  .round div { flex: 1; padding: 10px 0; }
+  .round b { display: block; font-family: "Noto Serif SC", serif; font-size: 15px; color: #B03A28; }
+  .round span { font-size: 8.5px; color: #8A7E62; letter-spacing: .08em; }
+  .prog { margin-top: 14px; }
+  .pline { display: flex; justify-content: space-between; font-size: 10px; color: #4A4334; }
+  .pline b { color: #B03A28; font-weight: 600; }
+  .pline .pct { color: #2B5C86; font-variant-numeric: tabular-nums; }
+  .prog .track { height: 4px; background: rgba(28,25,19,.12); margin-top: 6px; }
+  .prog .track i { display: block; height: 100%; background: #2B5C86; transition: width .3s; }
+  .plist { margin-top: 12px; }
+  .pl { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid rgba(28,25,19,.1); font-size: 10.5px; }
+  .pl .who { flex: 1; }
+  .pl .who i { font-style: normal; font-size: 8.5px; color: #2B5C86; margin-left: 6px; }
+  .pl .mo { color: #B03A28; font-variant-numeric: tabular-nums; }
+  .pl em { font-style: normal; font-size: 8.5px; color: #8A7E62; width: 34px; text-align: right; }
+  .pl em.wt { color: #B03A28; }
+  .terms { margin-top: 12px; }
+  .terms div { display: flex; gap: 8px; font-size: 10px; line-height: 1.7; color: #4A4334; padding: 3px 0; }
+  .terms span { width: 34px; flex: none; color: #8A7E62; }
+  .invbtn { width: 100%; margin-top: 12px; background: #1C1913; color: #fff; border: 0; padding: 12px 0;
+    font: 500 12px/1 inherit; letter-spacing: .26em; cursor: pointer; }
+  .invbtn:hover { background: #3A3324; }
+  .iamt { display: flex; gap: 8px; margin-top: 14px; }
+  .iamt div { flex: 1; border: 1px solid rgba(28,25,19,.2); padding: 12px 0; text-align: center; font-size: 13px; cursor: pointer; }
+  .iamt div.on { border-color: #B03A28; color: #B03A28; box-shadow: inset 0 0 0 1px #B03A28; }
+  .inote { margin-top: 12px; font-size: 10px; line-height: 1.8; color: #6E6349; }
+  /* ---------- 步骤条 ---------- */
+  .steps { display: flex; flex-wrap: wrap; gap: 6px; font-size: 10px; letter-spacing: .12em; color: #B3AA97; }
+  .steps span { cursor: pointer; padding-bottom: 2px; }
+  .steps span.on { color: #1C1913; border-bottom: 1px solid #1C1913; }
+  .steps span:not(:first-child)::before { content: "·"; margin-right: 6px; color: #D0C8B7; }
+  /* ---------- 我 ---------- */
+  .mepage { padding: 18px 22px 0; }
+  .mehd { display: flex; gap: 12px; align-items: center; margin-top: 12px; }
+  .meimg { width: 56px; height: 56px; overflow: hidden; border: 1px solid rgba(28,25,19,.2); }
+  .meimg svg { display: block; width: 100%; height: 100%; }
+  .mein b { font-size: 17px; display: block; }
+  .mein span { font-size: 10px; color: #8A7E62; letter-spacing: .04em; }
+  .mestat { display: flex; margin-top: 16px; border-top: 1px solid rgba(28,25,19,.14); border-bottom: 1px solid rgba(28,25,19,.14); }
+  .mestat div { flex: 1; padding: 10px 0; }</pre>
+    <footer>第 7 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  .mestat b { display: block; font-family: "Noto Serif SC", serif; font-size: 16px; color: #1C1913; }
+  .mestat b.money { color: #B03A28; }
+  .mestat span { font-size: 9px; color: #8A7E62; letter-spacing: .06em; }
+  .melist { margin-top: 14px; }
+  .melist div { display: flex; justify-content: space-between; align-items: baseline; padding: 11px 0; border-bottom: 1px solid rgba(28,25,19,.12); font-size: 12px; cursor: pointer; }
+  .melist em { font-style: normal; font-size: 9.5px; color: #8A7E62; }
+  .melist div:hover span { text-decoration: underline; text-underline-offset: 3px; }
+  .pwrap { position: absolute; transform-origin: top left; z-index: 5; }
+  .plabel { position: absolute; z-index: 5; font-size: 9.5px; color: #8A7E62; letter-spacing: .14em; white-space: nowrap; }
+  /* ---------- 可读性下限 + 颜色语义 ---------- */
+  .h1 { font-size: 26px; }
+  .q .qq { font-size: 15px; }
+  .pblock .lb, .grp .gl, .round span, .review span, .mestat span, .shop i, .line i,
+  .brief .kv span, .brief .lb, .pl em, .org .gl, .total span, .pay, .charge { font-size: 9.5px; }
+  .mem .rl, .mem .mt, .sheet .hd i, .skills .s, .pl, .pline, .terms div, .q .qd,
+  .melist em, .tab, .steps, .it .w, .shop, .fine, .line, .ship { font-size: 10px; }
+  .mem .nm, .mem .rs, .ds, .it .n { font-size: 11px; }
+  .cell .sk { font-size: 9.5px; }
+  .cell .lv { font-size: 8.5px; }
+  /* 红色只给钱；匹配度走蓝，风险走橙 */
+  .round b, .summary b, .review b { color: #1C1913; }
+  .round b.money, .summary b.money { color: #B03A28; }
+  .review b.risk { color: #B4701F; }
+  .mem .mt b { color: #2B5C86; }
+  .fine { color: #B4701F; }
+  .ship b { color: #2B5C86; font-weight: 600; }
+  /* ---------- 底片贯穿：立项胶片框 / 下单印章 / 合规勾选 ---------- */
+  .framefilm { background: #1B1711; padding: 15px 12px 10px; position: relative; overflow: hidden; }
+  .framefilm::before, .framefilm::after { content: ""; position: absolute; left: 8px; right: 8px; height: 5px;
+    background: repeating-linear-gradient(90deg, rgba(240,230,205,.42) 0 6px, transparent 6px 14px); }
+  .framefilm::before { top: 4px; }
+  .framefilm::after { bottom: 4px; }
+  .framefilm .lb { color: rgba(255,255,255,.55); }
+  .framefilm .fnum { position: absolute; right: 12px; top: 13px; font-size: 8px; letter-spacing: .16em; color: rgba(255,255,255,.45); }
+  .framefilm .req .row { border-bottom-color: rgba(255,255,255,.14); color: #F2EADA; }
+  .framefilm .req .row span { color: rgba(255,255,255,.5); }
+  .order { position: relative; }
+  .stamp { flex: none; width: 52px; height: 52px; border: 1.6px solid #B03A28;
+    color: #B03A28; border-radius: 3px; display: flex; align-items: center; justify-content: center;
+    transform: rotate(-7deg); font-family: "Noto Serif SC", serif; font-size: 10.5px; letter-spacing: .1em; opacity: .8; display: flex; align-items: center; justify-content: center; }
+  .comply { margin-top: 12px; }
+  .ck { display: flex; gap: 8px; align-items: flex-start; font-size: 9.5px; line-height: 1.6; color: #4A4334; padding: 5px 0; cursor: pointer; }
+  .ck i { width: 13px; height: 13px; border: 1px solid rgba(28,25,19,.45); flex: none; margin-top: 1px; position: relative; }
+  .ck.on i { background: #1C1913; border-color: #1C1913; }
+  .ck.on i::after { content: "✓"; position: absolute; inset: 0; color: #fff; font-size: 9px; display: flex; align-items: center; justify-content: center; }
+  .invbtn.off { background: #DDD5C4; color: #6E6349; cursor: not-allowed; }
+  .invbtn.off:hover { background: #C6BEAD; }
+  .org .node.ai { background: #F2F6FA; border-color: #A8BDD0; }
+  /* ---------- 年份详情 ---------- */
+  .ysheet { height: 66%; }</pre>
+    <footer>第 8 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  .ysheet .yh { display: flex; gap: 11px; align-items: center; }
+  .ysheet .yimg { width: 54px; height: 64px; flex: none; background: #1B1711; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.45); font-size: 8px; }
+  .ysheet .yimg img { width: 100%; height: 100%; object-fit: cover; filter: sepia(.3); }
+  .ysheet .yh b { display: block; font-family: "Noto Serif SC", serif; font-size: 20px; }
+  .ysheet .yh span { font-size: 9.5px; color: #8A7E62; }
+  .yinfo { margin-top: 12px; }
+  .yinfo div { display: flex; gap: 8px; font-size: 10.5px; line-height: 1.6; padding: 3px 0; color: #4A4334; }
+  .yinfo span { width: 34px; color: #8A7E62; flex: none; }
+  .ylist div { font-size: 10.5px; line-height: 1.6; padding: 3px 0 3px 9px; border-left: 2px solid rgba(28,25,19,.16); margin-top: 4px; color: #4A4334; }
+  .yfill { display: flex; gap: 8px; margin-top: 12px; }
+  .yfill input { flex: 1; border: 0; border-bottom: 1px solid rgba(28,25,19,.3); background: transparent;
+    font: inherit; font-size: 11px; padding: 6px 0; outline: none; color: #1C1913; }
+  .yfill button { border: 1px solid #1C1913; background: none; padding: 5px 10px; font-size: 10px; letter-spacing: .08em; cursor: pointer; }
+  .yfill button:hover { background: #1C1913; color: #fff; }
+  .ygo { width: 100%; margin-top: 14px; border: 0; background: none; color: #2B5C86; font: inherit;
+    font-size: 11px; letter-spacing: .12em; text-align: left; cursor: pointer; padding: 0; }
+  /* ---------- AI 读底片 ---------- */
+  .aibar { position: absolute; left: 22px; right: 22px; bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px; z-index: 3; }
+  .aibtn { border: 1px solid #1C1913; background: #FFFFFF; color: #1C1913; font: inherit; font-size: 11px; letter-spacing: .12em; padding: 8px 12px; cursor: pointer; }
+  .aibtn:hover { background: #1C1913; color: #fff; }
+  .aistate { font-size: 9px; color: #9A8E72; letter-spacing: .03em; text-align: right; cursor: pointer; max-width: 150px; line-height: 1.5; }
+  .aistate.on { color: #2B5C86; }
+  .aisheet .ai-hd { display: flex; align-items: baseline; justify-content: space-between; }
+  .aisheet .ai-lab { margin-top: 16px; font-size: 9px; letter-spacing: .24em; color: #2B5C86; }
+  .aisheet .ai-big { margin-top: 6px; font-family: "Noto Serif SC", serif; font-size: 19px; line-height: 1.5; }
+  .aisheet .ai-ev div { font-size: 10.5px; line-height: 1.7; color: #4A4334; padding: 3px 0 3px 9px; border-left: 2px solid rgba(28,25,19,.16); margin-top: 5px; }
+  .aisheet .ai-meta { margin-top: 14px; font-size: 8.5px; color: #9A8E72; letter-spacing: .04em; }
+  .aisheet .ai-load { margin-top: 46px; display: flex; align-items: center; gap: 10px; font-size: 11px; color: #6E6349; }
+  .aisheet .spin { width: 14px; height: 14px; border: 1.5px solid rgba(28,25,19,.2); border-top-color: #1C1913; border-radius: 50%; animation: sp .8s linear infinite; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  .ai-err { margin-top: 16px; font-size: 10.5px; line-height: 1.7; color: #B4701F; word-break: break-word; }
+  .ai-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .ai-actions button, .ksave, .kclear { border: 1px solid #1C1913; background: none; font: inherit; font-size: 10px; padding: 7px 10px; cursor: pointer; }
+  .ai-actions button:hover, .ksave:hover, .kclear:hover { background: #1C1913; color: #fff; }
+  .kinput { width: 100%; border: 0; border-bottom: 1px solid rgba(28,25,19,.35); background: transparent; font: inherit; font-size: 12px; padding: 7px 0; outline: none; }
+  .ksel { width: 100%; border: 1px solid rgba(28,25,19,.25); background: #fff; font: inherit; font-size: 11px; padding: 7px; margin-top: 10px; }
+  /* ---------- 立项：可编辑需求 + AI 生成 ---------- */
+  .proj .lb { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .framefilm .req .row { align-items: center; }
+  .framefilm .req input { flex: 1; min-width: 0; border: 0; border-bottom: 1px solid rgba(255,255,255,.28);
+    background: transparent; color: #F2EADA; font: inherit; font-size: 11px; padding: 2px 0 3px; outline: none; }
+  .framefilm .req input:focus { border-bottom-color: #F2EADA; }
+  .framefilm .req input::placeholder { color: rgba(255,255,255,.35); }
+  .genbtn { border: 1px solid #1C1913; background: none; font: inherit; font-size: 9.5px; padding: 3px 8px;
+    cursor: pointer; letter-spacing: .06em; flex: none; }
+  .genbtn:hover:not(:disabled) { background: #1C1913; color: #fff; }
+  .genbtn:disabled { opacity: .4; cursor: default; }
+  .gmsg { font-size: 9.5px; line-height: 1.6; color: #B4701F; margin-top: 6px; }
+  .gmsg:empty { display: none; }</pre>
+    <footer>第 9 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  .langtog { position: absolute; right: 64px; top: 38px; z-index: 6; display: flex; gap: 7px; align-items: baseline;
+    font-size: 10px; letter-spacing: .08em; color: #A79C82; }
+  .langtog b { font-weight: 400; cursor: pointer; padding-bottom: 2px; border-bottom: 1px solid transparent; }
+  .langtog b.on { color: #1C1913; border-bottom-color: #1C1913; }
+  .melist .lp { font-style: normal; cursor: pointer; font-weight: 400; padding-bottom: 1px; border-bottom: 1px solid transparent; }
+  .melist .lp.on { color: #1C1913; border-bottom-color: #1C1913; }
+  .melist em.ok { color: #2B5C86; }
+  /* ---------- 层级重构 ---------- */
+  .steps { font-size: 9px; letter-spacing: .18em; }
+  .steps span { color: #C9C1AE; }
+  .steps span.on { color: #2B5C86; }
+  .scr .h1 { font-size: 26px; }
+  .review div:first-child b { font-size: 27px; line-height: 1.1; color: #1C1913; }
+  .review div:not(:first-child) b { font-size: 13px; color: #1C1913; opacity: .5; font-family: "Noto Serif SC", serif; }
+  .review span { font-size: 9px; opacity: .75; }
+  .pblock .lb { font-size: 9px; letter-spacing: .24em; }
+  .card2 .t { font-size: 12px; }
+  .card2 .d { font-size: 9.5px; }
+  .spiral .hd { padding-top: 4px; padding-bottom: 10px; }
+  .coil .hint { font-size: 9.5px; }
+  /* ---------- 过渡与状态 ---------- */
+  .sheet { transition: transform .24s cubic-bezier(.22,.7,.3,1), opacity .24s ease; }
+  .sheet.on { animation: sheetUp .24s cubic-bezier(.22,.7,.3,1); }
+  @keyframes sheetUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .scr { animation: scrIn .22s ease-out; }
+  @keyframes scrIn { from { opacity: .6; } to { opacity: 1; } }
+  .skel { background: linear-gradient(90deg,#EFEAE0 25%,#F7F3EA 37%,#EFEAE0 63%); background-size: 400% 100%;
+    animation: skShine 1.2s ease-in-out infinite; border-radius: 2px; }
+  @keyframes skShine { from { background-position: 100% 0; } to { background-position: 0 0; } }
+  .skel-l { height: 10px; margin-top: 8px; }
+  .skel-b { height: 22px; margin-top: 10px; width: 62%; }
+  .empty { padding: 16px 0 4px; }
+  .empty b { display: block; font-size: 12px; font-weight: 500; }
+  .empty span { display: block; margin-top: 6px; font-size: 10px; line-height: 1.8; color: #8A7E62; }
+  .empty .eadd { margin-top: 12px; border: 1px solid #1C1913; background: none; font: inherit; font-size: 10px;
+    padding: 8px 14px; cursor: pointer; letter-spacing: .08em; }
+  .empty .eadd:hover { background: #1C1913; color: #fff; }
+  .fromfilm { margin-top: 14px; border-left: 2px solid #2B5C86; padding: 8px 0 8px 10px; display: none; }
+  .fromfilm.on { display: block; }
+  .fromfilm p { font-size: 10px; line-height: 1.7; color: #4A4334; }
+  .fromfilm b { font-size: 9px; letter-spacing: .18em; color: #2B5C86; display: block; margin-bottom: 3px; }
+  .fromfilm button { margin-top: 8px; border: 1px solid #2B5C86; background: none; color: #2B5C86;
+    font: inherit; font-size: 9.5px; padding: 4px 9px; cursor: pointer; letter-spacing: .06em; }
+  .fromfilm button:hover { background: #2B5C86; color: #fff; }
+  .spiral .hd { position: relative; }
+  .addyear { position: absolute; right: 24px; top: 2px; border: 1px solid #C9C1AE; background: none;
+    font: inherit; font-size: 9.5px; color: #8A7E62; padding: 3px 8px; cursor: pointer; letter-spacing: .06em; }
+  .addyear:hover { border-color: #1C1913; color: #1C1913; }
+  /* ---------- 下单后的物流追踪 ---------- */
+  .track { display: none; }</pre>
+    <footer>第 10 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  .order.tracked .item2, .order.tracked .total, .order.tracked .pay,
+  .order.tracked .ship, .order.tracked .shipbar, .order.tracked .confirm, .order.tracked .fine { display: none !important; }
+  .order.tracked .track { display: block; }
+  .track .theader { position: relative; padding-right: 62px; }
+  .track .theader .stamp { position: absolute; right: 0; top: -8px; }
+  .track .tstatus { display: flex; justify-content: space-between; align-items: baseline;
+    border-top: 1px solid rgba(28,25,19,.14); padding-top: 14px; margin-top: 6px; }
+  .track .tstatus b { font-size: 15px; font-weight: 600; }
+  .track .tstatus i { font-style: normal; font-size: 9px; color: #2B5C86; letter-spacing: .12em; }
+  .track .tno { font-family: "JetBrains Mono", Consolas, monospace; font-size: 9.5px;
+    color: #8A7E62; letter-spacing: .04em; margin-top: 6px; display: block; }
+  .tl { margin-top: 16px; position: relative; padding-left: 18px; }
+  .tl::before { content: ''; position: absolute; left: 4.5px; top: 7px; bottom: 14px; width: 1px;
+    background: rgba(28,25,19,.16); }
+  .tl .n { position: relative; padding-bottom: 15px; }
+  .tl .n::before { content: ''; position: absolute; left: -18px; top: 5px; width: 8px; height: 8px;
+    border-radius: 50%; background: #fff; border: 1px solid rgba(28,25,19,.3); }
+  .tl .n.on::before { background: #2B5C86; border-color: #2B5C86; box-shadow: 0 0 0 3px rgba(43,92,134,.14); }
+  .tl .n b { display: block; font-size: 12px; font-weight: 500; }
+  .tl .n span { display: block; margin-top: 3px; font-size: 9.5px; color: #8A7E62; letter-spacing: .02em; }
+  .tl .n.wait b { color: #B3AA97; font-weight: 400; }
+  .tl .n.wait span { color: #C4BCAA; }
+  .track .tact { display: flex; gap: 10px; margin-top: 4px; }
+  .track .tact button { flex: 1; border: 1px solid #1C1913; background: none; font: inherit;
+    font-size: 10px; padding: 9px; cursor: pointer; letter-spacing: .06em; }
+  .track .tact button:hover { background: #1C1913; color: #fff; }
+  .track .tnote { margin-top: 14px; font-size: 9.5px; line-height: 1.8; color: #8A7E62; }
+  /* ---------- 封面（实拍长曝光） ---------- */
+  .cov2 { position: absolute; inset: 0; overflow: hidden; background: #F6EFE2; }
+  .cov2-img { position: absolute; left: 0; right: 0; top: 0; height: 58%; overflow: hidden; }
+  .cov2-img img { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; }
+  .cov2-scrim { position: absolute; left: 0; right: 0; top: 0; height: 64px;
+    background: linear-gradient(to bottom, rgba(246,239,226,.92), rgba(246,239,226,0)); }
+  .cov2-fade { position: absolute; left: 0; right: 0; top: calc(58% - 74px); height: 96px;
+    background: linear-gradient(to bottom, rgba(246,239,226,0), #F6EFE2 88%); }
+  .cov2-type { position: absolute; left: 0; right: 0; top: 60%; text-align: center; }
+  .cov2-author { font-size: 9px; letter-spacing: .36em; color: #3A4A5C; font-weight: 600; }
+  .cov2-title { margin-top: 14px; display: inline-block; position: relative;
+    font-family: "Noto Serif SC","Songti SC",serif; font-weight: 300;
+    font-size: 34px; line-height: 1.5; letter-spacing: .16em; color: #22262E; }
+  .cov2-sl { position: absolute; width: 1px; background: rgba(58,74,92,.28); }
+  .cov2-sl.s1 { left: -28px; top: 2px; height: 62px; transform: rotate(-17deg); }
+  .cov2-sl.s2 { right: -24px; bottom: 6px; height: 44px; transform: rotate(-17deg); }
+  .cov2-sub { margin-top: 16px; font-size: 10px; line-height: 1.95; color: #6F6858; letter-spacing: .06em; }
+  .cov2-enter { position: static; margin-top: 20px; text-align: center; }
+  .cov2-enter span { font-size: 9.5px; letter-spacing: .3em; color: #7A7261; }
+  .cov2-enter i { display: block; width: 1px; height: 18px; background: rgba(58,74,92,.35); margin: 10px auto 0; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;</pre>
+    <footer>第 11 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>&lt;div id="fit"&gt;&lt;div id="board"&gt;
+&lt;div class="tornw" style="left: 16px; top: 16px; width: 1768px; height: 968px;"&gt;
+  &lt;div class="tear" data-seed="101" style="background: linear-gradient(160deg,#F3EBD8 0%,#EDE4CE 45%,#E4D9BE 100%);"&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="grain"&gt;&lt;/div&gt;
+&lt;div class="board-title"&gt;
+  &lt;h1&gt;寻找人生的 25 号底片&lt;/h1&gt;
+  &lt;p&gt;第六版 · 时钟 · 头像底片 · 产品图 ／ 方向一「白纸」的迭代&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="tornw" style="left: 486px; top: 40px; width: 322px; height: 82px; transform: rotate(-1.4deg); z-index: 3;"&gt;
+  &lt;div class="tear" data-seed="11"&gt;
+    &lt;div class="q" style="font-size: 14px; letter-spacing: .04em;"&gt;游离个体的栖息地&lt;/div&gt;
+    &lt;div class="who"&gt;—— 这六页的来处&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="tornw" style="left: 834px; top: 58px; width: 330px; height: 78px; transform: rotate(1.2deg); z-index: 3;"&gt;
+  &lt;div class="tear" data-seed="43"&gt;
+    &lt;div class="q" style="font-size: 13px; letter-spacing: .04em;"&gt;举众星之光，照未来之路。&lt;/div&gt;
+    &lt;div class="who"&gt;—— 栖息地计划&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="langtog"&gt;&lt;b data-lang="zh"&gt;中文&lt;/b&gt;&lt;span&gt;/&lt;/span&gt;&lt;b data-lang="en"&gt;EN&lt;/b&gt;&lt;/div&gt;
+&lt;div class="board-foot"&gt;演示数据：虚构的项目与人物 · 照片来自 Unsplash · 底部四个导航（封面 / 底片 / 项目 / 我），「项目」内含五步，顶部步骤条可跳转&lt;/div&gt;
+&lt;div id="stage"&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- ============ 1 封面 ============ --&gt;
+&lt;template id="tpl-cover"&gt;
+  &lt;div class="scr" data-name="cover"&gt;
+      &lt;div class="cov2" data-go="film"&gt;
+        &lt;div class="cov2-img"&gt;&lt;img src="/* [image] */" alt=""&gt;&lt;/div&gt;
+        &lt;div class="cov2-scrim"&gt;&lt;/div&gt;
+        &lt;div class="cov2-fade"&gt;&lt;/div&gt;
+        &lt;div class="cov2-type"&gt;
+          &lt;div class="cov2-author"&gt;25 号底片&lt;/div&gt;
+          &lt;div class="cov2-title"&gt;&lt;span class="cov2-sl s1"&gt;&lt;/span&gt;把「想做」&lt;br&gt;变成「在做」&lt;span class="cov2-sl s2"&gt;&lt;/span&gt;&lt;/div&gt;
+          &lt;p class="cov2-sub"&gt;十一年，四格已显影&lt;br&gt;还剩二十一格，等你走到&lt;/p&gt;
+          &lt;div class="cov2-enter"&gt;&lt;span&gt;轻触开始&lt;/span&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/template&gt;
+&lt;!-- ============ 2 底片（螺旋上升） ============ --&gt;
+&lt;template id="tpl-film"&gt;
+  &lt;div class="scr" data-name="film"&gt;
+    &lt;div class="spiral"&gt;
+      &lt;div class="hd"&gt;
+        &lt;div class="kicker"&gt;个人信息记录&lt;/div&gt;
+        &lt;div class="h2" style="margin-top: 8px;"&gt;十一年，螺旋上升&lt;/div&gt;
+        &lt;div class="tiny" style="margin-top: 4px;"&gt;越往上越近。点开任意一格，照片可以随时插进去。&lt;/div&gt;
+        &lt;button class="addyear"&gt;＋ 新增一年&lt;/button&gt;</pre>
+    <footer>第 12 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>      &lt;/div&gt;
+      &lt;div class="coil" id="coil"&gt;
+        &lt;svg class="path" viewBox="0 0 393 612" preserveAspectRatio="none"&gt;
+          &lt;path d="M300 560 C 340 500, 340 430, 300 380 S 200 300, 240 250 S 330 176, 290 128 S 190 60, 220 24"
+                fill="none" stroke="#C2B493" stroke-width="1.4" stroke-dasharray="4 6"/&gt;
+        &lt;/svg&gt;
+        &lt;div class="cell" data-year="2015" style="left: 12px; top: 466px; transform: rotate(-4deg);"&gt;
+          &lt;div class="ph"&gt;&lt;img src="/* [image] */" alt="照片"&gt;&lt;/div&gt;
+          &lt;div class="txt"&gt;&lt;div class="yr"&gt;2015&lt;/div&gt;&lt;div class="sk"&gt;文案 · 被退稿&lt;/div&gt;&lt;div class="lv"&gt;第 1 年&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="cell" data-year="2018" style="left: 178px; top: 384px; transform: rotate(4deg);"&gt;
+          &lt;div class="ph add"&gt;＋ 插入照片&lt;/div&gt;
+          &lt;div class="txt"&gt;&lt;div class="yr"&gt;2018&lt;/div&gt;&lt;div class="sk"&gt;访谈 40 场&lt;/div&gt;&lt;div class="lv"&gt;第 4 年&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="cell" data-year="2021" style="left: 12px; top: 302px; transform: rotate(-3deg);"&gt;
+          &lt;div class="ph"&gt;&lt;img src="/* [image] */" alt="照片"&gt;&lt;/div&gt;
+          &lt;div class="txt"&gt;&lt;div class="yr"&gt;2021&lt;/div&gt;&lt;div class="sk"&gt;组件化 · 带 3 人&lt;/div&gt;&lt;div class="lv"&gt;第 6 年&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="cell" data-year="2024" style="left: 178px; top: 220px; transform: rotate(3deg);"&gt;
+          &lt;div class="ph add"&gt;＋ 插入照片&lt;/div&gt;
+          &lt;div class="txt"&gt;&lt;div class="yr"&gt;2024&lt;/div&gt;&lt;div class="sk"&gt;定价 · 留存 +8%&lt;/div&gt;&lt;div class="lv"&gt;第 9 年&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="cell" data-year="2026" style="left: 12px; top: 116px; transform: rotate(-2deg);"&gt;
+          &lt;div class="ph"&gt;&lt;img src="/* [image] */" alt="照片"&gt;&lt;/div&gt;
+          &lt;div class="txt"&gt;&lt;div class="yr"&gt;2026&lt;/div&gt;&lt;div class="sk"&gt;一个人上线&lt;/div&gt;&lt;div class="lv"&gt;第 11 年&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="aibar"&gt;
+        &lt;button class="aibtn"&gt;让 AI 读一遍&lt;/button&gt;
+        &lt;span class="aistate"&gt;未配置 Key&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;!-- ============ 3 立项 ============ --&gt;
+&lt;template id="tpl-project"&gt;
+  &lt;div class="scr" data-name="project"&gt;
+    &lt;div class="proj"&gt;
+      &lt;div class="steps"&gt;&lt;span data-step="project"&gt;立项&lt;/span&gt;&lt;span data-step="team"&gt;团队&lt;/span&gt;&lt;span data-step="invest"&gt;投资&lt;/span&gt;&lt;span data-step="tech"&gt;选型&lt;/span&gt;&lt;span data-step="order"&gt;下单&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="h1" style="margin-top: 8px; font-size: 24px;"&gt;需求录入 → 方案 → 评审&lt;/div&gt;
+      &lt;div class="fromfilm" data-fromfilm&gt;
+        &lt;b&gt;来自底片的结论&lt;/b&gt;
+        &lt;p data-fromtext&gt;&lt;/p&gt;
+        &lt;button data-fill&gt;代入需求&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class="pblock framefilm"&gt;
+        &lt;div class="fnum"&gt;第 25 格&lt;/div&gt;
+        &lt;div class="lb"&gt;① 需求录入&lt;/div&gt;
+        &lt;div class="req"&gt;
+          &lt;div class="row"&gt;&lt;span&gt;想做什么&lt;/span&gt;&lt;input class="rq" data-k="what" type="text"&gt;&lt;/div&gt;</pre>
+    <footer>第 13 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>          &lt;div class="row"&gt;&lt;span&gt;给谁用&lt;/span&gt;&lt;input class="rq" data-k="who" type="text"&gt;&lt;/div&gt;
+          &lt;div class="row"&gt;&lt;span&gt;什么时候&lt;/span&gt;&lt;input class="rq" data-k="when" type="text"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="pblock"&gt;
+        &lt;div class="lb"&gt;&lt;span&gt;② AI 方案 · 两版&lt;/span&gt;&lt;button class="genbtn"&gt;用 AI 生成&lt;/button&gt;&lt;/div&gt;
+        &lt;div class="sol" data-sol&gt;
+          &lt;div class="card2"&gt;
+            &lt;div class="t"&gt;A 全自动&lt;/div&gt;
+            &lt;div class="d"&gt;按时间地点自动聚类，生成 60 页&lt;/div&gt;
+            &lt;div class="pm"&gt;稳 · 7 天出原型&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="card2 rec"&gt;
+            &lt;div class="tag"&gt;推荐&lt;/div&gt;
+            &lt;div class="t"&gt;B 先选再排&lt;/div&gt;
+            &lt;div class="d"&gt;你挑 20 张，AI 排成一册&lt;/div&gt;
+            &lt;div class="pm"&gt;准 · 付费意愿高&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="gmsg" data-gmsg&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="pblock"&gt;
+        &lt;div class="lb"&gt;&lt;span&gt;③ 评审&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="review" data-rev&gt;
+          &lt;div&gt;&lt;b&gt;8.5&lt;/b&gt;&lt;span&gt;概念&lt;/span&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;b&gt;7.0&lt;/b&gt;&lt;span&gt;成本&lt;/span&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;b class="risk"&gt;6.5&lt;/b&gt;&lt;span&gt;风险&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="tiny" style="margin-top: 8px;" data-verdict&gt;结论：选 B，先做 8 周，预算 ¥30,000。风险在「选图」这一步，一次可用性测试就能验。&lt;/div&gt;
+        &lt;div class="rev2" data-rev2&gt;
+          &lt;div&gt;&lt;span&gt;保留&lt;/span&gt;B 的「先选再排」，付费意愿最高&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;要改&lt;/span&gt;把选图压到 20 张以内，不然没人愿意挑&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;风险&lt;/span&gt;相册权限与导出尺寸，第 2 周前要验&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;button class="allin" data-go="team" style="margin-top: 12px;"&gt;立项，去组队&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;!-- ============ 4 团队 ============ --&gt;
+&lt;template id="tpl-team"&gt;
+  &lt;div class="scr" data-name="team"&gt;
+    &lt;div class="org"&gt;
+      &lt;div class="steps"&gt;&lt;span data-step="project"&gt;立项&lt;/span&gt;&lt;span data-step="team"&gt;团队&lt;/span&gt;&lt;span data-step="invest"&gt;投资&lt;/span&gt;&lt;span data-step="tech"&gt;选型&lt;/span&gt;&lt;span data-step="order"&gt;下单&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="root"&gt;你&lt;em&gt;创始人 · 产品&lt;/em&gt;&lt;/div&gt;
+      &lt;div class="stem"&gt;&lt;/div&gt;
+      &lt;div class="bar"&gt;&lt;/div&gt;
+      &lt;div class="cols"&gt;
+        &lt;div class="col"&gt;
+          &lt;div class="gl"&gt;AI 组 · 常驻 3&lt;/div&gt;</pre>
+    <footer>第 14 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>          &lt;div class="node ai" data-mem="zhan"&gt;&lt;div class="av"&gt;栈&lt;/div&gt;&lt;div class="nm"&gt;小栈&lt;i&gt;代码搭子&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class="node ai" data-mem="ye"&gt;&lt;div class="av"&gt;页&lt;/div&gt;&lt;div class="nm"&gt;小页&lt;i&gt;排版助理&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class="node ai" data-mem="zhang"&gt;&lt;div class="av"&gt;账&lt;/div&gt;&lt;div class="nm"&gt;小账&lt;i&gt;财务合规&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="col"&gt;
+          &lt;div class="gl"&gt;真人组 · 待招 3&lt;/div&gt;
+          &lt;div class="node" data-mem="lin"&gt;&lt;div class="av"&gt;前&lt;/div&gt;&lt;div class="nm"&gt;林一舟&lt;i&gt;前端 92%&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class="node" data-mem="zhou"&gt;&lt;div class="av"&gt;图&lt;/div&gt;&lt;div class="nm"&gt;周牧&lt;i&gt;算法 87%&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class="node" data-mem="lan"&gt;&lt;div class="av"&gt;长&lt;/div&gt;&lt;div class="nm"&gt;阿岚&lt;i&gt;增长 78%&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="summary"&gt;
+        &lt;div&gt;&lt;b&gt;3&lt;/b&gt;&lt;span&gt;AI 常驻&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b&gt;3&lt;/b&gt;&lt;span&gt;真人待招&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b class="money"&gt;4.2万&lt;/b&gt;&lt;span&gt;月度人力&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b&gt;5&lt;/b&gt;&lt;span&gt;首月可用&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="tiny" style="margin-top: 10px;"&gt;六个人，六格底片。AI 随项目自带、不占工资；真人按周结算。点开任意一格看技能。&lt;/div&gt;
+      &lt;button class="allin" data-go="tech" style="margin-top: 10px;"&gt;都要，下一步&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;!-- ============ 5 投资参与 ============ --&gt;
+&lt;template id="tpl-invest"&gt;
+  &lt;div class="scr" data-name="invest"&gt;
+    &lt;div class="inv"&gt;
+      &lt;div class="steps"&gt;&lt;span data-step="project"&gt;立项&lt;/span&gt;&lt;span data-step="team"&gt;团队&lt;/span&gt;&lt;span data-step="invest"&gt;投资&lt;/span&gt;&lt;span data-step="tech"&gt;选型&lt;/span&gt;&lt;span data-step="order"&gt;下单&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="h1" style="margin-top: 8px;"&gt;天使轮 50 万，&lt;br&gt;还差 18 万。&lt;/div&gt;
+      &lt;div class="round"&gt;
+        &lt;div&gt;&lt;b class="money"&gt;450万&lt;/b&gt;&lt;span&gt;投前估值&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b class="money"&gt;50万&lt;/b&gt;&lt;span&gt;本轮融资&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b&gt;10%&lt;/b&gt;&lt;span&gt;出让股份&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b&gt;6 个月&lt;/b&gt;&lt;span&gt;锁定期&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="prog"&gt;
+        &lt;div class="pline"&gt;&lt;span&gt;已认购 &lt;b class="amt"&gt;¥32 万&lt;/b&gt;&lt;/span&gt;&lt;span class="pct"&gt;64%&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="track"&gt;&lt;i style="width: 64%"&gt;&lt;/i&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="plist"&gt;
+        &lt;div class="pl"&gt;&lt;span class="who"&gt;林一舟&lt;i&gt;团队跟投&lt;/i&gt;&lt;/span&gt;&lt;span class="mo"&gt;¥3 万&lt;/span&gt;&lt;em&gt;已到账&lt;/em&gt;&lt;/div&gt;
+        &lt;div class="pl"&gt;&lt;span class="who"&gt;阿岚&lt;i&gt;团队跟投&lt;/i&gt;&lt;/span&gt;&lt;span class="mo"&gt;¥2 万&lt;/span&gt;&lt;em&gt;已到账&lt;/em&gt;&lt;/div&gt;
+        &lt;div class="pl"&gt;&lt;span class="who"&gt;拾光天使基金&lt;i&gt;外部 · 领投&lt;/i&gt;&lt;/span&gt;&lt;span class="mo"&gt;¥10 万&lt;/span&gt;&lt;em class="wt"&gt;意向&lt;/em&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="terms"&gt;
+        &lt;div&gt;&lt;span&gt;起投&lt;/span&gt;团队 ¥1 万 · 外部 ¥10 万&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;回购&lt;/span&gt;3 年内按 1.5 倍回购&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;分红&lt;/span&gt;可分配利润的 20%&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;信息权&lt;/span&gt;季度财报 + 月度进展&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="comply"&gt;</pre>
+    <footer>第 15 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>        &lt;div class="ck on" data-ck="risk"&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;我已阅读《风险揭示书》，理解本金可能全损&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="ck" data-ck="q"&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;我符合合格投资者标准（外部 10 万起投）&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;button class="invbtn off" disabled&gt;参与投资&lt;/button&gt;
+      &lt;div class="fine" style="margin-top: 10px;"&gt;24 小时冷静期 · 资金由托管账户代持 · 仅限合格投资者&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;!-- ============ 6 技术选型 ============ --&gt;
+&lt;template id="tpl-tech"&gt;
+  &lt;div class="scr" data-name="tech"&gt;
+    &lt;div class="tech"&gt;
+      &lt;div class="steps"&gt;&lt;span data-step="project"&gt;立项&lt;/span&gt;&lt;span data-step="team"&gt;团队&lt;/span&gt;&lt;span data-step="invest"&gt;投资&lt;/span&gt;&lt;span data-step="tech"&gt;选型&lt;/span&gt;&lt;span data-step="order"&gt;下单&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="h1" style="margin-top: 8px;"&gt;四件软件，三件硬件。&lt;/div&gt;
+      &lt;div class="grp"&gt;
+        &lt;div class="gl"&gt;软件&lt;/div&gt;
+        &lt;div class="it"&gt;
+          &lt;div class="pic mono"&gt;S&lt;/div&gt;
+          &lt;div class="tx"&gt;
+            &lt;div class="n"&gt;&lt;b&gt;SwiftUI&lt;/b&gt;&lt;span&gt;iOS 端&lt;/span&gt;&lt;/div&gt;
+            &lt;div class="w"&gt;一个人也能维护，系统控件直接可用。&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="it"&gt;
+          &lt;div class="pic mono"&gt;C&lt;/div&gt;
+          &lt;div class="tx"&gt;
+            &lt;div class="n"&gt;&lt;b&gt;CoreML · 场景分类&lt;/b&gt;&lt;span&gt;端侧&lt;/span&gt;&lt;/div&gt;
+            &lt;div class="w"&gt;照片不上传，隐私和速度都省心。&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="it"&gt;
+          &lt;div class="pic mono"&gt;F&lt;/div&gt;
+          &lt;div class="tx"&gt;
+            &lt;div class="n"&gt;&lt;b&gt;Python FastAPI&lt;/b&gt;&lt;span&gt;排版服务&lt;/span&gt;&lt;/div&gt;
+            &lt;div class="w"&gt;排版算法写得快，招人也容易。&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="it"&gt;
+          &lt;div class="pic mono sm"&gt;pdf&lt;/div&gt;
+          &lt;div class="tx"&gt;
+            &lt;div class="n"&gt;&lt;b&gt;pdf-lib&lt;/b&gt;&lt;span&gt;印刷导出&lt;/span&gt;&lt;/div&gt;
+            &lt;div class="w"&gt;出血、CMYK 转换要自己控，不过关印不出来。&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="grp"&gt;
+        &lt;div class="gl"&gt;硬件&lt;/div&gt;
+        &lt;div class="it"&gt;
+          &lt;div class="pic"&gt;&lt;svg viewBox="0 0 44 44" width="30" height="30" fill="none" stroke="#1C1913" stroke-width="1.4"&gt;&lt;rect x="9" y="10" width="26" height="17" rx="1.5"/&gt;&lt;path d="M5 31h34l-2 3.2H7z" stroke-linejoin="round"/&gt;&lt;path d="M16.5 32.6h11" stroke-width="1"/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class="tx"&gt;</pre>
+    <footer>第 16 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>            &lt;div class="n"&gt;&lt;b&gt;MacBook Pro 14 · M4 Pro 24G&lt;/b&gt;&lt;span class="price"&gt;¥19,999&lt;/span&gt;&lt;/div&gt;
+            &lt;div class="w"&gt;本地跑 xcode 与模型微调，够用三年。&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="it"&gt;
+          &lt;div class="pic"&gt;&lt;svg viewBox="0 0 44 44" width="30" height="30" fill="none" stroke="#1C1913" stroke-width="1.4"&gt;&lt;rect x="12.5" y="6" width="19" height="32" rx="2.6"/&gt;&lt;circle cx="22" cy="33" r="1.5" fill="#1C1913" stroke="none"/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class="tx"&gt;
+            &lt;div class="n"&gt;&lt;b&gt;iPad Air 11&lt;/b&gt;&lt;span class="price"&gt;¥4,799&lt;/span&gt;&lt;/div&gt;
+            &lt;div class="w"&gt;画册预览与店里演示，客户看的就是这个屏。&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="it"&gt;
+          &lt;div class="pic"&gt;&lt;svg viewBox="0 0 44 44" width="30" height="30" fill="none" stroke="#1C1913" stroke-width="1.4"&gt;&lt;rect x="14" y="7.5" width="16" height="9"/&gt;&lt;rect x="8" y="16.5" width="28" height="12.5" rx="2"/&gt;&lt;rect x="14" y="26" width="16" height="8"/&gt;&lt;path d="M33 21.5h1.6" stroke-width="2"/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class="tx"&gt;
+            &lt;div class="n"&gt;&lt;b&gt;A3 打样机 · 六色&lt;/b&gt;&lt;span class="price"&gt;¥2,399&lt;/span&gt;&lt;/div&gt;
+            &lt;div class="w"&gt;自己打样，比寄一次打样便宜。&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="sum"&gt;合计 ¥27,197 · 软件按订阅另计 · 不含云服务&lt;/div&gt;
+      &lt;button class="allin" data-go="order" style="margin-top: 12px;"&gt;按这份配置下单&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;!-- ============ 6 下单 ============ --&gt;
+&lt;template id="tpl-order"&gt;
+  &lt;div class="scr" data-name="order"&gt;
+    &lt;div class="order"&gt;
+      &lt;div class="steps"&gt;&lt;span data-step="project"&gt;立项&lt;/span&gt;&lt;span data-step="team"&gt;团队&lt;/span&gt;&lt;span data-step="invest"&gt;投资&lt;/span&gt;&lt;span data-step="tech"&gt;选型&lt;/span&gt;&lt;span data-step="order"&gt;下单&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="h1" style="margin-top: 8px;"&gt;三件硬件，六家商家。&lt;/div&gt;
+      &lt;div class="item2"&gt;
+        &lt;div class="t"&gt;&lt;b&gt;MacBook Pro 14 · M4 Pro 24G&lt;/b&gt;&lt;span class="price"&gt;¥19,999&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="shops"&gt;
+          &lt;div class="shop on" data-price="19999"&gt;官方店&lt;i&gt;次日达 · 2 年保&lt;/i&gt;&lt;/div&gt;
+          &lt;div class="shop" data-price="18899"&gt;京东自营&lt;i&gt;3 天 · 1 年保&lt;/i&gt;&lt;/div&gt;
+          &lt;div class="shop" data-price="18499"&gt;教育商店&lt;i&gt;5 天 · 需认证&lt;/i&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="item2"&gt;
+        &lt;div class="t"&gt;&lt;b&gt;iPad Air 11 · 128G&lt;/b&gt;&lt;span class="price"&gt;¥4,799&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="shops"&gt;
+          &lt;div class="shop on" data-price="4799"&gt;官方店&lt;i&gt;次日达&lt;/i&gt;&lt;/div&gt;
+          &lt;div class="shop" data-price="4499"&gt;京东自营&lt;i&gt;3 天&lt;/i&gt;&lt;/div&gt;
+          &lt;div class="shop" data-price="4299"&gt;认证二手&lt;i&gt;7 天 · 95 新&lt;/i&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="item2"&gt;
+        &lt;div class="t"&gt;&lt;b&gt;A3 打样机 · 六色&lt;/b&gt;&lt;span class="price"&gt;¥2,399&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="shops"&gt;
+          &lt;div class="shop on" data-price="2399"&gt;品牌店&lt;i&gt;3 天 · 含相纸&lt;/i&gt;&lt;/div&gt;</pre>
+    <footer>第 17 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>          &lt;div class="shop" data-price="1680"&gt;认证二手&lt;i&gt;7 天 · 无相纸&lt;/i&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="total"&gt;&lt;span&gt;合计&lt;/span&gt;&lt;b class="sum2"&gt;¥27,197&lt;/b&gt;&lt;/div&gt;
+      &lt;div class="pay"&gt;可分 12 期 · 每期 ¥2,266&lt;/div&gt;
+      &lt;div class="ship"&gt;
+        &lt;b&gt;送达&lt;/b&gt; 预计 11 月 21 日 · 顺丰次日达&lt;br&gt;
+        &lt;b&gt;地址&lt;/b&gt; 上海市徐汇区 · 漕河泾（演示地址）&lt;br&gt;
+        &lt;b&gt;发票&lt;/b&gt; 电子专票，下单后 1 个工作日开出
+      &lt;/div&gt;
+      &lt;div class="shipbar"&gt;
+        &lt;div&gt;&lt;b&gt;今天&lt;/b&gt;&lt;span&gt;下单&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b&gt;11 / 20&lt;/b&gt;&lt;span&gt;发货&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b&gt;11 / 21&lt;/b&gt;&lt;span&gt;送达&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;button class="confirm"&gt;确认下单&lt;/button&gt;
+      &lt;div class="fine" style="display: flex; justify-content: space-between; align-items: center; gap: 12px;"&gt;
+        &lt;span&gt;不同商家的保修与发票不同，下单前会再确认一次&lt;/span&gt;
+        &lt;span class="stamp"&gt;已冲洗&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class="track" data-track&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;!-- ============ 8 我 ============ --&gt;
+&lt;template id="tpl-me"&gt;
+  &lt;div class="scr" data-name="me"&gt;
+    &lt;div class="mepage"&gt;
+      &lt;div class="kicker"&gt;我&lt;/div&gt;
+      &lt;div class="mehd"&gt;
+        &lt;div class="meimg"&gt;&lt;svg viewBox="0 0 64 64"&gt;&lt;rect width="64" height="64" fill="#1B1711"/&gt;&lt;circle cx="32" cy="24" r="11" fill="#EFE8D8"/&gt;&lt;path d="M11 64c0-12 9-19 21-19s21 7 21 19z" fill="#EFE8D8"/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;div class="mein"&gt;&lt;b&gt;你&lt;/b&gt;&lt;span&gt;创始人 · 产品 · 第 12 天&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="mestat"&gt;
+        &lt;div&gt;&lt;b&gt;90%&lt;/b&gt;&lt;span&gt;持有股份&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b class="money"&gt;¥5 万&lt;/b&gt;&lt;span&gt;已认购&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b&gt;7&lt;/b&gt;&lt;span&gt;项进展&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="melist"&gt;
+        &lt;div data-go="film"&gt;&lt;span&gt;我的底片&lt;/span&gt;&lt;em&gt;十一年 · 5 格&lt;/em&gt;&lt;/div&gt;
+        &lt;div data-go="project"&gt;&lt;span&gt;我的项目&lt;/span&gt;&lt;em&gt;进行中 · 第 3 步&lt;/em&gt;&lt;/div&gt;
+        &lt;div data-go="invest"&gt;&lt;span&gt;我的认购&lt;/span&gt;&lt;em&gt;¥5 万 · 待签约&lt;/em&gt;&lt;/div&gt;
+        &lt;div data-go="order"&gt;&lt;span&gt;我的订单&lt;/span&gt;&lt;em data-order-em&gt;未下单&lt;/em&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;设置&lt;/span&gt;&lt;em&gt;通知 · 隐私 · 导出&lt;/em&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;语言 Language&lt;/span&gt;&lt;em&gt;&lt;b class="lp" data-lang="zh"&gt;中文&lt;/b&gt; · &lt;b class="lp" data-lang="en"&gt;EN&lt;/b&gt;&lt;/em&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="fine"&gt;底片与项目只存在本机&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</pre>
+    <footer>第 18 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>&lt;/div&gt;&lt;!-- /#board --&gt;
+&lt;/div&gt;&lt;!-- /#fit --&gt;
+&lt;div id="mobile"&gt;
+  &lt;div class="mbar"&gt;&lt;b&gt;寻找人生的 25 号底片&lt;/b&gt;&lt;span id="mstep"&gt;1 / 6&lt;/span&gt;&lt;/div&gt;
+  &lt;div class="mstage" id="mstage"&gt;&lt;/div&gt;
+  &lt;div class="mfoot"&gt;
+    &lt;div class="mdots" id="mdots"&gt;&lt;/div&gt;
+    &lt;div class="mhint"&gt;左右滑动 · 或点底部导航&lt;/div&gt;
+  &lt;/div&gt;
+&lt;script&gt;
+  /* --- 撕纸 --- */
+  function rnd(seed) { let s = seed &gt;&gt;&gt; 0; return function () { s = (s * 1664525 + 1013904223) &gt;&gt;&gt; 0; return s / 4294967296; }; }
+  function tornPolygon(el, seed, amp) {
+    const w = el.clientWidth || el.offsetWidth, h = el.clientHeight || el.offsetHeight;
+    if (!w || !h) return 'none';
+    const r = rnd(seed), j = () =&gt; (r() * 2 - 1) * amp, step = 13, pts = [];
+    for (let x = 0; x &lt;= w; x += step) pts.push(`${x.toFixed(1)}px ${Math.abs(j()).toFixed(1)}px`);
+    for (let y = 0; y &lt;= h; y += step) pts.push(`${(w - Math.abs(j())).toFixed(1)}px ${y.toFixed(1)}px`);
+    for (let x = w; x &gt;= 0; x -= step) pts.push(`${x.toFixed(1)}px ${(h - Math.abs(j())).toFixed(1)}px`);
+    for (let y = h; y &gt;= 0; y -= step) pts.push(`${Math.abs(j()).toFixed(1)}px ${y.toFixed(1)}px`);
+    return 'polygon(' + pts.join(',') + ')';
+  }
+  function tearAll(root) {
+    root.querySelectorAll('.tear[data-seed]').forEach((el) =&gt; {
+      const poly = tornPolygon(el, Number(el.dataset.seed), 7);
+      el.style.setProperty('--tear', poly);
+      el.parentElement.style.setProperty('--tear', poly);
+    });
+  }
+  tearAll(document);
+  /* --- 封面：现实路口 + 速写人物 --- */
+  function buildRoad(host) {
+    const W = 517, H = 330;
+    const vx = 172, vw = 173;      // 竖向车道
+    const hy = 78, hh = 174;       // 横向车道
+    const ink = '#171410';
+    let s = `&lt;svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"&gt;`;
+    s += `&lt;defs&gt;
+      &lt;filter id="rough" x="-20%" y="-20%" width="140%" height="140%"&gt;
+        &lt;feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="6" result="n"/&gt;
+        &lt;feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" xChannelSelector="R" yChannelSelector="G"/&gt;
+      &lt;/filter&gt;
+      &lt;filter id="asphalt" x="0" y="0" width="100%" height="100%"&gt;
+        &lt;feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" seed="2" result="t"/&gt;
+        &lt;feColorMatrix in="t" type="saturate" values="0"/&gt;
+        &lt;feComposite operator="in" in2="SourceGraphic"/&gt;
+      &lt;/filter&gt;
+    &lt;/defs&gt;`;
+    // 人行道底色
+    s += `&lt;rect x="0" y="0" width="${W}" height="${H}" fill="#D8D0BE"/&gt;`;</pre>
+    <footer>第 19 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    s += `&lt;rect x="0" y="0" width="${W}" height="${hy - 8}" fill="#DCD5C4"/&gt;`;
+    s += `&lt;rect x="0" y="${hy + hh + 8}" width="${W}" height="${H - hy - hh - 8}" fill="#DCD5C4"/&gt;`;
+    s += `&lt;rect x="0" y="0" width="${vx - 8}" height="${H}" fill="#DCD5C4"/&gt;`;
+    s += `&lt;rect x="${vx + vw + 8}" y="0" width="${W - vx - vw - 8}" height="${H}" fill="#DCD5C4"/&gt;`;
+    // 沥青
+    s += `&lt;rect x="${vx - 8}" y="0" width="${vw + 16}" height="${H}" fill="#78756C" opacity=".90"/&gt;`;
+    s += `&lt;rect x="0" y="${hy - 8}" width="${W}" height="${hh + 16}" fill="#78756C" opacity=".90"/&gt;`;
+    s += `&lt;rect x="${vx - 8}" y="${hy - 8}" width="${vw + 16}" height="${hh + 16}" fill="#737067" opacity=".90"/&gt;`;
+    s += `&lt;rect x="${vx - 8}" y="0" width="${vw + 16}" height="${H}" fill="#000" opacity=".05" filter="url(#asphalt)"/&gt;`;
+    s += `&lt;rect x="0" y="${hy - 8}" width="${W}" height="${hh + 16}" fill="#000" opacity=".05" filter="url(#asphalt)"/&gt;`;
+    // 路缘
+    s += `&lt;rect x="${vx - 10}" y="0" width="2" height="${hy - 10}" fill="#B9B1A0"/&gt;`;
+    s += `&lt;rect x="${vx + vw + 9}" y="0" width="2" height="${hy - 10}" fill="#B9B1A0"/&gt;`;
+    s += `&lt;rect x="${vx - 10}" y="${hy + hh + 9}" width="2" height="${H}" fill="#B9B1A0"/&gt;`;
+    s += `&lt;rect x="${vx + vw + 9}" y="${hy + hh + 9}" width="2" height="${H}" fill="#B9B1A0"/&gt;`;
+    // —— 交错叠加：另外两层路口，各自旋转，压在主路口下面 ——
+    const cx0 = vx + vw / 2, cy0 = hy + hh / 2;
+    const ghost = (angle, op) =&gt; `&lt;g transform="rotate(${angle} ${cx0} ${cy0})" opacity="${op}"&gt;
+        &lt;rect x="${vx - 8}" y="-40" width="${vw + 16}" height="${H + 80}" fill="#6F6C63"/&gt;
+        &lt;rect x="-40" y="${hy - 8}" width="${W + 80}" height="${hh + 16}" fill="#6F6C63"/&gt;
+        &lt;rect x="${vx - 10}" y="-40" width="2" height="${hy + 30}" fill="#BDB5A3"/&gt;
+        &lt;rect x="${vx + vw + 9}" y="-40" width="2" height="${hy + 30}" fill="#BDB5A3"/&gt;
+        &lt;rect x="-40" y="${cy0 - 1}" width="${W + 80}" height="2" fill="#E8E2D2" opacity=".5"/&gt;
+        &lt;rect x="${cx0 - 1}" y="-40" width="2" height="${H + 80}" fill="#E8E2D2" opacity=".5"/&gt;
+      &lt;/g&gt;`;
+    s += ghost(-18, .18) + ghost(14, .13) + ghost(31, .09);
+    // 车道分隔虚线
+    const cx = vx + vw / 2, cy = hy + hh / 2;
+    for (let y = 0; y &lt; hy - 26; y += 26) s += `&lt;rect x="${cx - 1}" y="${y}" width="2" height="14" fill="#E8E2D2" opacity=".8"/&gt;`;
+    for (let y = hy + hh + 20; y &lt; H; y += 26) s += `&lt;rect x="${cx - 1}" y="${y}" width="2" height="14" fill="#E8E2D2" opacity=".8"/&gt;`;
+    for (let x = 0; x &lt; vx - 26; x += 26) s += `&lt;rect x="${x}" y="${cy - 1}" width="14" height="2" fill="#E8E2D2" opacity=".8"/&gt;`;
+    for (let x = vx + vw + 20; x &lt; W; x += 26) s += `&lt;rect x="${x}" y="${cy - 1}" width="14" height="2" fill="#E8E2D2" opacity=".8"/&gt;`;
+    // 斑马线（四条）
+    const zw = 10, zg = 9;
+    for (let x = vx - 2; x &lt; vx + vw + 2; x += zw + zg) {
+      s += `&lt;rect x="${x}" y="${hy - 62}" width="${zw}" height="34" fill="#EFE9DA" opacity=".92"/&gt;`;   // 上
+      s += `&lt;rect x="${x}" y="${hy + hh + 28}" width="${zw}" height="34" fill="#EFE9DA" opacity=".92"/&gt;`; // 下
+    }
+    for (let y = hy; y &lt; hy + hh; y += zw + zg) {
+      s += `&lt;rect x="${vx - 62}" y="${y}" width="34" height="${zw}" fill="#EFE9DA" opacity=".92"/&gt;`;      // 左
+      s += `&lt;rect x="${vx + vw + 28}" y="${y}" width="34" height="${zw}" fill="#EFE9DA" opacity=".92"/&gt;`;  // 右
+    }
+    // 停止线
+    s += `&lt;rect x="${vx - 2}" y="${hy - 72}" width="${vw + 4}" height="4" fill="#EFE9DA" opacity=".9"/&gt;`;
+    s += `&lt;rect x="${vx - 2}" y="${hy + hh + 68}" width="${vw + 4}" height="4" fill="#EFE9DA" opacity=".9"/&gt;`;
+    s += `&lt;rect x="${vx - 72}" y="${hy}" width="4" height="${hh}" fill="#EFE9DA" opacity=".9"/&gt;`;
+    s += `&lt;rect x="${vx + vw + 68}" y="${hy}" width="4" height="${hh}" fill="#EFE9DA" opacity=".9"/&gt;`;
+    // 井盖与磨损
+    s += `&lt;circle cx="${vx + 30}" cy="${hy + hh + 46}" r="9" fill="#5E5B54" stroke="#4E4B45" stroke-width="1"/&gt;`;
+    s += `&lt;circle cx="${vx + vw + 52}" cy="${hy - 34}" r="7" fill="#5E5B54" stroke="#4E4B45" stroke-width="1"/&gt;`;</pre>
+    <footer>第 20 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    // —— 速写人物（实心，笔触）——
+    const figure = (x, y, sc, rot, flip) =&gt; `&lt;g transform="translate(${x} ${y}) rotate(${rot}) scale(${flip ? -1 : 1} ${1}) scale(${sc})" filter="url(#rough)" stroke="${ink}" stroke-linecap="round" fill="none"&gt;
+        &lt;circle cx="0" cy="-40" r="5.6" fill="${ink}" stroke="none"/&gt;
+        &lt;path d="M-6.5 -33.5 L6.5 -33.5 L5 -13 L-5 -13 Z" fill="${ink}" stroke="none"/&gt;
+        &lt;path d="M-4.5 -30.5 L-9 -16" stroke-width="3.4"/&gt;
+        &lt;path d="M4.5 -30.5 L10 -20" stroke-width="3.2"/&gt;
+        &lt;path d="M-2 -12.5 L3.5 6" stroke-width="3.8"/&gt;
+        &lt;path d="M2.5 -12.5 L-5 5" stroke-width="3.6"/&gt;
+        &lt;path d="M3.5 6.2 L8.2 6.2" stroke-width="2.6"/&gt;
+        &lt;path d="M-5 5.2 L-9.6 5.2" stroke-width="2.6"/&gt;
+        &lt;path d="M-4 -28 l 2 8 M0 -29 l 2 8 M3 -27 l 2 7" stroke-width=".9" opacity=".42"/&gt;
+        &lt;path d="M-11 10 l 22 -1.5" stroke-width="1" opacity=".2"/&gt;
+      &lt;/g&gt;`;
+    // 八个更大的速写人：彼此隔着距离走，又被细线牵在一起
+    const pts = [
+      [238, 52, .86], [300, 58, .80], [116, 148, .92], [86, 226, .84],
+      [404, 138, .90], [420, 232, .82], [248, 296, .90], [334, 306, .84],
+    ];
+    const links = [[0, 2], [2, 3], [3, 1], [1, 4], [5, 2], [3, 6], [6, 7], [0, 6]];
+    let net = `&lt;g stroke="${ink}" stroke-width=".9" opacity=".26"&gt;`;
+    links.forEach(([a, b]) =&gt; {
+      net += `&lt;line x1="${pts[a][0]}" y1="${pts[a][1] - 20}" x2="${pts[b][0]}" y2="${pts[b][1] - 20}"/&gt;`;
+    });
+    net += `&lt;/g&gt;`;
+    // 看不见的手：画外收拢的一束淡线
+    net += `&lt;g stroke="${ink}" stroke-width=".7" opacity=".11"&gt;`;
+    [0, 3, 6].forEach((i) =&gt; { net += `&lt;line x1="${pts[i][0]}" y1="${pts[i][1] - 20}" x2="${cx}" y2="${cy - 82}"/&gt;`; });
+    net += `&lt;/g&gt;`;
+    s += net;
+    pts.forEach(([x, y, sc], i) =&gt; { s += figure(x, y, sc, (i % 3 - 1) * 7, i % 2 === 0); });
+    // 路口中间立着一只钟：占满整个路口，时间是那只看不见的手
+    const R = 84;
+    const clock = (x, y) =&gt; {
+      const pt = (a, r) =&gt; {
+        const rad = (a - 90) * Math.PI / 180;
+        return [x + Math.cos(rad) * r, y + Math.sin(rad) * r];
+      };
+      let g = `&lt;g&gt;&lt;ellipse cx="${x}" cy="${y + R + 10}" rx="58" ry="9" fill="${ink}" opacity=".10"/&gt;`;
+      g += `&lt;circle cx="${x}" cy="${y}" r="${R}" fill="#FFFFFF" stroke="${ink}" stroke-width="2"/&gt;`;
+      g += `&lt;circle cx="${x}" cy="${y}" r="${R - 9}" fill="none" stroke="${ink}" stroke-width=".7" opacity=".45"/&gt;`;
+      for (let i = 0; i &lt; 60; i++) {
+        const major = i % 5 === 0;
+        const [x1, y1] = pt(i * 6, R - 14);
+        const [x2, y2] = pt(i * 6, major ? R - 24 : R - 19);
+        g += `&lt;line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${ink}" stroke-width="${major ? 1.8 : .7}" opacity="${major ? 1 : .6}"/&gt;`;
+      }
+      const hand = (a, len, w, col) =&gt; {
+        const [x2, y2] = pt(a, len);
+        return `&lt;line x1="${x}" y1="${y}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/&gt;`;
+      };</pre>
+    <footer>第 21 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>      g += hand(222.5, 40, 4.2, ink) + hand(60, 62, 2.8, ink) + hand(-48, 70, 1.2, '#B03A28');
+      g += `&lt;circle cx="${x}" cy="${y}" r="3.4" fill="${ink}"/&gt;`;
+      return g + `&lt;/g&gt;`;
+    };
+    s += clock(cx, cy);
+    // 交通信号灯（俯视的小灯箱）
+    const light = (x, y) =&gt; `&lt;g&gt;&lt;rect x="${x - 5}" y="${y - 5}" width="10" height="10" rx="2" fill="#3B3833"/&gt;&lt;circle cx="${x}" cy="${y}" r="2.4" fill="#C9A24A"/&gt;&lt;/g&gt;`;
+    s += light(vx - 26, hy - 26) + light(vx + vw + 26, hy + hh + 26);
+    s += `&lt;/svg&gt;`;
+    host.innerHTML = s;
+  }
+  /* --- 手机 --- */
+  const PHONES = [
+    { initial: 'cover',   x: 40,   y: 400, label: '一　封面（tab 1）' },
+    { initial: 'film',    x: 285,  y: 386, label: '二　底片 · 螺旋上升（tab 2）' },
+    { initial: 'project', x: 530,  y: 400, label: '三　项目 ① 立项' },
+    { initial: 'team',    x: 775,  y: 386, label: '四　项目 ② 团队' },
+    { initial: 'invest',  x: 1020, y: 400, label: '五　项目 ③ 投资' },
+    { initial: 'tech',    x: 1265, y: 386, label: '六　项目 ④ 选型' },
+    { initial: 'order',   x: 1510, y: 400, label: '七　项目 ⑤ 下单' },
+  ];
+  const TABS = [
+    { key: 'cover', label: '封面' },
+    { key: 'film', label: '底片' },
+    { key: 'project', label: '项目' },
+    { key: 'me', label: '我' },
+  ];
+  const SCALE = .54;
+  const stage = document.getElementById('stage');
+  const TEAM = {
+    zhan: { av: '栈', name: '小栈', role: 'AI 成员 · 代码搭子 · 常驻', foot: '不占工资 · 随项目常驻', desc: '你写需求，他写样板代码；改到第三版也不抱怨。', skills: [['SwiftUI', 80], ['样板代码', 95], ['重构', 70]] },
+    ye: { av: '页', name: '小页', role: 'AI 成员 · 排版助理 · 常驻', foot: '不占工资 · 随项目常驻', desc: '三千张照片先过她一遍，再交给你挑。', skills: [['排版', 92], ['图像处理', 88], ['中文字体', 90]] },
+    zhang: { av: '账', name: '小账', role: 'AI 成员 · 财务与合规 · 按次', foot: '按次计费 · 发票与合同', desc: '发票、合同、报税，一个月处理一次就够。', skills: [['财税', 85], ['合同', 80], ['发票', 95]] },
+    lin: { av: '前', name: '林一舟', role: '真人 · 前端工程师 · 匹配 92%', foot: '可接档 11 月 20 日 · 按周结算', desc: '你已经把界面想清楚了，缺一个把它写成真东西的人。', skills: [['SwiftUI', 92], ['WebGL', 78], ['上线节奏', 90]] },
+    zhou: { av: '图', name: '周牧', role: '真人 · 图像算法 · 匹配 87%', foot: '可接档 11 月 25 日 · 按周结算', desc: '三千张照片的自动排版，是这件事真正的难点。', skills: [['抠图', 94], ['排版算法', 86], ['PyTorch', 88]] },
+    lan: { av: '长', name: '阿岚', role: '真人 · 增长 · 匹配 78%', foot: '可接档 12 月 1 日 · 按周结算', desc: '你做过 0 到 1，没做过从 1 到 1000。', skills: [['内容', 88], ['投放', 82], ['增长实验', 79]] },
+  };
+  // 每个成员的个人底片 + AI 标记
+  Object.assign(TEAM.zhan, { ai: true, film: [['2023', '代码训练'], ['2025', '项目微调'], ['2026', '上线 4 个项目']] });
+  Object.assign(TEAM.ye, { ai: true, film: [['2024', '图库训练'], ['2025', '中文字体'], ['2026', '排版上线']] });
+  Object.assign(TEAM.zhang, { ai: true, film: [['2024', '票据识别'], ['2025', '合规库'], ['2026', '第一次月结']] });
+  Object.assign(TEAM.lin, { ai: false, film: [['2019', '第一个 App'], ['2022', '上线 3 个'], ['2025', '独立开发']] });
+  Object.assign(TEAM.zhou, { ai: false, film: [['2018', '抠图模型'], ['2021', '排版算法'], ['2024', '论文 2 篇']] });
+  Object.assign(TEAM.lan, { ai: false, film: [['2019', '内容起号'], ['2022', '第一次投放'], ['2025', '增长实验 40 次']] });
+  const YEARS = {
+    2015: { sub: '第 1 年 · 文案', doing: '在广告公司写产品文案', city: '北京 · 望京', line: '写清楚比写漂亮难',
+      skills: [['文案', 70], ['抗压', 60], ['排版', 55]], logs: ['Q1 一天写 12 条，被退回 9 条', 'Q4 第一次被用户在评论区骂'] },
+    2018: { sub: '第 4 年 · 交互设计师', doing: '做用户访谈与原型', city: '上海 · 静安', line: '用户说的不是他要的',
+      skills: [['访谈', 85], ['原型', 88], ['可用性测试', 72]], logs: ['全年 40 场访谈', '画了 300 张原型，大部分是废稿'] },
+    2021: { sub: '第 6 年 · 产品设计师', doing: '把界面拆成可复用的组件', city: '上海 · 漕河泾', line: '把混乱收进秩序',</pre>
+    <footer>第 22 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>      skills: [['组件化', 92], ['带人', 70], ['数据看板', 78]], logs: ['Q2 一套 42 个组件的库', 'Q4 做完一个没人用的功能'] },
+    2024: { sub: '第 9 年 · 产品负责人', doing: '定价与留存', city: '上海 · 漕河泾', line: '砍功能比加功能难',
+      skills: [['定价', 82], ['留存', 88], ['带团队', 76]], logs: ['Q2 把 19 块改成 39 块，续费没掉', 'Q4 砍三个功能，留存 11%→19%'] },
+    2026: { sub: '第 11 年 · 产品经理', doing: '一个人从 0 到 1 上线', city: '上海 · 漕河泾', line: '判断比执行贵',
+      skills: [['需求拆解', 90], ['上线', 85], ['AI 工具链', 70]], logs: ['Q1 十周做出第一个版本', 'Q3 开始让 AI 写样板代码'] },
+  };
+  /* ---------- 底片数据模型 + AI 调用 ---------- */
+  const memStore = {};
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return memStore[k] || null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { memStore[k] = v; } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { delete memStore[k]; } },
+  };
+  // 把用户补记的记录并回数据模型（下次打开还在）
+  try {
+    const savedLogs = JSON.parse(store.get('dipian.logs') || '{}');
+    Object.keys(savedLogs).forEach((y) =&gt; {
+      if (YEARS[y]) YEARS[y].logs = YEARS[y].logs.concat(savedLogs[y]);
+    });
+  } catch (e) { /* 忽略损坏数据 */ }
+  // 数据模型 → 提示词用的结构化摘要
+  // 底片结论 -&gt; 立项页的带入条（跨手机统一刷新）
+function syncMeOrder() {
+  let o = null;
+  try { o = JSON.parse(store.get('dipian.order') || 'null'); } catch (e) { o = null; }
+  const delivered = o &amp;&amp; (o.stage || 0) &gt;= 4;
+  document.querySelectorAll('#stage [data-order-em]').forEach((el) =&gt; {
+    if (!o) { el.textContent = '未下单'; el.classList.remove('ok'); return; }
+    el.textContent = '¥27,197 · ' + (delivered ? '已到货' : '运输中');
+    el.classList.toggle('ok', delivered);
+  });
+}
+function syncFromFilmAll(focus) {
+  let c = null;
+  try { c = JSON.parse(store.get('dipian.conclusion') || 'null'); } catch (e) { c = null; }
+  document.querySelectorAll('#stage [data-fromfilm]').forEach((el) =&gt; {
+    if (!c || (!c.strength &amp;&amp; !c.openings)) { el.classList.remove('on'); return; }
+    el.classList.add('on');
+    const t = el.querySelector('[data-fromtext]');
+    if (t) t.textContent = '你擅长的：' + (c.strength || '—') + '。可以打开的方向：' + (c.openings || '—') + '。';
+  });
+  if (focus) {
+    const b = document.querySelector('#stage [data-fromfilm].on [data-fill]');
+    if (b) b.focus();
+  }
+}
+function filmSummary() {
+  return Object.keys(YEARS).sort()
+    .filter((y) =&gt; {
+      const d = YEARS[y];</pre>
+    <footer>第 23 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>      return (d.logs &amp;&amp; d.logs.length) || (d.skills &amp;&amp; d.skills.length);
+    })
+    .map((y) =&gt; {
+      const d = YEARS[y];
+      return {
+        年: y, 身份: d.sub, 在做: d.doing, 城市: d.city,
+        一句话: d.line, 技能: (d.skills || []).map(([k, v]) =&gt; k + ' ' + v), 记录: d.logs || [],
+      };
+    });
+}
+// 新建一年：先只有空壳，等用户写下第一条记录
+function createNextYear() {
+  const keys = Object.keys(YEARS).filter((k) =&gt; /^\d+$/.test(k)).map(Number);
+  const maxY = keys.length ? String(Math.max(...keys)) : '2026';
+  const y = String(Number(maxY) + 1);
+  if (!YEARS[y]) {
+    const prev = (YEARS[maxY] &amp;&amp; YEARS[maxY].sub) || '';
+    const m = prev.match(/(\d+)/);
+    const n = m ? Number(m[1]) + 1 : keys.length + 1;
+    YEARS[y] = {
+      sub: '第 ' + n + ' 年', doing: '还没写', city: '—',
+      line: '还没写', skills: [], logs: [],
+    };
+  }
+  return y;
+}
+  const AI_SYS = '你是一位资深的产品与职业顾问。只根据用户提供的「底片」数据判断，不要编造年份或事件。'
+    + '输出严格的 JSON，字段：strength（一句话，不超过 20 字，说清他真正擅长什么）、'
+    + 'evidence（数组，3 条，每条引用具体年份和事件）、openings（一句话，不超过 20 字，说清 AI 时代可以往哪打开）、'
+    + 'why（一句话解释依据）。不要输出多余文字。';
+  async function callJSON(system, user, temp) {
+    const endpoint = store.get('dipian.endpoint');
+    const model = store.get('dipian.model') || 'deepseek-chat';
+    const t = typeof temp === 'number' ? temp : 0.6;
+    // 首选：走自己的 BFF（Key 在服务端，前端拿不到）
+    if (endpoint) {
+      const r = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ system, user, model, temperature: t }),
+      });
+      let j = null;
+      try { j = await r.json(); } catch (e) { j = null; }
+      if (!r.ok) {
+        const msg = (j &amp;&amp; j.error &amp;&amp; j.error.message) || ('HTTP ' + r.status);
+        throw new Error(msg);
+      }
+      if (!j || !j.data || typeof j.data !== 'object') throw new Error('BFF 返回格式不对。');
+      return { data: j.data, usage: j.usage || null, model: j.model || model };
+    }</pre>
+    <footer>第 24 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    // 回退：直连（仅演示，Key 在浏览器本地）
+    const key = store.get('dipian.apiKey');
+    const body = {
+      model,
+      temperature: t,
+      response_format: { type: 'json_object' },
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: user },
+      ],
+    };
+    const r = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + key },
+      body: JSON.stringify(body),
+    });
+    if (!r.ok) {
+      let detail = '';
+      try { detail = (await r.text()).slice(0, 140); } catch (e) { detail = ''; }
+      throw new Error('HTTP ' + r.status + (detail ? ' · ' + detail : ''));
+    }
+    const j = await r.json();
+    const txt = (j.choices &amp;&amp; j.choices[0] &amp;&amp; j.choices[0].message &amp;&amp; j.choices[0].message.content) || '';
+    let data;
+    try { data = JSON.parse(txt); } catch (e) { throw new Error('返回不是合法 JSON：' + txt.slice(0, 100)); }
+    return { data, usage: j.usage, model };
+  }
+  async function callAI() {
+    return callJSON(AI_SYS, JSON.stringify(filmSummary()), 0.6);
+  }
+  const PROJ_SYS = '你是资深产品负责人。根据用户的三个回答和底片摘要，给出两个差异明显的方案和一次评审。'
+    + '只根据给定信息，不要编造数据。输出严格 JSON：'
+    + '{"plans":[{"name":"不超过6字","desc":"一句话不超过24字","pros":"优点不超过12字","cons":"代价不超过12字"},{"name":"","desc":"","pros":"","cons":""}],'
+    + '"recommended":0, "review":{"concept":0.0,"cost":0.0,"risk":0.0},'
+    + '"verdict":"结论一句话，含周期与预算，不超过40字","keep":"保留什么","fix":"要改什么","risky":"风险是什么"}'
+    + '。review 三项为 0–10 的一位小数；两个方案必须真的不同（一个是稳的、一个是快的或准的）。不要输出多余文字。';
+  async function callProject(req, film) {
+    return callJSON(PROJ_SYS, JSON.stringify({ 需求: req, 底片: film }), 0.5);
+  }
+  function buildPhone(cfg) {
+    const wrap = document.createElement('div');    wrap.className = 'pwrap';
+    wrap.style.left = cfg.x + 'px';
+    wrap.style.top = cfg.y + 'px';
+    wrap.style.transform = `scale(${SCALE})`;
+    const phone = document.createElement('div');
+    phone.className = 'phone';
+    phone.innerHTML = `
+      &lt;div class="screen"&gt;
+        &lt;div class="sbar"&gt;&lt;span&gt;9:41&lt;/span&gt;
+          &lt;div class="sicons"&gt;</pre>
+    <footer>第 25 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>            &lt;div class="sig"&gt;&lt;i style="height:4px"&gt;&lt;/i&gt;&lt;i style="height:6px"&gt;&lt;/i&gt;&lt;i style="height:9px"&gt;&lt;/i&gt;&lt;i style="height:11px"&gt;&lt;/i&gt;&lt;/div&gt;
+            &lt;div class="bat"&gt;&lt;b&gt;&lt;/b&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="island"&gt;&lt;/div&gt;
+        &lt;div class="content"&gt;&lt;/div&gt;
+        &lt;div class="tabbar"&gt;&lt;/div&gt;
+        &lt;div class="home"&gt;&lt;/div&gt;
+      &lt;/div&gt;`;
+    const content = phone.querySelector('.content');
+    ['cover', 'film', 'project', 'team', 'invest', 'tech', 'order', 'me'].forEach((k) =&gt; content.appendChild(document.getElementById('tpl-' + k).content.cloneNode(true)));
+    const screen = phone.querySelector('.screen');
+    const scr = content.querySelectorAll('.scr');
+    const sheet = document.createElement('div');
+    sheet.className = 'sheet';
+    screen.appendChild(sheet);
+    const isheet = document.createElement('div');
+    isheet.className = 'sheet';
+    screen.appendChild(isheet);
+    const ys = document.createElement('div');
+    ys.className = 'sheet ysheet';
+    screen.appendChild(ys);
+    const aisheet = document.createElement('div');
+    aisheet.className = 'sheet aisheet';
+    screen.appendChild(aisheet);
+    const GROUP = { cover: 'cover', film: 'film', me: 'me', project: 'project', team: 'project', invest: 'project', tech: 'project', order: 'project' };
+    const show = (name) =&gt; {
+      scr.forEach((s) =&gt; s.classList.toggle('on', s.dataset.name === name));
+      const active = GROUP[name] || name;
+      phone.querySelectorAll('.tab').forEach((t) =&gt; t.classList.toggle('on', t.dataset.tab === active));
+      phone.querySelectorAll('.steps span').forEach((sp) =&gt; sp.classList.toggle('on', sp.dataset.step === name));
+      sheet.classList.remove('on');
+      isheet.classList.remove('on');
+      ys.classList.remove('on');
+      aisheet.classList.remove('on');
+    };
+    const tabbar = phone.querySelector('.tabbar');
+    TABS.forEach((t) =&gt; {
+      const b = document.createElement('div');
+      b.className = 'tab';
+      b.dataset.tab = t.key;
+      b.textContent = t.label;
+      b.addEventListener('click', () =&gt; show(t.key));
+      tabbar.appendChild(b);
+    });
+    phone.querySelectorAll('.steps span').forEach((sp) =&gt; {
+      sp.addEventListener('click', (ev) =&gt; { ev.stopPropagation(); show(sp.dataset.step); });
+    });
+    // 底片：点开某一年，看信息并补记录
+    const openYear = (y, imgSrc) =&gt; {</pre>
+    <footer>第 26 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>        const d = YEARS[y];
+        if (!d) return;
+        const img = imgSrc ? { src: imgSrc } : null;
+        ys.innerHTML = `&lt;div class="yh"&gt;
+            &lt;div class="yimg"&gt;${img ? `&lt;img src="${img.src}" alt=""&gt;` : '照片位'}&lt;/div&gt;
+            &lt;div&gt;&lt;b&gt;${y}&lt;/b&gt;&lt;span&gt;${d.sub}&lt;/span&gt;&lt;/div&gt;
+            &lt;button class="x"&gt;×&lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div class="yinfo"&gt;
+            &lt;div&gt;&lt;span&gt;在做&lt;/span&gt;${d.doing}&lt;/div&gt;
+            &lt;div&gt;&lt;span&gt;城市&lt;/span&gt;${d.city}&lt;/div&gt;
+            &lt;div&gt;&lt;span&gt;一句&lt;/span&gt;${d.line}&lt;/div&gt;
+          &lt;/div&gt;
+          ${(d.skills &amp;&amp; d.skills.length)
+            ? `&lt;div class="fl"&gt;这一年积累的&lt;/div&gt;
+          &lt;div class="skills"&gt;${d.skills.map(([k, v]) =&gt; `&lt;div class="s"&gt;&lt;span&gt;${k}&lt;/span&gt;&lt;div class="track"&gt;&lt;i style="width:${v}%"&gt;&lt;/i&gt;&lt;/div&gt;&lt;b&gt;${v}&lt;/b&gt;&lt;/div&gt;`).join('')}&lt;/div&gt;`
+            : ''}
+          &lt;div class="fl"&gt;这一年的记录&lt;/div&gt;
+          ${(d.logs &amp;&amp; d.logs.length)
+            ? `&lt;div class="ylist"&gt;${d.logs.map((l) =&gt; `&lt;div&gt;${l}&lt;/div&gt;`).join('')}&lt;/div&gt;`
+            : `&lt;div class="empty"&gt;&lt;b&gt;这一年还没有记录&lt;/b&gt;&lt;span&gt;写下当时在做什么、卡在哪里。下次读底片时，这段会进到模型输入里。&lt;/span&gt;&lt;button class="eadd"&gt;补一条&lt;/button&gt;&lt;/div&gt;`}
+          &lt;div class="yfill"&gt;&lt;input type="text" placeholder="记一句这一年的事…"&gt;&lt;button&gt;存&lt;/button&gt;&lt;/div&gt;
+          &lt;button class="ygo"&gt;带着这一年去立项 →&lt;/button&gt;`;
+        ys.classList.add('on');
+        ys.querySelector('.x').onclick = (ev) =&gt; { ev.stopPropagation(); ys.classList.remove('on'); };
+        const input = ys.querySelector('.yfill input');
+        const eadd = ys.querySelector('.eadd');
+        if (eadd) eadd.onclick = (ev) =&gt; { ev.stopPropagation(); input.focus(); };
+        ys.querySelector('.yfill button').onclick = (ev) =&gt; {
+          ev.stopPropagation();
+          const v = input.value.trim();
+          if (!v) return;
+          let list = ys.querySelector('.ylist');
+          if (!list) {
+            // 空态：第一次补记时，把空态换成列表
+            const empty = ys.querySelector('.empty');
+            list = document.createElement('div');
+            list.className = 'ylist';
+            if (empty) empty.replaceWith(list);
+            else ys.insertBefore(list, input.parentElement);
+          }
+          const div = document.createElement('div');
+          div.textContent = v;
+          list.appendChild(div);
+          input.value = '';
+          // 存到本机，下次打开还在，也会进入 AI 的输入
+          try {
+            const saved = JSON.parse(store.get('dipian.logs') || '{}');
+            saved[y] = (saved[y] || []).concat([v]);
+            store.set('dipian.logs', JSON.stringify(saved));</pre>
+    <footer>第 27 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>            if (YEARS[y]) YEARS[y].logs.push(v);
+          } catch (err) { /* 存不了就只在本次会话里 */ }
+        };
+        ys.querySelector('.ygo').onclick = (ev) =&gt; { ev.stopPropagation(); ys.classList.remove('on'); show('project'); };
+    };
+    phone.querySelectorAll('.cell[data-year]').forEach((c) =&gt; {
+      c.addEventListener('click', (e) =&gt; {
+        e.stopPropagation();
+        const im = c.querySelector('.ph img');
+        openYear(c.dataset.year, im ? im.src : null);
+      });
+    });
+    const addYearBtn = phone.querySelector('.addyear');
+    if (addYearBtn) {
+      addYearBtn.addEventListener('click', (e) =&gt; {
+        e.stopPropagation();
+        openYear(createNextYear(), null);
+      });
+    }
+    /* ---------- AI 读底片 ---------- */
+    const aiBtn = phone.querySelector('.aibtn');
+    const aiState = phone.querySelector('.aistate');
+    const syncAI = () =&gt; {
+      if (!aiState) return;
+      const ep = store.get('dipian.endpoint');
+      const k = store.get('dipian.apiKey');
+      if (ep) {
+        let host = ep;
+        try { host = new URL(ep).host; } catch (e) { host = ep.slice(0, 22); }
+        aiState.textContent = 'BFF · ' + host;
+        aiState.classList.add('on');
+      } else if (k) {
+        aiState.textContent = '直连 · ' + (store.get('dipian.model') || 'deepseek-chat');
+        aiState.classList.add('on');
+      } else {
+        aiState.textContent = '未连接 · 点这里设置';
+        aiState.classList.remove('on');
+      }
+    };
+    const closeAI = () =&gt; aisheet.classList.remove('on');
+    const bindX = () =&gt; { const x = aisheet.querySelector('.x'); if (x) x.onclick = (e) =&gt; { e.stopPropagation(); closeAI(); }; };
+    const renderDemo = () =&gt; {
+      aisheet.innerHTML = `&lt;div class="ai-hd"&gt;&lt;b style="font-size: 15px;"&gt;AI 读完了十一年&lt;/b&gt;&lt;button class="x"&gt;×&lt;/button&gt;&lt;/div&gt;
+        &lt;div class="ai-lab"&gt;你擅长的&lt;/div&gt;
+        &lt;div class="ai-big"&gt;把混乱收进秩序&lt;/div&gt;
+        &lt;div&gt;&lt;div class="ai-ev"&gt;&lt;div&gt;2021 · 用 42 个组件把混乱的界面收进秩序&lt;/div&gt;&lt;div&gt;2024 · 砍掉三个功能，留存 11% → 19%&lt;/div&gt;&lt;div&gt;2026 · 十周一个人上线，7 个真实用户&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class="ai-lab"&gt;可以打开的&lt;/div&gt;
+        &lt;div class="ai-big"&gt;用 AI 做决策，不做设计稿&lt;/div&gt;
+        &lt;div class="ai-meta"&gt;演示结果 · 未调用 API&lt;/div&gt;
+        &lt;div class="ai-actions"&gt;&lt;button class="again"&gt;配置 Key 重新读&lt;/button&gt;&lt;/div&gt;`;</pre>
+    <footer>第 28 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>      bindX();
+      aisheet.querySelector('.again').onclick = (e) =&gt; { e.stopPropagation(); openKey(); };
+      aisheet.classList.add('on');
+    };
+    const renderResult = ({ data, usage, model }) =&gt; {
+      const ev = Array.isArray(data.evidence) ? data.evidence : [];
+      aisheet.innerHTML = `&lt;div class="ai-hd"&gt;&lt;b style="font-size: 15px;"&gt;AI 读完了十一年&lt;/b&gt;&lt;button class="x"&gt;×&lt;/button&gt;&lt;/div&gt;
+        &lt;div class="ai-lab"&gt;你擅长的&lt;/div&gt;
+        &lt;div class="ai-big"&gt;${data.strength || '—'}&lt;/div&gt;
+        &lt;div class="ai-ev"&gt;${ev.map((e) =&gt; `&lt;div&gt;${e}&lt;/div&gt;`).join('')}&lt;/div&gt;
+        &lt;div class="ai-lab"&gt;可以打开的&lt;/div&gt;
+        &lt;div class="ai-big"&gt;${data.openings || '—'}&lt;/div&gt;
+        &lt;div class="ai-meta"&gt;${model} · 输入 ${(usage &amp;&amp; usage.prompt_tokens) || '-'} / 输出 ${(usage &amp;&amp; usage.completion_tokens) || '-'} tokens · ${data.why || ''}&lt;/div&gt;
+        &lt;div class="ai-actions"&gt;&lt;button class="again"&gt;再读一次&lt;/button&gt;&lt;button class="toinv"&gt;带着结论去立项 →&lt;/button&gt;&lt;/div&gt;`;
+      bindX();
+      aisheet.querySelector('.again').onclick = (e) =&gt; { e.stopPropagation(); runAI(); };
+      aisheet.querySelector('.toinv').onclick = (e) =&gt; {
+        e.stopPropagation();
+        store.set('dipian.conclusion', JSON.stringify({ strength: data.strength || '', openings: data.openings || '' }));
+        closeAI();
+        show('project');
+        syncFromFilmAll(true);
+      };
+      aisheet.classList.add('on');
+    };
+    const renderError = (msg) =&gt; {
+      aisheet.innerHTML = `&lt;div class="ai-hd"&gt;&lt;b style="font-size: 15px;"&gt;AI 没读成&lt;/b&gt;&lt;button class="x"&gt;×&lt;/button&gt;&lt;/div&gt;
+        &lt;div class="ai-err"&gt;${msg}&lt;/div&gt;
+        &lt;div class="ai-actions"&gt;&lt;button class="retry"&gt;重试&lt;/button&gt;&lt;button class="demo"&gt;先用演示结果&lt;/button&gt;&lt;button class="cfg"&gt;改 Key&lt;/button&gt;&lt;/div&gt;`;
+      bindX();
+      aisheet.querySelector('.retry').onclick = (e) =&gt; { e.stopPropagation(); runAI(); };
+      aisheet.querySelector('.demo').onclick = (e) =&gt; { e.stopPropagation(); renderDemo(); };
+      aisheet.querySelector('.cfg').onclick = (e) =&gt; { e.stopPropagation(); openKey(); };
+      aisheet.classList.add('on');
+    };
+    const runAI = async () =&gt; {
+      aisheet.innerHTML = `&lt;div class="ai-hd"&gt;&lt;b style="font-size: 15px;"&gt;读底片&lt;/b&gt;&lt;button class="x"&gt;×&lt;/button&gt;&lt;/div&gt;
+        &lt;div class="ai-lab"&gt;你擅长的&lt;/div&gt;
+        &lt;div class="skel skel-b" style="width: 70%;"&gt;&lt;/div&gt;
+        &lt;div class="skel skel-l"&gt;&lt;/div&gt;
+        &lt;div class="skel skel-l" style="width: 84%;"&gt;&lt;/div&gt;
+        &lt;div class="skel skel-l" style="width: 60%;"&gt;&lt;/div&gt;
+        &lt;div class="ai-lab" style="margin-top: 22px;"&gt;可以打开的&lt;/div&gt;
+        &lt;div class="skel skel-b" style="width: 56%;"&gt;&lt;/div&gt;
+        &lt;div class="ai-meta"&gt;正在读十一年的记录…&lt;/div&gt;`;
+      bindX();
+      aisheet.classList.add('on');
+      try {
+        const res = await callAI();
+        renderResult(res);</pre>
+    <footer>第 29 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>      } catch (err) {
+        renderError(String(err &amp;&amp; err.message ? err.message : err));
+      }
+    };
+    const openKey = () =&gt; {
+      aisheet.innerHTML = `&lt;div class="ai-hd"&gt;&lt;b style="font-size: 15px;"&gt;AI 连接设置&lt;/b&gt;&lt;button class="x"&gt;×&lt;/button&gt;&lt;/div&gt;
+        &lt;div class="ai-meta" style="margin-top: 10px;"&gt;推荐填服务地址（BFF）：Key 只在服务端，浏览器拿不到。留空则退回直连模式，Key 存在本机 localStorage，仅适合自己试。&lt;/div&gt;
+        &lt;div class="ai-lab" style="margin-top: 14px;"&gt;服务地址&lt;/div&gt;
+        &lt;input class="kinput ept" type="text" placeholder="http://localhost:8787/api/chat"&gt;
+        &lt;div class="ai-lab"&gt;直连 Key（可选）&lt;/div&gt;
+        &lt;input class="kinput key" type="password" placeholder="sk-..."&gt;
+        &lt;select class="ksel"&gt;&lt;option value="deepseek-chat"&gt;deepseek-chat&lt;/option&gt;&lt;option value="deepseek-reasoner"&gt;deepseek-reasoner&lt;/option&gt;&lt;/select&gt;
+        &lt;div class="ai-actions"&gt;&lt;button class="ksave"&gt;保存&lt;/button&gt;&lt;button class="kclear"&gt;清除&lt;/button&gt;&lt;/div&gt;`;
+      bindX();
+      const epInput = aisheet.querySelector('.ept');
+      const keyInput = aisheet.querySelector('.key');
+      const sel = aisheet.querySelector('.ksel');
+      epInput.value = store.get('dipian.endpoint') || '';
+      keyInput.value = store.get('dipian.apiKey') || '';
+      sel.value = store.get('dipian.model') || 'deepseek-chat';
+      aisheet.querySelector('.ksave').onclick = (e) =&gt; {
+        e.stopPropagation();
+        const ep = epInput.value.trim();
+        const kk = keyInput.value.trim();
+        if (ep) store.set('dipian.endpoint', ep); else store.del('dipian.endpoint');
+        if (kk) store.set('dipian.apiKey', kk); else store.del('dipian.apiKey');
+        store.set('dipian.model', sel.value);
+        syncAI();
+        closeAI();
+      };
+      aisheet.querySelector('.kclear').onclick = (e) =&gt; {
+        e.stopPropagation();
+        store.del('dipian.endpoint');
+        store.del('dipian.apiKey');
+        syncAI();
+        closeAI();
+      };
+      aisheet.classList.add('on');
+    };
+    if (aiBtn) {
+      aiBtn.addEventListener('click', (e) =&gt; {
+        e.stopPropagation();
+        if (!store.get('dipian.endpoint') &amp;&amp; !store.get('dipian.apiKey')) { openKey(); return; }
+        runAI();
+      });
+      aiState.addEventListener('click', (e) =&gt; { e.stopPropagation(); openKey(); });
+      syncAI();
+    }
+    /* ---------- 立项：可编辑需求 + AI 生成方案与评审 ---------- */
+    const fillBtn = phone.querySelector('[data-fill]');</pre>
+    <footer>第 30 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    if (fillBtn) {
+      fillBtn.addEventListener('click', (e) =&gt; {
+        e.stopPropagation();
+        let c = null;
+        try { c = JSON.parse(store.get('dipian.conclusion') || 'null'); } catch (err) { c = null; }
+        if (!c || !c.openings) return;
+        const what = phone.querySelector('.rq[data-k="what"]');
+        if (what) {
+          what.value = c.openings;
+          const cur = {};
+          rqInputs.forEach((i) =&gt; { cur[i.dataset.k] = i.value; });
+          store.set('dipian.req', JSON.stringify(cur));
+          what.focus();
+        }
+      });
+    }
+    syncFromFilmAll();
+    syncMeOrder();
+    const REQ_DEFAULT = {
+      what: '把手机里的旅行照，自动排成一本能打印的小册子',
+      who: '一年旅行 ≥3 次、懒得修图的人',
+      when: '10 周内看到第一个能寄出去的版本',
+    };
+    const rqInputs = phone.querySelectorAll('.rq');
+    let savedReq = {};
+    try { savedReq = JSON.parse(store.get('dipian.req') || '{}'); } catch (e) { savedReq = {}; }
+    rqInputs.forEach((inp) =&gt; {
+      const k = inp.dataset.k;
+      inp.value = savedReq[k] || REQ_DEFAULT[k] || '';
+      inp.placeholder = REQ_DEFAULT[k] || '';
+      inp.addEventListener('change', () =&gt; {
+        const cur = {};
+        rqInputs.forEach((i) =&gt; { cur[i.dataset.k] = i.value; });
+        store.set('dipian.req', JSON.stringify(cur));
+      });
+    });
+    const genBtn = phone.querySelector('.genbtn');
+    const solEl = phone.querySelector('[data-sol]');
+    const revEl = phone.querySelector('[data-rev]');
+    const verdictEl = phone.querySelector('[data-verdict]');
+    const rev2El = phone.querySelector('[data-rev2]');
+    const gmsg = phone.querySelector('[data-gmsg]');
+    const renderProject = (d) =&gt; {
+      const plans = Array.isArray(d.plans) ? d.plans.slice(0, 2) : [];
+      if (plans.length === 2 &amp;&amp; solEl) {
+        solEl.innerHTML = plans.map((p, i) =&gt; {
+          const rec = i === Number(d.recommended);
+          return `&lt;div class="card2 ${rec ? 'rec' : ''}"&gt;${rec ? '&lt;div class="tag"&gt;推荐&lt;/div&gt;' : ''}`
+            + `&lt;div class="t"&gt;${i === 0 ? 'A ' : 'B '}${p.name || ''}&lt;/div&gt;`
+            + `&lt;div class="d"&gt;${p.desc || ''}&lt;/div&gt;`</pre>
+    <footer>第 31 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>            + `&lt;div class="pm"&gt;${[p.pros, p.cons].filter(Boolean).join(' · ')}&lt;/div&gt;&lt;/div&gt;`;
+        }).join('');
+      }
+      const r = d.review || {};
+      const n = (v) =&gt; (typeof v === 'number' &amp;&amp; isFinite(v) ? v.toFixed(1) : '—');
+      if (revEl) {
+        revEl.innerHTML = `&lt;div&gt;&lt;b&gt;${n(r.concept)}&lt;/b&gt;&lt;span&gt;概念&lt;/span&gt;&lt;/div&gt;`
+          + `&lt;div&gt;&lt;b&gt;${n(r.cost)}&lt;/b&gt;&lt;span&gt;成本&lt;/span&gt;&lt;/div&gt;`
+          + `&lt;div&gt;&lt;b class="risk"&gt;${n(r.risk)}&lt;/b&gt;&lt;span&gt;风险&lt;/span&gt;&lt;/div&gt;`;
+      }
+      if (d.verdict &amp;&amp; verdictEl) verdictEl.textContent = '结论：' + d.verdict;
+      const rows = [['保留', d.keep], ['要改', d.fix], ['风险', d.risky]].filter((x) =&gt; x[1]);
+      if (rows.length &amp;&amp; rev2El) {
+        rev2El.innerHTML = rows.map(([k, v]) =&gt; `&lt;div&gt;&lt;span&gt;${k}&lt;/span&gt;${v}&lt;/div&gt;`).join('');
+      }
+    };
+    if (genBtn) {
+      genBtn.addEventListener('click', async (e) =&gt; {
+        e.stopPropagation();
+        if (!store.get('dipian.endpoint') &amp;&amp; !store.get('dipian.apiKey')) {
+          gmsg.textContent = '先在底片页配置服务地址或 Key，再回来生成。';
+          return;
+        }
+        const reqData = {};
+        rqInputs.forEach((i) =&gt; { reqData[i.dataset.k] = i.value.trim(); });
+        store.set('dipian.req', JSON.stringify(reqData));
+        genBtn.disabled = true;
+        const oldLabel = genBtn.textContent;
+        genBtn.textContent = '生成中…';
+        gmsg.textContent = '';
+        try {
+          const { data } = await callProject(reqData, filmSummary());
+          renderProject(data);
+          gmsg.textContent = '';
+        } catch (err) {
+          gmsg.textContent = '生成失败：' + String(err &amp;&amp; err.message ? err.message : err);
+        } finally {
+          genBtn.disabled = false;
+          genBtn.textContent = oldLabel;
+        }
+      });
+    }
+    phone.querySelectorAll('[data-go]').forEach((el) =&gt; {
+      el.addEventListener('click', (e) =&gt; { e.stopPropagation(); show(el.dataset.go); });
+    });
+    /* ---------- 下单后的物流追踪 ---------- */
+    const orderScr = phone.querySelector('.scr[data-name="order"]');
+    if (orderScr) {
+      const orderBox = orderScr.querySelector('.order');
+      const trackBox = orderScr.querySelector('[data-track]');</pre>
+    <footer>第 32 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>      const confirmBtn = orderScr.querySelector('.confirm');
+      const TNO = 'SF1234567890';
+      const NODES = [
+        ['已下单', '11 / 20 10:12'],
+        ['已发货 · 顺丰速运', '11 / 20 18:40'],
+        ['运输中 · 已到达上海转运中心', '11 / 21 07:05'],
+        ['派送中', '11 / 21 13:40'],
+        ['已签收', '11 / 21 14:12'],
+      ];
+      const readOrder = () =&gt; {
+        try { return JSON.parse(store.get('dipian.order') || 'null'); } catch (e) { return null; }
+      };
+      const STATUS = ['已下单', '已发货', '运输中', '派送中', '已签收'];
+      const renderTrack = () =&gt; {
+        if (!trackBox) return;
+        const o = readOrder();
+        if (!o) return;
+        const stage = Math.min(o.stage || 0, NODES.length - 1);
+        const done = stage &gt;= NODES.length - 1;
+        trackBox.innerHTML = `&lt;div class="theader"&gt;
+            &lt;div class="tstatus"&gt;&lt;b&gt;${STATUS[stage]}&lt;/b&gt;&lt;/div&gt;
+            &lt;span class="stamp"&gt;${done ? '已到货' : '已冲洗'}&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;span class="tno"&gt;${TNO} · 顺丰速运&lt;/span&gt;
+          &lt;div class="tl"&gt;${NODES.map(([t, s], i) =&gt; {
+            const k = i &lt; stage ? 'done' : (i === stage ? 'on' : 'wait');
+            return `&lt;div class="n ${k}"&gt;&lt;b&gt;${t}&lt;/b&gt;&lt;span&gt;${s}&lt;/span&gt;&lt;/div&gt;`;
+          }).join('')}&lt;/div&gt;
+          &lt;div class="tact"&gt;
+            &lt;button class="copy"&gt;复制单号&lt;/button&gt;
+            ${done ? '&lt;button class="back"&gt;去「我」&lt;/button&gt;' : '&lt;button class="next"&gt;推进到下一节点&lt;/button&gt;'}
+          &lt;/div&gt;
+          &lt;div class="tnote"&gt;${done
+            ? '已签收，订单记为「已到货」，保修与发票在「我」里。'
+            : '演示用：点「推进到下一节点」可以让物流往前走一步；签收后自动回到「我」页。'}&lt;/div&gt;`;
+        const copyBtn = trackBox.querySelector('.copy');
+        copyBtn.onclick = async (e) =&gt; {
+          e.stopPropagation();
+          try {
+            await navigator.clipboard.writeText(TNO);
+            copyBtn.textContent = '已复制';
+          } catch (err) { copyBtn.textContent = TNO; }
+        };
+        const backBtn = trackBox.querySelector('.back');
+        if (backBtn) backBtn.onclick = (e) =&gt; { e.stopPropagation(); show('me'); syncMeOrder(); };
+        const nextBtn = trackBox.querySelector('.next');
+        if (nextBtn) {
+          nextBtn.onclick = (e) =&gt; {
+            e.stopPropagation();
+            const cur = readOrder();</pre>
+    <footer>第 33 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>            if (!cur) return;
+            const ns = Math.min((cur.stage || 0) + 1, NODES.length - 1);
+            store.set('dipian.order', JSON.stringify({ ...cur, stage: ns }));
+            const h1n = orderScr.querySelector('.h1');
+            if (h1n) h1n.textContent = ns &gt;= NODES.length - 1 ? '已签收，冲洗完了。' : '已下单，正在路上。';
+            renderTrack();
+            syncMeOrder();
+            if (ns &gt;= NODES.length - 1) {
+              // 签收：停一下让人看到最后一个节点亮起，再自动切到「我」
+              setTimeout(() =&gt; { show('me'); syncMeOrder(); }, 1400);
+            }
+          };
+        }
+      };
+      const applyOrderState = () =&gt; {
+        const h1 = orderScr.querySelector('.h1');
+        const o = readOrder();
+        if (o) {
+          orderBox.classList.add('tracked');
+          if (h1) h1.textContent = (o.stage || 0) &gt;= NODES.length - 1 ? '已签收，冲洗完了。' : '已下单，正在路上。';
+          renderTrack();
+        } else {
+          orderBox.classList.remove('tracked');
+          if (h1) h1.textContent = '三件硬件，六家商家。';
+        }
+      };
+      if (confirmBtn) {
+        confirmBtn.addEventListener('click', (e) =&gt; {
+          e.stopPropagation();
+          store.set('dipian.order', JSON.stringify({ no: TNO, carrier: '顺丰速运', at: Date.now(), stage: 2 }));
+          applyOrderState();
+          syncMeOrder();
+        });
+      }
+      applyOrderState();
+    }
+    show(cfg.initial);
+    // 团队成员详情
+    phone.querySelectorAll('[data-mem]').forEach((n) =&gt; {
+      n.addEventListener('click', (e) =&gt; {
+        e.stopPropagation();
+        const m = TEAM[n.dataset.mem];
+        if (!m) return;
+        const face = m.ai
+          ? `&lt;svg viewBox="0 0 64 64"&gt;&lt;rect width="64" height="64" fill="#2B5C86"/&gt;&lt;circle cx="32" cy="32" r="14" fill="none" stroke="#fff" stroke-width="1.6"/&gt;&lt;circle cx="32" cy="32" r="4" fill="#fff"/&gt;&lt;path d="M32 8v10M32 46v10M8 32h10M46 32h10" stroke="#fff" stroke-width="1.2" opacity=".65"/&gt;&lt;/svg&gt;`
+          : `&lt;svg viewBox="0 0 64 64"&gt;&lt;rect width="64" height="64" fill="#1B1711"/&gt;&lt;circle cx="32" cy="24" r="11" fill="#EFE8D8"/&gt;&lt;path d="M11 64c0-12 9-19 21-19s21 7 21 19z" fill="#EFE8D8"/&gt;&lt;/svg&gt;`;
+        sheet.innerHTML = `&lt;div class="pf"&gt;
+            &lt;div class="pf-img"&gt;${face}&lt;/div&gt;
+            &lt;div class="pf-t"&gt;&lt;b&gt;${m.name}&lt;/b&gt;&lt;i&gt;${m.role}&lt;/i&gt;&lt;div class="pm"&gt;${m.foot}&lt;/div&gt;&lt;/div&gt;
+            &lt;button class="x"&gt;×&lt;/button&gt;</pre>
+    <footer>第 34 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>          &lt;/div&gt;
+          &lt;div class="ds"&gt;${m.desc}&lt;/div&gt;
+          &lt;div class="skills"&gt;${m.skills.map(([k, v]) =&gt; `&lt;div class="s"&gt;&lt;span&gt;${k}&lt;/span&gt;&lt;div class="track"&gt;&lt;i style="width:${v}%"&gt;&lt;/i&gt;&lt;/div&gt;&lt;b&gt;${v}&lt;/b&gt;&lt;/div&gt;`).join('')}&lt;/div&gt;
+          &lt;div class="fl"&gt;个人底片&lt;/div&gt;
+          &lt;div class="strip"&gt;${m.film.map(([y, l]) =&gt; `&lt;div class="mf ${m.ai ? 'ai' : ''}"&gt;&lt;b&gt;${y}&lt;/b&gt;&lt;span&gt;${l}&lt;/span&gt;&lt;/div&gt;`).join('')}&lt;/div&gt;
+          &lt;div class="tags"&gt;&lt;span&gt;远程协作&lt;/span&gt;&lt;span&gt;按周&lt;/span&gt;&lt;span&gt;两周一次评审&lt;/span&gt;&lt;/div&gt;`;
+        sheet.classList.add('on');
+        sheet.querySelector('.x').addEventListener('click', (ev) =&gt; { ev.stopPropagation(); sheet.classList.remove('on'); });
+      });
+    });
+    // 商家比价
+    const sumEl = phone.querySelector('.sum2');
+    const recalc = () =&gt; {
+      let total = 0;
+      phone.querySelectorAll('.item2').forEach((it) =&gt; {
+        const p = it.querySelector('.shop.on');
+        if (p) total += Number(p.dataset.price);
+      });
+      if (sumEl) sumEl.textContent = '¥' + total.toLocaleString('en-US');
+    };
+    phone.querySelectorAll('.item2').forEach((it) =&gt; {
+      it.querySelectorAll('.shop').forEach((sh) =&gt; {
+        sh.addEventListener('click', (e) =&gt; {
+          e.stopPropagation();
+          it.querySelectorAll('.shop').forEach((x) =&gt; x.classList.remove('on'));
+          sh.classList.add('on');
+          const priceEl = it.querySelector('.price');
+          if (priceEl) priceEl.textContent = '¥' + Number(sh.dataset.price).toLocaleString('en-US');
+          recalc();
+        });
+      });
+    });
+    recalc();
+    // 投资认购
+    let amt = 5;
+    const invBtn = phone.querySelector('.invbtn');
+    const cks = phone.querySelectorAll('.ck');
+    cks.forEach((c) =&gt; c.addEventListener('click', (e) =&gt; {
+      e.stopPropagation();
+      c.classList.toggle('on');
+      const ok = [...cks].every((x) =&gt; x.classList.contains('on'));
+      if (invBtn) {
+        invBtn.disabled = !ok;
+        invBtn.classList.toggle('off', !ok);
+      }
+    }));
+    if (invBtn) {
+      invBtn.addEventListener('click', (e) =&gt; {
+        e.stopPropagation();
+        isheet.innerHTML = `&lt;div class="hd"&gt;&lt;div&gt;&lt;b&gt;参与投资&lt;/b&gt;&lt;i style="font-style: normal; font-size: 9.5px; color: #8A7E62;"&gt;天使轮 · 投前估值 ¥450 万&lt;/i&gt;&lt;/div&gt;&lt;button class="x"&gt;×&lt;/button&gt;&lt;/div&gt;</pre>
+    <footer>第 35 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>          &lt;div class="iamt"&gt;&lt;div data-amt="3"&gt;¥3 万&lt;/div&gt;&lt;div data-amt="5" class="on"&gt;¥5 万&lt;/div&gt;&lt;div data-amt="10"&gt;¥10 万&lt;/div&gt;&lt;/div&gt;
+          &lt;div class="inote"&gt;团队跟投上限 5 万；外部投资人需做合格投资者认证，10 万起投。认购后 6 个月锁定期，3 年内可按 1.5 倍回购。&lt;/div&gt;
+          &lt;button class="invbtn" style="margin-top: 18px;"&gt;确认认购 &lt;span class="sel"&gt;¥5 万&lt;/span&gt;&lt;/button&gt;`;
+        isheet.classList.add('on');
+        isheet.querySelector('.x').addEventListener('click', (ev) =&gt; { ev.stopPropagation(); isheet.classList.remove('on'); });
+        isheet.querySelectorAll('.iamt div').forEach((d) =&gt; {
+          d.addEventListener('click', () =&gt; {
+            isheet.querySelectorAll('.iamt div').forEach((x) =&gt; x.classList.remove('on'));
+            d.classList.add('on');
+            amt = Number(d.dataset.amt);
+            isheet.querySelector('.invbtn .sel').textContent = '¥' + amt + ' 万';
+          });
+        });
+        isheet.querySelector('.invbtn').addEventListener('click', (ev) =&gt; {
+          ev.stopPropagation();
+          const list = phone.querySelector('.plist');
+          if (list) {
+            const row = document.createElement('div');
+            row.className = 'pl';
+            row.innerHTML = `&lt;span class="who"&gt;你&lt;i&gt;团队跟投&lt;/i&gt;&lt;/span&gt;&lt;span class="mo"&gt;¥${amt} 万&lt;/span&gt;&lt;em&gt;待签约&lt;/em&gt;`;
+            list.appendChild(row);
+          }
+          const now = 32 + amt;
+          const pct = Math.min(100, Math.round(now / 50 * 100));
+          const amtEl = phone.querySelector('.amt');
+          const pctEl = phone.querySelector('.pct');
+          const barEl = phone.querySelector('.prog .track i');
+          if (amtEl) amtEl.textContent = '¥' + now + ' 万';
+          if (pctEl) pctEl.textContent = pct + '%';
+          if (barEl) barEl.style.width = pct + '%';
+          const h1 = phone.querySelector('.inv .h1');
+          if (h1) h1.innerHTML = '天使轮 50 万，&lt;br&gt;还差 ' + Math.max(0, 50 - now) + ' 万。';
+          isheet.classList.remove('on');
+        });
+      });
+    }
+    wrap.appendChild(phone);
+    return wrap;
+  }
+  PHONES.forEach((cfg) =&gt; {
+    stage.appendChild(buildPhone(cfg));
+    const label = document.createElement('div');
+    label.className = 'plabel';
+    label.textContent = cfg.label;
+    label.style.left = cfg.x + 'px';
+    label.style.top = (cfg.y + 876 * SCALE + 12) + 'px';
+    stage.appendChild(label);
+  });
+  document.querySelectorAll('#road').forEach(buildRoad);
+  tearAll(document);</pre>
+    <footer>第 36 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  /* 按窗口缩放整块版心：任何预览尺寸都能看到完整的六台手机 */
+  function fitBoard() {
+    const s = Math.min(window.innerWidth / 1800, window.innerHeight / 1000, 1);
+    const b = document.getElementById('board');
+    if (b) b.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitBoard);
+  fitBoard();
+  /* ---------- 手机模式：一台手机 + 左右滑动 ---------- */
+  const ORDER = ['cover', 'film', 'project', 'me'];
+  let mphone = null;
+  function fitMobile() {
+    if (!mphone) return;
+    const st = document.getElementById('mstage');
+    const s = Math.min((window.innerWidth - 20) / 417, (window.innerHeight - 150) / 876);
+    mphone.style.transform = 'scale(' + s + ')';
+    st.style.width = (417 * s) + 'px';
+    st.style.height = (876 * s) + 'px';
+  }
+  function syncPager() {
+    if (!mphone) return;
+    const on = mphone.querySelector('.scr.on');
+    const i = on ? ORDER.indexOf(on.dataset.name) : 0;
+    const step = document.getElementById('mstep');
+    if (step) step.textContent = (i + 1) + ' / ' + ORDER.length;
+    document.querySelectorAll('#mdots i').forEach((d, k) =&gt; d.classList.toggle('on', k === i));
+  }
+  function go(name) {
+    if (!mphone) return;
+    const tab = mphone.querySelector('.tab[data-tab="' + name + '"]');
+    if (tab) tab.click();
+    syncPager();
+  }
+  function buildMobile() {
+    if (mphone) return;
+    const host = document.getElementById('mstage');
+    const wrap = buildPhone({ initial: 'cover', x: 0, y: 0 });
+    wrap.style.left = '0';
+    wrap.style.top = '0';
+    host.appendChild(wrap);
+    mphone = wrap;
+    wrap.querySelectorAll('#road').forEach(buildRoad);
+    tearAll(wrap);
+    const dots = document.getElementById('mdots');
+    ORDER.forEach(() =&gt; dots.appendChild(document.createElement('i')));
+    host.addEventListener('click', () =&gt; setTimeout(syncPager, 30));
+    let sx = 0, sy = 0;
+    host.addEventListener('touchstart', (e) =&gt; {
+      const t = e.touches[0]; sx = t.clientX; sy = t.clientY;
+    }, { passive: true });</pre>
+    <footer>第 37 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    host.addEventListener('touchend', (e) =&gt; {
+      const t = e.changedTouches[0];
+      const dx = t.clientX - sx, dy = t.clientY - sy;
+      if (Math.abs(dx) &lt; 50 || Math.abs(dx) &lt; Math.abs(dy)) return;
+      const on = mphone.querySelector('.scr.on');
+      const i = ORDER.indexOf(on.dataset.name);
+      const next = dx &lt; 0 ? Math.min(i + 1, ORDER.length - 1) : Math.max(i - 1, 0);
+      if (next !== i) go(ORDER[next]);
+    }, { passive: true });
+    fitMobile();
+    syncPager();
+  }
+  /* ---------- 语言切换 ---------- */
+  const I18N = {
+    "寻找人生的 25 号底片": "Finding Frame 25",
+    "第六版 · 时钟 · 头像底片 · 产品图 ／ 方向一「白纸」的迭代": "v6 · clock · member film · product shots — Direction 1 \"White Paper\"",
+    "游离个体的栖息地": "A habitat for drifting individuals",
+    "—— 这六页的来处": "— where these six pages come from",
+    "举众星之光，照未来之路。": "Gather the light of many stars, light the road ahead.",
+    "—— 栖息地计划": "— Habitat Project",
+    "演示数据：虚构的项目与人物 · 照片来自 Unsplash · 底部四个导航（封面 / 底片 / 项目 / 我），「项目」内含五步，顶部步骤条可跳转": "Demo data: a fictional project and people · photos from Unsplash · four tabs (Crossing / Film / Project / Me), five steps inside Project",
+    "25 号底片": "Frame 25",
+    "每个人的底片里，都有一格还没显影。": "Every life's film has one frame left undeveloped.",
+    "把它找出来，用它照亮接下来的十年。": "Find it, and let it light the next ten years.",
+    "走进路口": "Step into the crossing",
+    "轻触开始": "Tap to start",
+    "把「想做」": "From “want to”",
+    "变成「在做」": "to “doing”",
+    "十一年，四格已显影": "Eleven years, four frames developed",
+    "还剩二十一格，等你走到": "Twenty-one left, waiting for you",
+    "个人信息记录": "Personal record",
+    "十一年，螺旋上升": "Eleven years, spiralling up",
+    "越往上越近。点开任意一格，照片可以随时插进去。": "The higher it goes, the closer it gets. Tap a frame; photos can go in later.",
+    "文案 · 被退稿": "Copywriting · rejected",
+    "＋ 插入照片": "＋ Add a photo",
+    "＋ 新增一年": "＋ New year",
+    "访谈 40 场": "40 user interviews",
+    "组件化 · 带 3 人": "Design system · led 3",
+    "定价 · 留存 +8%": "Pricing · retention +8%",
+    "一个人上线": "Shipped solo",
+    "让 AI 读一遍": "Let AI read it",
+    "未配置 Key · 点这里设置": "No key · tap to set",
+    "立项": "Kickoff",
+    "团队": "Team",
+    "投资": "Raise",
+    "选型": "Build",
+    "下单": "Order",
+    "需求录入 → 方案 → 评审": "Brief → options → review",
+    "第 25 格": "Frame 25",
+    "① 需求录入": "① Brief",</pre>
+    <footer>第 38 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    "想做什么": "What",
+    "给谁用": "For whom",
+    "什么时候": "By when",
+    "② AI 方案 · 两版": "② Two options",
+    "用 AI 生成": "Generate",
+    "生成中…": "Generating…",
+    "A 全自动": "A Auto",
+    "按时间地点自动聚类，生成 60 页": "Clusters by time and place, 60 pages",
+    "稳 · 7 天出原型": "Safe · prototype in 7 days",
+    "推荐": "Pick",
+    "B 先选再排": "B Curate first",
+    "你挑 20 张，AI 排成一册": "You pick 20, AI lays out the book",
+    "准 · 付费意愿高": "Sharp · higher willingness to pay",
+    "③ 评审": "③ Review",
+    "概念": "Concept",
+    "成本": "Cost",
+    "风险": "Risk",
+    "结论：选 B，先做 8 周，预算 ¥30,000。风险在「选图」这一步，一次可用性测试就能验。": "Decision: pick B, 8 weeks first, budget ¥30,000. Risk sits in curating — one usability test settles it.",
+    "保留": "Keep",
+    "B 的「先选再排」，付费意愿最高": "B's \"curate first\" — highest willingness to pay",
+    "要改": "Fix",
+    "把选图压到 20 张以内，不然没人愿意挑": "Cap curation at 20 photos, or nobody will do it",
+    "相册权限与导出尺寸，第 2 周前要验": "Photo permission and export size — verify by week 2",
+    "立项，去组队": "Kick off, build the team",
+    "你": "You",
+    "创始人 · 产品": "Founder · product",
+    "AI 组 · 常驻 3": "AI crew · 3 resident",
+    "栈": "S", "小栈": "Stack", "代码搭子": "code buddy",
+    "页": "P", "小页": "Page", "排版助理": "layout assistant",
+    "账": "L", "小账": "Ledger", "财务合规": "finance &amp; compliance",
+    "真人组 · 待招 3": "People · 3 to hire",
+    "前": "FE", "林一舟": "Lin Yizhou", "前端 92%": "frontend 92%",
+    "图": "CV", "周牧": "Zhou Mu", "算法 87%": "vision 87%",
+    "长": "GR", "阿岚": "A Lan", "增长 78%": "growth 78%",
+    "AI 常驻": "AI resident",
+    "真人待招": "people to hire",
+    "月度人力": "monthly people cost",
+    "首月可用": "available month one",
+    "六个人，六格底片。AI 随项目自带、不占工资；真人按周结算。点开任意一格看技能。": "Six people, six frames. AI comes with the project and costs no salary; people are paid weekly. Tap any frame for skills.",
+    "都要，下一步": "Take all, next",
+    "天使轮 50 万，": "Seed round ¥500K,",
+    "450万": "¥4.5M",
+    "投前估值": "pre-money",
+    "50万": "¥500K",
+    "本轮融资": "raising",
+    "出让股份": "equity",
+    "锁定期": "lock-up",
+    "已认购": "Pledged",
+    "团队跟投": "team",
+    "已到账": "funded",</pre>
+    <footer>第 39 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    "拾光天使基金": "Shiguang Angels",
+    "外部 · 领投": "external · lead",
+    "意向": "interest",
+    "起投": "Minimum",
+    "团队 ¥1 万 · 外部 ¥10 万": "team ¥10K · external ¥100K",
+    "回购": "Buyback",
+    "3 年内按 1.5 倍回购": "1.5× within 3 years",
+    "分红": "Dividend",
+    "可分配利润的 20%": "20% of distributable profit",
+    "信息权": "Reporting",
+    "季度财报 + 月度进展": "quarterly report + monthly update",
+    "我已阅读《风险揭示书》，理解本金可能全损": "I've read the risk disclosure and accept total loss",
+    "我符合合格投资者标准（外部 10 万起投）": "I qualify as an accredited investor (¥100K min)",
+    "参与投资": "Invest",
+    "24 小时冷静期 · 资金由托管账户代持 · 仅限合格投资者": "24h cooling-off · funds held in escrow · accredited investors only",
+    "四件软件，三件硬件。": "Four tools, three devices.",
+    "软件": "Software",
+    "iOS 端": "iOS",
+    "一个人也能维护，系统控件直接可用。": "One person can maintain it; native controls work out of the box.",
+    "CoreML · 场景分类": "CoreML · scene tagging",
+    "端侧": "on-device",
+    "照片不上传，隐私和速度都省心。": "Photos never leave the phone — privacy and speed for free.",
+    "排版服务": "layout service",
+    "排版算法写得快，招人也容易。": "Fast to write layout logic, easy to hire for.",
+    "印刷导出": "print export",
+    "出血、CMYK 转换要自己控，不过关印不出来。": "Bleed and CMYK are on you; get them wrong and the press fails.",
+    "硬件": "Hardware",
+    "本地跑 xcode 与模型微调，够用三年。": "Runs Xcode and local fine-tuning; good for three years.",
+    "画册预览与店里演示，客户看的就是这个屏。": "Album previews and in-store demos — this is the screen clients see.",
+    "A3 打样机 · 六色": "A3 proofer · six inks",
+    "自己打样，比寄一次打样便宜。": "Proof at home; cheaper than shipping a proof.",
+    "合计 ¥27,197 · 软件按订阅另计 · 不含云服务": "Total ¥27,197 · software billed per subscription · cloud excluded",
+    "按这份配置下单": "Order this setup",
+    "三件硬件，六家商家。": "Three devices, six sellers.",
+    "官方店": "Official store",
+    "次日达 · 2 年保": "next day · 2-yr warranty",
+    "京东自营": "JD direct",
+    "3 天 · 1 年保": "3 days · 1-yr warranty",
+    "教育商店": "Education store",
+    "5 天 · 需认证": "5 days · verification",
+    "次日达": "next day",
+    "3 天": "3 days",
+    "认证二手": "Certified used",
+    "7 天 · 95 新": "7 days · like new",
+    "品牌店": "Brand store",
+    "3 天 · 含相纸": "3 days · paper included",
+    "7 天 · 无相纸": "7 days · no paper",
+    "合计": "Total",
+    "可分 12 期 · 每期 ¥2,266": "12 instalments · ¥2,266 each",
+    "送达": "Delivery",</pre>
+    <footer>第 40 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    "预计 11 月 21 日 · 顺丰次日达": "Nov 21 · SF Express next day",
+    "地址": "Address",
+    "上海市徐汇区 · 漕河泾（演示地址）": "Xuhui, Shanghai · Caohejing (demo address)",
+    "发票": "Invoice",
+    "电子专票，下单后 1 个工作日开出": "E-invoice within 1 business day",
+    "今天": "Today",
+    "发货": "Ship",
+    "确认下单": "Confirm order",
+    "已下单": "Order placed",
+    "已发货 · 顺丰速运": "Shipped · SF Express",
+    "运输中 · 已到达上海转运中心": "In transit · Shanghai hub",
+    "派送中": "Out for delivery",
+    "已签收": "Delivered",
+    "运输中": "In transit",
+    "已发货": "Shipped",
+    "复制单号": "Copy no.",
+    "回封面": "Back",
+    "已复制": "Copied",
+    "已下单，正在路上。": "Order placed — on its way.",
+    "已签收，冲洗完了。": "Delivered — all developed.",
+    "我的订单": "My order",
+    "未下单": "Not ordered",
+    "已到货": "Arrived",
+    "推进到下一节点": "Advance one step",
+    "去「我」": "Go to Me",
+    "已签收，订单记为「已到货」，保修与发票在「我」里。": "Delivered. Order marked arrived; warranty and invoice are in Me.",
+    "演示用：点「推进到下一节点」可以让物流往前走一步；签收后自动回到「我」页。": "Demo: tap advance to move the shipment forward; on delivery it returns to Me.",
+    "物流信息每 30 分钟更新一次，签收后可在「我」里查看保修与发票。": "Tracking refreshes every 30 min; warranty and invoice are in Me.",
+    "不同商家的保修与发票不同，下单前会再确认一次": "Warranty and invoice differ by seller; we'll confirm before charging",
+    "已冲洗": "Developed",
+    "我": "Me",
+    "创始人 · 产品 · 第 12 天": "Founder · product · day 12",
+    "持有股份": "equity held",
+    "项进展": "updates",
+    "我的底片": "My film",
+    "十一年 · 5 格": "11 years · 5 frames",
+    "我的项目": "My project",
+    "进行中 · 第 3 步": "in progress · step 3",
+    "我的认购": "My pledge",
+    "¥5 万 · 待签约": "¥50K · pending signature",
+    "设置": "Settings",
+    "通知 · 隐私 · 导出": "notifications · privacy · export",
+    "语言 Language": "Language",
+    "底片与项目只存在本机": "Your film and project live on this device only",
+    "封面": "Cover",
+    "底片": "Film",
+    "项目": "Project",
+    "一　封面（tab 1）": "1 Crossing · cover (tab 1)",
+    "二　底片 · 螺旋上升（tab 2）": "2 Film · spiralling up (tab 2)",
+    "三　项目 ① 立项": "3 Project ① Kickoff",</pre>
+    <footer>第 41 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    "四　项目 ② 团队": "4 Project ② Team",
+    "五　项目 ③ 投资": "5 Project ③ Raise",
+    "六　项目 ④ 选型": "6 Project ④ Build",
+    "七　项目 ⑤ 下单": "7 Project ⑤ Order",
+    "第 6 年 · 产品设计师": "Year 6 · product designer",
+    "在做": "Doing",
+    "把界面拆成可复用的组件": "Breaking the UI into reusable components",
+    "城市": "City",
+    "上海 · 漕河泾": "Shanghai · Caohejing",
+    "一句": "In a line",
+    "把混乱收进秩序": "Pulling chaos into order",
+    "这一年积累的": "Built this year",
+    "组件化": "Components",
+    "带人": "Leading",
+    "数据看板": "Dashboards",
+    "这一年的记录": "This year's notes",
+    "Q2 一套 42 个组件的库": "Q2 · a 42-component library",
+    "Q4 做完一个没人用的功能": "Q4 · shipped a feature nobody used",
+    "存": "Save",
+    "带着这一年去立项 →": "Take this year to the brief →",
+    "来自底片的结论": "From your film",
+    "代入需求": "Use as brief",
+    "这一年还没有记录": "No records for this year yet",
+    "写下当时在做什么、卡在哪里。下次读底片时，这段会进到模型输入里。": "Note what you were doing and where you got stuck — it feeds the next read.",
+    "补一条": "Add one",
+    "把手机里的旅行照，自动排成一本能打印的小册子": "Travel photos on your phone, auto-laid into a printable booklet",
+    "一年旅行 ≥3 次、懒得修图的人": "People who travel 3+ times a year and hate editing photos",
+    "10 周内看到第一个能寄出去的版本": "A first mailable version within 10 weeks",
+    "记一句这一年的事…": "One line about that year…",
+    "个人底片": "Personal film",
+    "远程协作": "Remote",
+    "按周": "Weekly",
+    "两周一次评审": "Review every two weeks",
+    "不占工资 · 随项目常驻": "No salary · resident",
+    "按次计费 · 发票与合同": "Per use · invoices &amp; contracts",
+    "可接档 11 月 20 日 · 按周结算": "Available Nov 20 · weekly",
+    "可接档 11 月 25 日 · 按周结算": "Available Nov 25 · weekly",
+    "可接档 12 月 1 日 · 按周结算": "Available Dec 1 · weekly",
+    "AI 成员 · 代码搭子 · 常驻": "AI member · code buddy · resident",
+    "AI 成员 · 排版助理 · 常驻": "AI member · layout assistant · resident",
+    "AI 成员 · 财务与合规 · 按次": "AI member · finance &amp; compliance · per use",
+    "真人 · 前端工程师 · 匹配 92%": "Human · frontend engineer · 92% match",
+    "真人 · 图像算法 · 匹配 87%": "Human · image algorithms · 87% match",
+    "真人 · 增长 · 匹配 78%": "Human · growth · 78% match",
+    "你写需求，他写样板代码；改到第三版也不抱怨。": "You write the spec, he writes the boilerplate — no complaints on revision three.",
+    "三千张照片先过她一遍，再交给你挑。": "Three thousand photos go through her before they reach you.",
+    "发票、合同、报税，一个月处理一次就够。": "Invoices, contracts, filings — once a month is enough.",
+    "你已经把界面想清楚了，缺一个把它写成真东西的人。": "You have the interface figured out; you need someone to make it real.",
+    "三千张照片的自动排版，是这件事真正的难点。": "Auto-layout for 3,000 photos is the real hard part.",
+    "你做过 0 到 1，没做过从 1 到 1000。": "You have done 0 to 1; you have not done 1 to 1,000.",</pre>
+    <footer>第 42 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    "SwiftUI": "SwiftUI", "WebGL": "WebGL", "PyTorch": "PyTorch",
+    "样板代码": "Boilerplate",
+    "重构": "Refactoring",
+    "排版": "Typesetting",
+    "图像处理": "Image processing",
+    "中文字体": "CJK type",
+    "上线节奏": "Shipping pace",
+    "抠图": "Matting",
+    "排版算法": "Layout algo",
+    "内容": "Content",
+    "投放": "Paid ads",
+    "增长实验": "Growth tests",
+    "财税": "Tax",
+    "合同": "Contracts",
+    "发票": "Invoices",
+    "需求拆解": "Spec writing",
+    "上线": "Shipping",
+    "AI 工具链": "AI tooling",
+    "定价": "Pricing",
+    "留存": "Retention",
+    "带团队": "Team lead",
+    "AI 读完了十一年": "AI read eleven years",
+    "你擅长的": "What you are good at",
+    "可以打开的": "Where it opens",
+    "再读一次": "Read again",
+    "带着结论去立项 →": "Take the conclusion to the brief →",
+    "AI 没读成": "AI could not read it",
+    "重试": "Retry",
+    "先用演示结果": "Use the demo result",
+    "改 Key": "Change key",
+    "读底片": "Reading the film",
+    "正在读十一年的记录…": "Reading eleven years of records…",
+    "API 设置": "API settings",
+    "保存": "Save",
+    "清除": "Clear",
+    "配置 Key 重新读": "Set a key and retry",
+    "确认认购": "Confirm",
+    "天使轮 · 投前估值 ¥450 万": "Seed · pre-money ¥4.5M",
+    "团队跟投上限 5 万；外部投资人需做合格投资者认证，10 万起投。认购后 6 个月锁定期，3 年内可按 1.5 倍回购。": "Team cap ¥50K; outside investors need accreditation, ¥100K minimum. Six-month lock-up, 1.5× buyback within three years.",
+    "文案": "Copywriting",
+    "抗压": "Under pressure",
+    "在广告公司写产品文案": "Writing product copy at an ad agency",
+    "北京 · 望京": "Beijing · Wangjing",
+    "写清楚比写漂亮难": "Clear beats pretty",
+    "Q1 一天写 12 条，被退回 9 条": "Q1 · 12 lines a day, 9 rejected",
+    "Q4 第一次被用户在评论区骂": "Q4 · first time a user cursed me in the comments",
+    "访谈": "Interviews",
+    "原型": "Prototypes",
+    "可用性测试": "Usability tests",
+    "做用户访谈与原型": "User interviews and prototypes",</pre>
+    <footer>第 43 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    "上海 · 静安": "Shanghai · Jing'an",
+    "用户说的不是他要的": "What users say is not what they need",
+    "全年 40 场访谈": "40 interviews across the year",
+    "画了 300 张原型，大部分是废稿": "300 prototypes, mostly dead ends",
+    "定价与留存": "Pricing and retention",
+    "砍功能比加功能难": "Cutting features is harder than adding",
+    "Q2 把 19 块改成 39 块，续费没掉": "Q2 · raised 19 to 39, renewals held",
+    "Q4 砍三个功能，留存 11%→19%": "Q4 · cut three features, retention 11%→19%",
+    "一个人从 0 到 1 上线": "Shipping 0 to 1 alone",
+    "判断比执行贵": "Judgement costs more than execution",
+    "Q1 十周做出第一个版本": "Q1 · first version in ten weeks",
+    "Q3 开始让 AI 写样板代码": "Q3 · started letting AI write boilerplate",
+  };
+  const RULES = [
+    [/^¥(\d+) 万$/, (m) =&gt; '¥' + Number(m[1]) * 10 + 'K'],
+    [/^已认购 ¥(\d+) 万$/, (m) =&gt; 'Pledged ¥' + Number(m[1]) * 10 + 'K'],
+    [/^还差 (\d+) 万。$/, (m) =&gt; '¥' + Number(m[1]) * 10 + 'K to go.'],
+    [/^已配置 · (.+)$/, (m) =&gt; 'Ready · ' + m[1]],
+    [/^第 (\d+) 年$/, (m) =&gt; 'Year ' + m[1]],
+    [/^结论：(.*)$/, (m) =&gt; 'Decision: ' + m[1]],
+    [/^(\d+) 个月$/, (m) =&gt; m[1] + ' months'],
+    [/^(\d+) 万$/, (m) =&gt; '¥' + Number(m[1]) * 10 + 'K'],
+    [/^([\d.]+)万$/, (m) =&gt; '¥' + Math.round(parseFloat(m[1]) * 10) + 'K'],
+  ];
+  function ruleTranslate(s) {
+    for (const [re, fn] of RULES) {
+      const m = s.match(re);
+      if (m) return fn(m);
+    }
+    return null;
+  }
+  let lang = store.get('dipian.lang') || 'zh';
+  const origText = new WeakMap();
+  const origAttr = new WeakMap();
+  let translating = false;
+  function translateText(root) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((node) =&gt; {
+      const parent = node.parentElement;
+      if (!parent) return;
+      const tag = parent.tagName;
+      if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TITLE') return;
+      const raw = node.nodeValue;
+      if (!raw || !raw.trim()) return;
+      if (lang === 'en') {
+        if (!origText.has(node)) origText.set(node, raw);
+        const src = origText.get(node);
+        const key = src.trim();</pre>
+    <footer>第 44 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>        if (!/[\u4e00-\u9fa5]/.test(key)) return;
+        const tr = I18N[key] || ruleTranslate(key);
+        if (tr) {
+          const next = src.replace(key, tr);
+          if (node.nodeValue !== next) node.nodeValue = next;
+        }
+      } else if (origText.has(node)) {
+        const back = origText.get(node);
+        if (node.nodeValue !== back) node.nodeValue = back;
+      }
+    });
+  }
+  function translateAttrs(root) {
+    root.querySelectorAll('[placeholder], [title], [aria-label]').forEach((el) =&gt; {
+      if (!origAttr.has(el)) {
+        origAttr.set(el, {
+          placeholder: el.getAttribute('placeholder'),
+          title: el.getAttribute('title'),
+          'aria-label': el.getAttribute('aria-label'),
+        });
+      }
+      const o = origAttr.get(el);
+      ['placeholder', 'title', 'aria-label'].forEach((name) =&gt; {
+        const v = o[name];
+        if (!v || !/[\u4e00-\u9fa5]/.test(v)) return;
+        if (lang === 'en') {
+          const tr = I18N[v] || ruleTranslate(v);
+          if (tr &amp;&amp; el.getAttribute(name) !== tr) el.setAttribute(name, tr);
+        } else {
+          el.setAttribute(name, v);
+        }
+      });
+    });
+    // 输入框的默认值也要跟着切（用户自己改过的不动）
+    root.querySelectorAll('input').forEach((el) =&gt; {
+      const rec = origAttr.get(el) || {};
+      if (rec.value === undefined) {
+        rec.value = el.value;
+        origAttr.set(el, rec);
+      }
+      const orig = rec.value;
+      if (!orig || !/[\u4e00-\u9fa5]/.test(orig)) return;
+      const en = I18N[orig] || ruleTranslate(orig);
+      if (!en) return;
+      if (lang === 'en') {
+        if (el.value === orig) el.value = en;
+      } else if (el.value === en) {
+        el.value = orig;
+      }
+    });</pre>
+    <footer>第 45 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  }
+  function translateAll() {
+    if (translating) return;
+    translating = true;
+    try {
+      document.querySelectorAll('#board, #mobile').forEach((root) =&gt; {
+        translateText(root);
+        translateAttrs(root);
+      });
+    } finally {
+      translating = false;
+    }
+  }
+  function syncLangUI() {
+    document.querySelectorAll('[data-lang]').forEach((el) =&gt; {
+      el.classList.toggle('on', el.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+  }
+  function setLang(next) {
+    lang = next === 'en' ? 'en' : 'zh';
+    store.set('dipian.lang', lang);
+    syncLangUI();
+    translateAll();
+  }
+  window.addEventListener('load', () =&gt; {
+    syncLangUI();
+    translateAll();
+    const mo = new MutationObserver(() =&gt; translateAll());
+    mo.observe(document.body, { childList: true, subtree: true, characterData: true });
+    document.addEventListener('click', (e) =&gt; {
+      const el = e.target.closest &amp;&amp; e.target.closest('[data-lang]');
+      if (!el) return;
+      e.preventDefault();
+      e.stopPropagation();
+      setLang(el.dataset.lang);
+    }, true);
+  });
+  window.addEventListener('resize', fitMobile);
+  buildMobile();
+  fitMobile();
+  syncPager();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+// 共享核心：校验、限流、转发、错误映射。不依赖任何运行时专有 API（Node 18+ / Workers 通用）。
+export const ALLOWED_MODELS = ['deepseek-chat', 'deepseek-reasoner'];
+export const MAX_SYSTEM = 20000;
+export const MAX_USER = 40000;
+export const DEFAULT_MODEL = 'deepseek-chat';</pre>
+    <footer>第 46 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
+export function json(status, payload, extra = {}) {
+  return new Response(JSON.stringify(payload), { status, headers: { ...JSON_HEADERS, ...extra } });
+}
+export function corsHeaders(origin, allowed) {
+  const allow = allowed &amp;&amp; allowed.trim() ? allowed.trim() : '*';
+  const ok = allow === '*' || allow.split(',').map((s) =&gt; s.trim()).includes(origin || '');
+  if (!ok) return null;
+  return {
+    'access-control-allow-origin': allow === '*' ? '*' : origin,
+    'access-control-allow-methods': 'POST, GET, OPTIONS',
+    'access-control-allow-headers': 'content-type',
+    'access-control-max-age': '86400',
+    vary: 'origin',
+  };
+}
+export function preflight(origin, allowed) {
+  const h = corsHeaders(origin, allowed);
+  if (!h) return new Response(null, { status: 403 });
+  return new Response(null, { status: 204, headers: h });
+}
+export function parseChatInput(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+    return { error: { code: 'invalid_body', message: 'Body 必须是 JSON 对象。' } };
+  }
+  const { system, user, model, temperature } = raw;
+  if (typeof system !== 'string' || !system.trim()) {
+    return { error: { code: 'invalid_system', message: '缺少 system。' } };
+  }
+  if (typeof user !== 'string' || !user.trim()) {
+    return { error: { code: 'invalid_user', message: '缺少 user。' } };
+  }
+  if (system.length &gt; MAX_SYSTEM) {
+    return { error: { code: 'system_too_long', message: `system 超过 ${MAX_SYSTEM} 字符。` } };
+  }
+  if (user.length &gt; MAX_USER) {
+    return { error: { code: 'user_too_long', message: `user 超过 ${MAX_USER} 字符。` } };
+  }
+  const m = model || DEFAULT_MODEL;
+  if (!ALLOWED_MODELS.includes(m)) {
+    return { error: { code: 'invalid_model', message: `不支持的模型：${m}` } };
+  }
+  let t = Number(temperature);
+  if (!Number.isFinite(t)) t = 0.6;
+  t = Math.min(2, Math.max(0, t));
+  return { value: { system, user, model: m, temperature: t } };
+}
+// 限流：存储可插拔（内存 / Redis），存储故障时退回本进程内存，避免整站不可用
+export function createLikimitMemory({ perMinute = 20, perDay = 200, now = () =&gt; Date.now() } = {}) {
+  const buckets = new Map();</pre>
+    <footer>第 47 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>  return function hitMemory(key) {
+    const t = now();
+    let b = buckets.get(key);
+    if (!b) { b = { min: 0, day: 0, minuteStart: t, dayStart: t }; buckets.set(key, b); }
+    if (t - b.minuteStart &gt;= 60000) { b.minuteStart = t; b.min = 0; }
+    if (t - b.dayStart &gt;= 86400000) { b.dayStart = t; b.day = 0; }
+    if (b.min &gt;= perMinute) return { ok: false, scope: 'minute', retryAfter: Math.ceil((60000 - (t - b.minuteStart)) / 1000) };
+    if (b.day &gt;= perDay) return { ok: false, scope: 'day', retryAfter: Math.ceil((86400000 - (t - b.dayStart)) / 1000) };
+    b.min += 1; b.day += 1;
+    return { ok: true, remaining: perMinute - b.min };
+  };
+}
+export function createLimiter({ store, perMinute = 20, perDay = 200 } = {}) {
+  const memory = createLikimitMemory({ perMinute, perDay });
+  return async function hit(id) {
+    if (!store || store.kind === 'memory') return memory(id);
+    const keyBase = 'rl:' + id;
+    try {
+      const m = await store.incr(keyBase + ':m', 60);
+      const d = await store.incr(keyBase + ':d', 86400);
+      if (m.count &gt; perMinute) return { ok: false, scope: 'minute', retryAfter: m.ttlSec || 60 };
+      if (d.count &gt; perDay) return { ok: false, scope: 'day', retryAfter: d.ttlSec || 86400 };
+      return { ok: true, remaining: Math.max(0, perMinute - m.count) };
+    } catch (e) {
+      // 存储挂了：退回单进程限流，并在结果里标记，方便日志排查
+      const r = memory(id);
+      return { ...r, degraded: true };
+    }
+  };
+}
+export async function callUpstream({ input, apiKey, baseUrl, fetchImpl = fetch, timeoutMs = 60000 }) {
+  const url = (baseUrl || 'https://api.deepseek.com').replace(/\/+$/, '') + '/chat/completions';
+  const body = {
+    model: input.model,
+    temperature: input.temperature,
+    response_format: { type: 'json_object' },
+    messages: [
+      { role: 'system', content: input.system },
+      { role: 'user', content: input.user },
+    ],
+  };
+  const ctrl = new AbortController();
+  const timer = setTimeout(() =&gt; ctrl.abort(), timeoutMs);
+  let res;
+  try {
+    res = await fetchImpl(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: 'Bearer ' + apiKey },
+      body: JSON.stringify(body),
+      signal: ctrl.signal,</pre>
+    <footer>第 48 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    });
+  } catch (e) {
+    return { status: 504, error: { code: 'upstream_timeout', message: '上游超时或不可达。' } };
+  } finally {
+    clearTimeout(timer);
+  }
+  if (!res.ok) {
+    // 不把上游原文透传给前端，避免回显密钥片段
+    const map = { 401: 'upstream_auth', 402: 'upstream_quota', 429: 'upstream_rate' };
+    const code = map[res.status] || (res.status &gt;= 500 ? 'upstream_error' : 'upstream_rejected');
+    const messages = {
+      upstream_auth: '上游鉴权失败（服务端 Key 无效或已过期）。',
+      upstream_quota: '上游账户余额不足。',
+      upstream_rate: '上游限流，请稍后再试。',
+      upstream_error: '上游服务异常。',
+      upstream_rejected: '上游拒绝了这次请求。',
+    };
+    return { status: res.status === 429 ? 429 : 502, error: { code, message: messages[code] } };
+  }
+  let payload;
+  try { payload = await res.json(); } catch (e) {
+    return { status: 502, error: { code: 'upstream_bad_json', message: '上游返回的不是 JSON。' } };
+  }
+  const content = payload?.choices?.[0]?.message?.content;
+  if (typeof content !== 'string') {
+    return { status: 502, error: { code: 'upstream_empty', message: '上游没有返回内容。' } };
+  }
+  let data;
+  try { data = JSON.parse(content); } catch (e) {
+    return { status: 502, error: { code: 'model_not_json', message: '模型返回的不是合法 JSON。' } };
+  }
+  return {
+    status: 200,
+    value: { data, usage: payload.usage || null, model: payload.model || input.model },
+  };
+}
+// 零依赖 Node BFF（Node 18+）：把 DeepSeek Key 留在服务端，前端只调这里。
+// 启动：node server/node-server.mjs   （先设置 DEEPSEEK_API_KEY）
+import http from 'node:http';
+import {
+  parseChatInput, createLimiter, callUpstream, json, corsHeaders, preflight, ALLOWED_MODELS,
+} from './core.mjs';
+import { pickStore } from './stores.mjs';
+const PORT = Number(process.env.PORT || 8787);
+const API_KEY = process.env.DEEPSEEK_API_KEY || '';
+const BASE_URL = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com';
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS || '*';
+const RATE_PER_MIN = Number(process.env.RATE_PER_MIN || 20);
+const RATE_PER_DAY = Number(process.env.RATE_PER_DAY || 200);
+const MAX_BODY = Number(process.env.MAX_BODY_BYTES || 65536);</pre>
+    <footer>第 49 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>const store = pickStore(process.env);
+const hit = createLimiter({ store, perMinute: RATE_PER_MIN, perDay: RATE_PER_DAY });
+function send(res, status, payload, extra = {}) {
+  const body = JSON.stringify(payload);
+  res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'content-length': Buffer.byteLength(body), ...extra });
+  res.end(body);
+}
+function readBody(req) {
+  return new Promise((resolve) =&gt; {
+    let size = 0;
+    const chunks = [];
+    let done = false;
+    const finish = (v) =&gt; { if (!done) { done = true; resolve(v); } };
+    req.on('data', (c) =&gt; {
+      if (done) return;
+      size += c.length;
+      if (size &gt; MAX_BODY) { finish({ tooLarge: true }); return; }
+      chunks.push(c);
+    });
+    req.on('end', () =&gt; finish({ raw: Buffer.concat(chunks).toString('utf8') }));
+    req.on('error', () =&gt; finish({ error: true }));
+  });
+}
+const server = http.createServer(async (req, res) =&gt; {
+  const origin = req.headers.origin || '';
+  const cors = corsHeaders(origin, ALLOWED_ORIGINS);
+  const url = new URL(req.url, 'http://localhost');
+  if (req.method === 'OPTIONS') {
+    const r = preflight(origin, ALLOWED_ORIGINS);
+    res.writeHead(r.status, Object.fromEntries(r.headers));
+    res.end();
+    return;
+  }
+  if (!cors) {
+    send(res, 403, { error: { code: 'origin_not_allowed', message: '来源不在允许列表内。' } });
+    return;
+  }
+  if (url.pathname === '/api/health') {
+    send(res, 200, { ok: true, hasKey: Boolean(API_KEY), models: ALLOWED_MODELS, rate: { perMinute: RATE_PER_MIN, perDay: RATE_PER_DAY }, store: store.kind }, cors);
+    return;
+  }
+  if (url.pathname !== '/api/chat') {
+    send(res, 404, { error: { code: 'not_found', message: '没有这个接口。' } }, cors);
+    return;
+  }
+  if (req.method !== 'POST') {
+    send(res, 405, { error: { code: 'method_not_allowed', message: '只接受 POST。' } }, { ...cors, allow: 'POST, OPTIONS' });
+    return;
+  }
+  if (!API_KEY) {</pre>
+    <footer>第 50 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>    send(res, 500, { error: { code: 'no_key', message: '服务端没有配置 DEEPSEEK_API_KEY。' } }, cors);
+    return;
+  }
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || 'unknown';
+  const limit = await hit(ip);
+  if (!limit.ok) {
+    send(res, 429, { error: { code: 'rate_limited', message: '请求太频繁，稍后再试。', scope: limit.scope } }, { ...cors, 'retry-after': String(limit.retryAfter) });
+    return;
+  }
+  const body = await readBody(req);
+  if (body.tooLarge) {
+    send(res, 413, { error: { code: 'body_too_large', message: `请求体超过 ${MAX_BODY} 字节。` } }, cors);
+    req.resume(); // 把剩下的数据读掉，保证 413 能被客户端收到
+    return;
+  }
+  if (body.error) {
+    send(res, 400, { error: { code: 'body_read_error', message: '读取请求体失败。' } }, cors);
+    return;
+  }
+  let parsedBody;
+  try { parsedBody = JSON.parse(body.raw); } catch (e) {
+    send(res, 400, { error: { code: 'bad_json', message: '请求体不是合法 JSON。' } }, cors);
+    return;
+  }
+  const parsed = parseChatInput(parsedBody);
+  if (parsed.error) {
+    send(res, 400, { error: parsed.error }, cors);
+    return;
+  }
+  // 只记长度与模型，不记内容
+  console.log(`[chat] model=${parsed.value.model} system=${parsed.value.system.length} user=${parsed.value.user.length}`);
+  const result = await callUpstream({ input: parsed.value, apiKey: API_KEY, baseUrl: BASE_URL });
+  if (result.error) {
+    send(res, result.status, { error: result.error }, cors);
+    return;
+  }
+  send(res, 200, result.value, { ...cors, 'x-ratelimit-remaining': String(limit.remaining ?? '') });
+});
+server.listen(PORT, () =&gt; {
+  console.log(`BFF listening on http://localhost:${PORT}`);
+  console.log(`  upstream: ${BASE_URL}  key: ${API_KEY ? '已配置' : '缺失'}`);
+  console.log(`  cors: ${ALLOWED_ORIGINS}  rate: ${RATE_PER_MIN}/min, ${RATE_PER_DAY}/day`);
+});
+// Cloudflare Workers 入口：与 Node 版共用 core.mjs
+// 部署：cd server &amp;&amp; npx wrangler deploy   （先 wrangler secret put DEEPSEEK_API_KEY）
+import {
+  parseChatInput, createLimiter, callUpstream, json, corsHeaders, preflight, ALLOWED_MODELS,
+} from './core.mjs';
+import { pickStore } from './stores.mjs';
+let cached = null;</pre>
+    <footer>第 51 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>function limiterFor(env) {
+  if (!cached || cached.key !== env.UPSTASH_REDIS_REST_URL) {
+    const store = pickStore(env);
+    cached = {
+      key: env.UPSTASH_REDIS_REST_URL,
+      store,
+      hit: createLimiter({
+        store,
+        perMinute: Number(env.RATE_PER_MIN || 20),
+        perDay: Number(env.RATE_PER_DAY || 200),
+      }),
+    };
+  }
+  return cached;
+}
+export default {
+  async fetch(request, env) {
+    const origin = request.headers.get('origin') || '';
+    const allowed = env.ALLOWED_ORIGINS || '*';
+    const url = new URL(request.url);
+    if (request.method === 'OPTIONS') return preflight(origin, allowed);
+    const cors = corsHeaders(origin, allowed);
+    if (!cors) return json(403, { error: { code: 'origin_not_allowed', message: '来源不在允许列表内。' } });
+    if (url.pathname === '/api/health') {
+      return json(200, {
+        ok: true,
+        hasKey: Boolean(env.DEEPSEEK_API_KEY),
+        models: ALLOWED_MODELS,
+        runtime: 'cloudflare-worker',
+        store: L.store.kind,
+      }, cors);
+    }
+    if (url.pathname !== '/api/chat') {
+      return json(404, { error: { code: 'not_found', message: '没有这个接口。' } }, cors);
+    }
+    if (request.method !== 'POST') {
+      return json(405, { error: { code: 'method_not_allowed', message: '只接受 POST。' } }, { ...cors, allow: 'POST, OPTIONS' });
+    }
+    if (!env.DEEPSEEK_API_KEY) {
+      return json(500, { error: { code: 'no_key', message: 'Worker 没有配置 DEEPSEEK_API_KEY。' } }, cors);
+    }
+    const ip = request.headers.get('cf-connecting-ip') || 'unknown';
+    const L = limiterFor(env);
+    const limit = await L.hit(ip);
+    if (!limit.ok) {
+      return json(429, { error: { code: 'rate_limited', message: '请求太频繁，稍后再试。', scope: limit.scope } },
+        { ...cors, 'retry-after': String(limit.retryAfter) });
+    }
+    const text = await request.text();
+    if (text.length &gt; 65536) {</pre>
+    <footer>第 52 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>      return json(413, { error: { code: 'body_too_large', message: '请求体过大。' } }, cors);
+    }
+    let body;
+    try { body = JSON.parse(text); } catch (e) {
+      return json(400, { error: { code: 'bad_json', message: '请求体不是合法 JSON。' } }, cors);
+    }
+    const parsed = parseChatInput(body);
+    if (parsed.error) return json(400, { error: parsed.error }, cors);
+    const result = await callUpstream({
+      input: parsed.value,
+      apiKey: env.DEEPSEEK_API_KEY,
+      baseUrl: env.DEEPSEEK_BASE_URL,
+    });
+    if (result.error) return json(result.status, { error: result.error }, cors);
+    return json(200, result.value, cors);
+  },
+};
+// 限流计数器存储。契约：async incr(key, ttlSec) -&gt; { count, ttlSec }
+// 默认内存版（单进程）；多实例用 Upstash Redis REST（Node 与 Workers 都能用，零依赖）。
+export function createMemoryStore() {
+  const map = new Map();
+  return {
+    kind: 'memory',
+    async incr(key, ttlSec) {
+      const now = Date.now();
+      let e = map.get(key);
+      if (!e || now &gt;= e.exp) {
+        e = { n: 0, exp: now + ttlSec * 1000 };
+        map.set(key, e);
+      }
+      e.n += 1;
+      // 顺手清掉过期键，避免长跑内存涨
+      if (map.size &gt; 5000) {
+        for (const [k, v] of map) if (now &gt;= v.exp) map.delete(k);
+      }
+      return { count: e.n, ttlSec: Math.max(0, Math.ceil((e.exp - now) / 1000)) };
+    },
+  };
+}
+// Upstash Redis REST：POST /pipeline，命令走 JSON，不需要 npm 包
+export function createUpstashStore({ url, token, fetchImpl = fetch }) {
+  const base = url.replace(/\/+$/, '');
+  return {
+    kind: 'upstash',
+    async incr(key, ttlSec) {
+      const res = await fetchImpl(base + '/pipeline', {
+        method: 'POST',
+        headers: { authorization: 'Bearer ' + token, 'content-type': 'application/json' },
+        body: JSON.stringify([
+          ['INCR', key],</pre>
+    <footer>第 53 页 共 54 页</footer>
+  </section>
+  <section class="page">
+    <header>25号底片个人经历档案管理与项目孵化系统 V1.0</header>
+    <pre>          ['EXPIRE', key, ttlSec, 'NX'],
+          ['TTL', key],
+        ]),
+      });
+      if (!res.ok) throw new Error('redis HTTP ' + res.status);
+      const rows = await res.json();
+      const count = Number(rows?.[0]?.result);
+      const ttl = Number(rows?.[2]?.result);
+      if (!Number.isFinite(count)) throw new Error('redis 返回异常');
+      return { count, ttlSec: Number.isFinite(ttl) &amp;&amp; ttl &gt; 0 ? ttl : ttlSec };
+    },
+  };
+}
+// 根据环境变量选存储；配了 Upstash 就用共享存储，否则退回内存
+export function pickStore(env) {
+  const url = env.UPSTASH_REDIS_REST_URL;
+  const token = env.UPSTASH_REDIS_REST_TOKEN;
+  if (url &amp;&amp; token) return createUpstashStore({ url, token });
+  if (env.RATE_STORE === 'upstash') {
+    throw new Error('RATE_STORE=upstash 但缺少 UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN');
+  }
+  return createMemoryStore();
+}
+&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+&lt;title&gt;寻找人生的 25 号底片&lt;/title&gt;
+&lt;meta http-equiv="refresh" content="0; url=design-demos/dir-1-v6.html"&gt;
+&lt;style&gt;
+  html, body { height: 100%; margin: 0; background: #F2EADA; color: #1C1913;
+    font-family: "Noto Serif SC", "Songti SC", SimSun, serif; }
+  .wrap { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  a { color: #1C1913; font-size: 15px; letter-spacing: .12em; border-bottom: 1px solid #1C1913; text-decoration: none; padding-bottom: 4px; }
+  p { font-size: 11px; color: #8A7E62; letter-spacing: .1em; margin: 0; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="wrap"&gt;
+  &lt;a href="design-demos/dir-1-v6.html"&gt;进入原型 · 寻找人生的 25 号底片&lt;/a&gt;
+  &lt;p&gt;正在跳转… 没跳的话点上面&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+    <footer>第 54 页 共 54 页</footer>
+  </section></body></html>
