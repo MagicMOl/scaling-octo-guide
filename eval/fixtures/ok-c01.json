@@ -1,0 +1,15 @@
+{
+  "caseId": "c01",
+  "expectPass": true,
+  "output": {
+    "v": 1,
+    "strength": "把混乱收进秩序",
+    "evidence": [
+      { "year": 2021, "event": "用 42 个组件统一了七零八落的界面", "why": "结构化拆解" },
+      { "year": 2024, "event": "砍掉三个功能，留存从 11% 回到 19%", "why": "敢做减法" },
+      { "year": 2018, "event": "访谈 40 位创业者，写出一篇 10 万+ 长文", "why": "能沉下去" }
+    ],
+    "openings": "用 AI 做决策，不做设计稿",
+    "confidence": 0.74
+  }
+}

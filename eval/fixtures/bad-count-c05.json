@@ -1,0 +1,15 @@
+{
+  "caseId": "c05",
+  "expectPass": false,
+  "note": "只有两条证据，应被拒",
+  "output": {
+    "v": 1,
+    "strength": "把课程做成体系",
+    "evidence": [
+      { "year": 2016, "event": "带了一届从高一到高三，平均分提了 20 分" },
+      { "year": 2020, "event": "疫情转线上，自己录了 80 节课" }
+    ],
+    "openings": "把教学经验做成产品",
+    "confidence": 0.6
+  }
+}
